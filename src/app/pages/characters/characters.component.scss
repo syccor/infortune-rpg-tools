@@ -1,0 +1,101 @@
+.characters-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.page-header p {
+  margin: 0.35rem 0 0;
+  color: #cbd5e1;
+}
+
+.primary-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.character-form {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+label span {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+input {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: #0f172a;
+  color: white;
+  padding: 0.75rem 0.85rem;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error {
+  color: #fca5a5;
+  margin-top: 1rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.character-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.character-card h3 {
+  margin-top: 0;
+}
+
+.empty-state {
+  color: #cbd5e1;
+}

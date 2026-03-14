@@ -1,0 +1,90 @@
+<section class="characters-page">
+  <div class="page-header">
+    <div>
+      <h1>Personnages</h1>
+      <p>Liste des personnages enregistrés.</p>
+    </div>
+
+    <button type="button" class="primary-btn" (click)="toggleForm()">
+      {{ showForm ? 'Fermer le formulaire' : 'Ajouter un personnage' }}
+    </button>
+  </div>
+
+  @if (showForm) {
+    <form class="character-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <label>
+          <span>Nom</span>
+          <input type="text" formControlName="name" />
+        </label>
+
+        <label>
+          <span>Classe</span>
+          <input type="text" formControlName="classId" placeholder="ex: priest" />
+        </label>
+
+        <label>
+          <span>Profil</span>
+          <input type="text" formControlName="classprofileId" placeholder="optionnel" />
+        </label>
+
+        <label>
+          <span>PV max</span>
+          <input type="number" formControlName="maxHp" />
+        </label>
+
+        <label>
+          <span>PV actuels</span>
+          <input type="number" formControlName="currentHp" />
+        </label>
+
+        <label>
+          <span>Régénération quotidienne</span>
+          <input type="number" formControlName="dailyRegen" />
+        </label>
+
+        <label>
+          <span>Armure</span>
+          <input type="number" formControlName="armor" />
+        </label>
+
+        <label>
+          <span>Esquive</span>
+          <input type="number" formControlName="dodge" />
+        </label>
+
+        <label>
+          <span>Chance</span>
+          <input type="number" formControlName="luck" />
+        </label>
+      </div>
+
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
+
+      <div class="actions">
+        <button type="submit" class="primary-btn" [disabled]="isSaving">
+          {{ isSaving ? 'Enregistrement...' : 'Créer le personnage' }}
+        </button>
+      </div>
+    </form>
+  }
+
+  <div class="cards">
+    @for (character of characters$ | async; track character.id) {
+      <article class="character-card">
+        <h3>{{ character.name }}</h3>
+        <p><strong>Classe :</strong> {{ character.classLabel }}</p>
+        <p><strong>Profil :</strong> {{ character.classprofileLabel || 'Aucun' }}</p>
+        <p><strong>PV :</strong> {{ character.currentHp }} / {{ character.maxHp }}</p>
+        <p><strong>Regen :</strong> {{ character.dailyRegen }}</p>
+        <p><strong>Armure :</strong> {{ character.armor }}</p>
+        <p><strong>Esquive :</strong> {{ character.dodge }}</p>
+        <p><strong>Chance :</strong> {{ character.luck }}</p>
+      </article>
+    } @empty {
+      <p class="empty-state">Aucun personnage pour le moment.</p>
+    }
+  </div>
+</section>

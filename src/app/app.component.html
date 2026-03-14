@@ -1,0 +1,54 @@
+<div class="app-shell">
+  <aside class="sidebar" [class.open]="menuOpen">
+    <div class="sidebar__header">
+      <div class="sidebar__brand">
+        <div class="brand-badge">LI</div>
+        <div>
+          <p class="brand-title">Les Infortunées</p>
+        </div>
+      </div>
+
+      <button class="icon-btn" type="button" (click)="closeMenu()" aria-label="Fermer le menu">
+        ✕
+      </button>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="active"
+      >
+        <span class="nav-icon">⌂</span>
+        <span>Accueil</span>
+      </a>
+
+      <a
+        routerLink="/characters"
+        routerLinkActive="active"
+      >
+        <span class="nav-icon">⚔</span>
+        <span>Personnages</span>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="overlay" *ngIf="menuOpen" (click)="closeMenu()"></div>
+
+  <div class="main-area" [class.menu-open]="menuOpen">
+    <header class="topbar">
+      <button class="icon-btn burger-btn" type="button" (click)="toggleMenu()" aria-label="Ouvrir le menu">
+        ☰
+      </button>
+
+      <div class="topbar__title">
+        <h1>Infortune RPG Tools</h1>
+        <p>Gestion de personnages et futurs outils de campagne</p>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
