@@ -5,9 +5,9 @@
       <p>Liste des personnages enregistrés.</p>
     </div>
 
-    <button type="button" class="primary-btn" (click)="goToCreate()">
+    <a type="button" routerLink="/characters/create" class="primary-btn">
       Ajouter un personnage
-    </button>
+    </a>
   </div>
 
   @if (characters$ | async; as characters) {
@@ -30,23 +30,12 @@
                 </span>
               </div>
 
-              <div class="hp-row">
-                <div class="hp-bar">
-                  <div
-                    class="hp-fill"
-                    [style.width.%]="character.hpPercent"
-                    [ngClass]="character.hpState"
-                  ></div>
-
-                  <div class="hp-mark mark-50"></div>
-                  <div class="hp-mark mark-25"></div>
-                  <div class="hp-mark mark-10"></div>
-                </div>
-
-                <div class="hp-values">
-                  {{ character.currentHp }} / {{ character.maxHp }}
-                </div>
-              </div>
+              <app-health-bar
+                [currentHp]="character.currentHp"
+                [maxHp]="character.maxHp"
+                [showValues]="true"
+                [height]="14"
+              ></app-health-bar>
             </div>
 
             <div class="character-actions">

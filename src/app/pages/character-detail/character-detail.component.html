@@ -1,0 +1,60 @@
+@if (character$ | async; as character) {
+  @if (character) {
+    <section class="detail-page">
+      <div class="page-header">
+        <div>
+          <h1>{{ character.name }} {{ character.surname || '' }}</h1>
+          <p>
+            {{ character.classLabel }}
+            @if (character.classProfileLabel) {
+              · {{ character.classProfileLabel }}
+            }
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <a routerLink="/characters" class="secondary-btn">Retour à la liste</a>
+          <button class="primary-btn" type="button" (click)="copyDiscord(character)">
+            Copier pour Discord
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <app-health-bar
+          [currentHp]="character.currentHp"
+          [maxHp]="character.maxHp"
+          [showValues]="true"
+          [height]="18"
+        ></app-health-bar>
+
+        <div class="thresholds">
+          <span>50 % : {{ character.hp50 }}</span>
+          <span>25 % : {{ character.hp25 }}</span>
+          <span>10 % : {{ character.hp10 }}</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item"><strong>Race :</strong> {{ character.raceLabel }}</div>
+          <div class="stat-item"><strong>Grade :</strong> {{ character.gradeLabel }}</div>
+          <div class="stat-item"><strong>Silhouette :</strong> {{ character.sizeLabel }}</div>
+          <div class="stat-item"><strong>Poids :</strong> {{ character.weightLabel }}</div>
+          <div class="stat-item"><strong>Musculature :</strong> {{ character.musculatureLabel }}</div>
+          <div class="stat-item"><strong>Armure :</strong> {{ character.armor }}</div>
+          <div class="stat-item"><strong>Type d’armure :</strong> {{ character.armorTypeLabel }}</div>
+          <div class="stat-item"><strong>Bouclier :</strong> {{ character.shieldTypeLabel }}</div>
+          <div class="stat-item"><strong>Esquive :</strong> {{ character.dodge }}</div>
+          <div class="stat-item"><strong>Agilité :</strong> R{{ character.agility }}</div>
+          <div class="stat-item"><strong>Perception :</strong> {{ character.perception }}</div>
+          <div class="stat-item"><strong>Chance :</strong> {{ character.luckpoint }} / {{ character.luckMax }}</div>
+          <div class="stat-item"><strong>Niveau :</strong> {{ character.lvl }}</div>
+          <div class="stat-item"><strong>XP :</strong> {{ character.xp }}</div>
+          <div class="stat-item"><strong>Ressource :</strong> {{ character.ressource }}</div>
+          <div class="stat-item"><strong>Mystique :</strong> {{ character.mystique ? 'Oui' : 'Non' }}</div>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <p>Personnage introuvable.</p>
+  }
+}

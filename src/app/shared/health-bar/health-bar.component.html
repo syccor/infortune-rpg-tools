@@ -1,0 +1,21 @@
+<div class="health-bar-wrapper">
+  <div class="hp-row">
+    <div class="hp-bar" [style.height.px]="heightValue()">
+      <div
+        class="hp-fill"
+        [style.width.%]="hpPercent()"
+        [ngClass]="hpState()"
+      ></div>
+
+      <div class="hp-mark mark-50"></div>
+      <div class="hp-mark mark-25"></div>
+      <div class="hp-mark mark-10"></div>
+    </div>
+
+    @if (showValuesValue()) {
+      <div class="hp-values">
+        {{ currentHpValue() }} / {{ maxHpValue() }}
+      </div>
+    }
+  </div>
+</div>

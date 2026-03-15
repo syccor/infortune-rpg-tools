@@ -44,6 +44,4 @@ export interface Character {
 export interface CharacterListItem extends Character {
   classLabel: string;
   classProfileLabel: string | null;
-  hpPercent: number;
-  hpState: 'healthy' | 'warning' | 'danger' | 'critical';
 }

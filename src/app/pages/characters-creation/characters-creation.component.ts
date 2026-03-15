@@ -71,7 +71,6 @@ export class CharactersCreationComponent implements OnInit {
     shieldTypeId: ['none'],
 
     hasPet: [false],
-    mystique: [false],
     lvl: [1, [Validators.required, Validators.min(1)]],
     xp: [0, [Validators.required, Validators.min(0)]],
     ressource: [0, [Validators.required, Validators.min(0)]],
@@ -232,6 +231,9 @@ export class CharactersCreationComponent implements OnInit {
 
     const raw = this.form.getRawValue();
 
+    const nonMysticClasses = ['heavy-fighter', 'light-fighter', 'shooter'];
+    const mystique = !nonMysticClasses.includes(raw.classId);
+
     const payload: Omit<Character, 'id' | 'createdAt' | 'updatedAt'> = {
       name: raw.name.trim(),
       surname: raw.surname?.trim() || '',
@@ -250,7 +252,7 @@ export class CharactersCreationComponent implements OnInit {
       shieldTypeId: raw.shieldTypeId === 'none' ? null : raw.shieldTypeId,
 
       hasPet: raw.hasPet,
-      mystique: raw.mystique,
+      mystique: mystique,
       lvl: Number(raw.lvl),
       xp: Number(raw.xp),
       ressource: Number(raw.ressource),
@@ -265,7 +267,7 @@ export class CharactersCreationComponent implements OnInit {
       luckMax: this.preview.luckMax,
       hasShoulderPads: this.preview.hasShoulderPads,
 
-   /**   inventory: [],
+     /**  inventory: [],
       passives: [], */
       isActive: true,
     };
