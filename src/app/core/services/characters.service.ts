@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc, serverTimestamp } from '@angular/fire/firestore';
+import { Firestore, doc, collection, collectionData, updateDoc, addDoc, serverTimestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Character } from '../models/character.model';
 
@@ -20,6 +20,17 @@ export class CharactersService {
     return addDoc(this.charactersCollection, {
       ...character,
       createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  updateCharacterCombatState(characterId: string, data: {
+    currentHp: number;
+    healCapState: 'none' | 'cap50' | 'cap25';
+  }) {
+    const ref = doc(this.firestore, 'characters', characterId);
+    return updateDoc(ref, {
+      ...data,
       updatedAt: serverTimestamp(),
     });
   }

@@ -1,3 +1,5 @@
+export type HealCapState = 'none' | 'cap50' | 'cap25';
+
 export interface Character {
   id?: string;
   name: string;
@@ -35,6 +37,8 @@ export interface Character {
 
   hasShoulderPads: boolean;
   isActive: boolean;
+
+  healCapState?: HealCapState;
 
   createdAt?: unknown;
   updatedAt?: unknown;

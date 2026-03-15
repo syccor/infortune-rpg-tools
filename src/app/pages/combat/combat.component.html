@@ -1,0 +1,118 @@
+<section class="combat-page">
+  <div class="combat-grid">
+    <aside class="combat-panel left-panel">
+      <h2>Personnage</h2>
+
+      <label>
+        <span>Choisir un personnage</span>
+        <select [formControl]="form.controls.characterId">
+          <option value="">Sélectionner</option>
+          @for (character of characters$ | async; track character.id) {
+            <option [value]="character.id">
+              {{ character.name }} — {{ character.classLabel }}
+            </option>
+          }
+        </select>
+      </label>
+
+      @if (selectedCharacter$ | async; as character) {
+        @if (character) {
+          <div class="stats">
+            <div><strong>Armure :</strong> {{ character.armor }}</div>
+            <div><strong>Esquive :</strong> {{ character.dodge }}</div>
+            <div><strong>Agilité :</strong> R{{ character.agility }}</div>
+            <div><strong>Cap soin :</strong> {{ character.healCapState || 'none' }}</div>
+          </div>
+        }
+      }
+    </aside>
+
+    <main class="combat-panel center-panel">
+      @if (selectedCharacter$ | async; as character) {
+        @if (character) {
+          <div class="hero-card">
+            <h2>{{ character.name }}</h2>
+            <p>
+              {{ character.classLabel }}
+              @if (character.classProfileLabel) {
+                · {{ character.classProfileLabel }}
+              }
+            </p>
+
+            <app-health-bar
+              [currentHp]="character.currentHp"
+              [maxHp]="character.maxHp"
+              [showValues]="true"
+              [height]="22"
+            ></app-health-bar>
+          </div>
+
+          <div class="action-card">
+            <h2>Action</h2>
+
+            <form class="combat-form">
+              <label>
+                <span>Type</span>
+                <select [formControl]="form.controls.type">
+                  <option value="damage">Dégâts</option>
+                  <option value="piercing-damage">Dégâts sans armure</option>
+                  <option value="heal">Soin</option>
+                  <option value="divine-heal">Soin divin</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Valeur</span>
+                <input type="number" [formControl]="form.controls.rawValue" />
+              </label>
+            </form>
+
+            <div class="actions">
+              <button class="secondary-btn" type="button" (click)="simulate(character)">
+                Simuler
+              </button>
+              <button class="primary-btn" type="button" (click)="apply(character)" [disabled]="isApplying">
+                {{ isApplying ? 'Application...' : 'Appliquer' }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+
+      @if (lastResult) {
+        <div class="result-card">
+          <h3>Résultat</h3>
+          <p><strong>Résolution :</strong> {{ lastResult.resolution }}</p>
+          <p><strong>Avant :</strong> {{ lastResult.hpBefore }} PV</p>
+          <p><strong>Après :</strong> {{ lastResult.hpAfter }} PV</p>
+          <p><strong>Valeur finale :</strong> {{ lastResult.finalValue }}</p>
+          <p><strong>Armure absorbée :</strong> {{ lastResult.armorReduction }}</p>
+          <p><strong>Cap de soin :</strong> {{ lastResult.newHealCapState }}</p>
+        </div>
+      }
+    </main>
+
+    <aside class="combat-panel right-panel">
+      <h2>Log</h2>
+
+      <div class="log-list">
+        @for (entry of logs; track $index) {
+          <div class="log-entry" [class.applied]="entry.applied">
+            <div class="log-top">
+              <strong>{{ entry.characterName }}</strong>
+              <span>{{ entry.timestamp }}</span>
+            </div>
+
+            <p>{{ entry.resultText }}</p>
+            <small>
+              {{ entry.hpBefore }} → {{ entry.hpAfter }}
+              · {{ entry.applied ? 'Appliqué' : 'Simulation' }}
+            </small>
+          </div>
+        } @empty {
+          <p class="empty-log">Aucune action pour le moment.</p>
+        }
+      </div>
+    </aside>
+  </div>
+</section>
