@@ -167,3 +167,44 @@
   width: 3px;
   background: rgba(255,80,80,0.7);
 }
+
+.page-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.header-left h1 {
+  margin: 0;
+}
+
+.header-left p {
+  margin: 0.25rem 0 0;
+  color: #9da3ae;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.regen-message {
+  background: #2b2d31;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  color: #c9ccd1;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.health-fill {
+  transition: width 0.6s ease;
+}

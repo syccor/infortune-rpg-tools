@@ -4,12 +4,23 @@
       <h1>Personnages</h1>
       <p>Liste des personnages enregistrés.</p>
     </div>
-
-    <a type="button" routerLink="/characters/create" class="primary-btn">
-      Ajouter un personnage
-    </a>
+    <div class="header-actions">
+      <button
+          type="button"
+          class="secondary-btn"
+          (click)="applyDailyRegen()"
+          [disabled]="isApplyingDailyRegen"
+        >
+          {{ isApplyingDailyRegen ? 'Régénération...' : 'Appliquer la régénération quotidienne' }}
+      </button>
+      <a type="button" routerLink="/characters/create" class="primary-btn">
+        Ajouter un personnage
+      </a>
+    </div>
   </div>
-
+    @if (dailyRegenMessage) {
+      <p class="regen-message">{{ dailyRegenMessage }}</p>
+    }
   @if (characters$ | async; as characters) {
     @if (characters.length > 0) {
       <div class="characters-list">

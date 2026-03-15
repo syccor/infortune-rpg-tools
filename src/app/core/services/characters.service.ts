@@ -1,5 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, doc, collection, collectionData, updateDoc, addDoc, serverTimestamp } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  addDoc,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  getDocs,
+  writeBatch,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Character } from '../models/character.model';
 
@@ -19,6 +29,7 @@ export class CharactersService {
   addCharacter(character: Omit<Character, 'id' | 'createdAt' | 'updatedAt'>) {
     return addDoc(this.charactersCollection, {
       ...character,
+      isDead: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -33,5 +44,78 @@ export class CharactersService {
       ...data,
       updatedAt: serverTimestamp(),
     });
+  }
+    private getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private diffDaysBetween(fromDateString: string, toDateString: string): number {
+    const from = new Date(`${fromDateString}T00:00:00`);
+    const to = new Date(`${toDateString}T00:00:00`);
+
+    const diffMs = to.getTime() - from.getTime();
+    return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+  }
+
+  async applyDailyRegenToAllCharacters(): Promise<number> {
+    const snapshot = await getDocs(this.charactersCollection);
+    const today = this.getTodayDateString();
+    const batch = writeBatch(this.firestore);
+    
+    let updatedCount = 0;
+
+    snapshot.forEach((docSnap) => {
+    const data = docSnap.data() as any;
+    const isDead = data.isDead ?? false;
+
+    if (isDead) {
+      return;
+    }
+    const maxHp = Number(data.maxHp ?? 0);
+    const currentHp = Number(data.currentHp ?? 0);
+    const lastDailyRegenAt = data.lastDailyRegenAt ?? null;
+
+    if (maxHp <= 0 || currentHp >= maxHp) {
+      if (lastDailyRegenAt !== today) {
+        batch.update(docSnap.ref, {
+          lastDailyRegenAt: today,
+          updatedAt: serverTimestamp(),
+        });
+        updatedCount++;
+      }
+      return;
+    }
+
+    let missedDays = 1;
+
+    if (lastDailyRegenAt) {
+      missedDays = this.diffDaysBetween(lastDailyRegenAt, today);
+    }
+
+    if (missedDays <= 0) {
+      return;
+    }
+
+    const regenPerDay = Math.floor(maxHp * 0.1);
+    const totalRegen = regenPerDay * missedDays;
+    const newHp = Math.min(maxHp, currentHp + totalRegen);
+
+    batch.update(docSnap.ref, {
+      currentHp: newHp,
+      lastDailyRegenAt: today,
+      updatedAt: serverTimestamp(),
+    });
+      updatedCount++;
+    });
+
+    if (updatedCount > 0) {
+      await batch.commit();
+    }
+
+    return updatedCount;
   }
 }

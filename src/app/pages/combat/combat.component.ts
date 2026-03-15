@@ -162,4 +162,17 @@ export class CombatComponent {
         return `${result.finalValue} dégâts subis`;
     }
   }
+
+  async resetCombatState(character: any): Promise<void> {
+    if (!character?.id) return;
+
+    await this.charactersService.updateCharacterCombatState(character.id, {
+      currentHp: character.maxHp,
+      healCapState: 'none',
+    });
+
+    this.lastResult = null;
+    this.logs = [];
+  }
+
 }

@@ -39,7 +39,9 @@ export interface Character {
   isActive: boolean;
 
   healCapState?: HealCapState;
-
+  isDead?: boolean | null;
+  
+  lastDailyRegenAt?: string | null;
   createdAt?: unknown;
   updatedAt?: unknown;
 }

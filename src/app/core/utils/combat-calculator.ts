@@ -93,6 +93,23 @@ export function applyCombatAction(
 
     hpAfter = Math.min(cap, state.currentHp + requestedHeal);
     finalValue = hpAfter - state.currentHp;
+
+    const ratioAfterHeal = hpAfter / state.maxHp;
+
+    if (action.type === 'divine-heal') {
+      newHealCapState = 'none';
+      healCapApplied = false;
+    } else {
+      if (state.healCapState === 'cap25' && ratioAfterHeal > 0.25) {
+        newHealCapState = 'none';
+        healCapApplied = false;
+      }
+
+      if (state.healCapState === 'cap50' && ratioAfterHeal > 0.5) {
+        newHealCapState = 'none';
+        healCapApplied = false;
+      }
+    }
   }
 
   return {
