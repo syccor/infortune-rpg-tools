@@ -1,4 +1,4 @@
-export interface Classprofile {
+export interface ClassProfile {
   id?: string;
   classId: string;
   label: string;

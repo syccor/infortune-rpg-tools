@@ -5,86 +5,66 @@
       <p>Liste des personnages enregistrés.</p>
     </div>
 
-    <button type="button" class="primary-btn" (click)="toggleForm()">
-      {{ showForm ? 'Fermer le formulaire' : 'Ajouter un personnage' }}
+    <button type="button" class="primary-btn">
+      Ajouter un personnage
     </button>
   </div>
 
-  @if (showForm) {
-    <form class="character-form" [formGroup]="form" (ngSubmit)="submit()">
-      <div class="grid">
-        <label>
-          <span>Nom</span>
-          <input type="text" formControlName="name" />
-        </label>
+  @if (characters$ | async; as characters) {
+    @if (characters.length > 0) {
+      <div class="characters-list">
+        @for (character of characters; track character.id) {
+          <article
+            class="character-row"
+            (click)="goToCharacter(character.id)"
+            tabindex="0"
+          >
+            <div class="character-main">
+              <div class="character-top">
+                <h3>{{ character.name }}</h3>
+                <span class="character-meta">
+                  {{ character.classLabel }}
+                  @if (character.classprofileLabel) {
+                    · {{ character.classprofileLabel }}
+                  }
+                </span>
+              </div>
 
-        <label>
-          <span>Classe</span>
-          <input type="text" formControlName="classId" placeholder="ex: priest" />
-        </label>
+              <div class="hp-row">
+                <div class="hp-bar">
+                  <div
+                    class="hp-fill"
+                    [style.width.%]="character.hpPercent"
+                    [ngClass]="character.hpState"
+                  ></div>
 
-        <label>
-          <span>Profil</span>
-          <input type="text" formControlName="classprofileId" placeholder="optionnel" />
-        </label>
+                  <div class="hp-mark mark-50"></div>
+                  <div class="hp-mark mark-25"></div>
+                  <div class="hp-mark mark-10"></div>
+                </div>
 
-        <label>
-          <span>PV max</span>
-          <input type="number" formControlName="maxHp" />
-        </label>
+                <div class="hp-values">
+                  {{ character.currentHp }} / {{ character.maxHp }}
+                </div>
+              </div>
+            </div>
 
-        <label>
-          <span>PV actuels</span>
-          <input type="number" formControlName="currentHp" />
-        </label>
-
-        <label>
-          <span>Régénération quotidienne</span>
-          <input type="number" formControlName="dailyRegen" />
-        </label>
-
-        <label>
-          <span>Armure</span>
-          <input type="number" formControlName="armor" />
-        </label>
-
-        <label>
-          <span>Esquive</span>
-          <input type="number" formControlName="dodge" />
-        </label>
-
-        <label>
-          <span>Chance</span>
-          <input type="number" formControlName="luck" />
-        </label>
+            <div class="character-actions">
+              <button
+                type="button"
+                class="secondary-btn"
+                (click)="goToCharacter(character.id); $event.stopPropagation()"
+              >
+                Visualiser
+              </button>
+            </div>
+          </article>
+        }
       </div>
-
-      @if (errorMessage) {
-        <p class="error">{{ errorMessage }}</p>
-      }
-
-      <div class="actions">
-        <button type="submit" class="primary-btn" [disabled]="isSaving">
-          {{ isSaving ? 'Enregistrement...' : 'Créer le personnage' }}
-        </button>
+    } @else {
+      <div class="empty-card">
+        <p>Aucun personnage pour le moment.</p>
       </div>
-    </form>
-  }
-
-  <div class="cards">
-    @for (character of characters$ | async; track character.id) {
-      <article class="character-card">
-        <h3>{{ character.name }}</h3>
-        <p><strong>Classe :</strong> {{ character.classLabel }}</p>
-        <p><strong>Profil :</strong> {{ character.classprofileLabel || 'Aucun' }}</p>
-        <p><strong>PV :</strong> {{ character.currentHp }} / {{ character.maxHp }}</p>
-        <p><strong>Regen :</strong> {{ character.dailyRegen }}</p>
-        <p><strong>Armure :</strong> {{ character.armor }}</p>
-        <p><strong>Esquive :</strong> {{ character.dodge }}</p>
-        <p><strong>Chance :</strong> {{ character.luck }}</p>
-      </article>
-    } @empty {
-      <p class="empty-state">Aucun personnage pour le moment.</p>
     }
-  </div>
+  }
 </section>
