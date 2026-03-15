@@ -16,6 +16,41 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /races/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /grades/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /armorTypes/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /shieldTypes/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /weightClasses/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /musculatureClasses/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /sizeClasses/{document} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -5,7 +5,7 @@
       <p>Liste des personnages enregistrés.</p>
     </div>
 
-    <button type="button" class="primary-btn">
+    <button type="button" class="primary-btn" (click)="goToCreate()">
       Ajouter un personnage
     </button>
   </div>
@@ -24,8 +24,8 @@
                 <h3>{{ character.name }}</h3>
                 <span class="character-meta">
                   {{ character.classLabel }}
-                  @if (character.classprofileLabel) {
-                    · {{ character.classprofileLabel }}
+                  @if (character.classProfileLabel) {
+                    · {{ character.classProfileLabel }}
                   }
                 </span>
               </div>

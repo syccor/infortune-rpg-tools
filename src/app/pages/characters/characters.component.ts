@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { combineLatest, map } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { CharactersService } from '../../core/services/characters.service';
-import { ClassesService } from '../../core/services/classes.service';
-import { ClassProfilesService } from '../../core/services/class-profiles.service';
+import { GameDataService } from '../../core/services/game-data.service';
+import { CharacterListItem } from '../../core/models/character.model';
 
 @Component({
   selector: 'app-characters',
@@ -16,35 +16,32 @@ import { ClassProfilesService } from '../../core/services/class-profiles.service
 })
 export class CharactersComponent {
   private readonly charactersService = inject(CharactersService);
-  private readonly classesService = inject(ClassesService);
-  private readonly classProfilesService = inject(ClassProfilesService);
   private readonly router = inject(Router);
+  private readonly gameDataService = inject(GameDataService);
 
-  readonly characters$ = combineLatest([
+    readonly characters$ = combineLatest([
     this.charactersService.getCharacters(),
-    this.classesService.getClasses(),
-    this.classProfilesService.getClassProfiles(),
+    this.gameDataService.getClassLabelMap(),
+    this.gameDataService.getSubClassLabelMap(),
   ]).pipe(
-    map(([characters, classes, classProfiles]) => {
-      const classMap = new Map(classes.map((c) => [c.id, c.label]));
-      const classprofileMap = new Map(classProfiles.map((s) => [s.id, s.label]));
-
-      return characters.map((character) => {
-        const hpPercent = character.maxHp > 0
-          ? Math.max(0, Math.min(100, (character.currentHp / character.maxHp) * 100))
-          : 0;
+    map(([characters, classMap, subClassMap]): CharacterListItem[] =>
+      characters.map((character) => {
+        const hpPercent =
+          character.maxHp > 0
+            ? Math.max(0, Math.min(100, (character.currentHp / character.maxHp) * 100))
+            : 0;
 
         return {
           ...character,
           classLabel: classMap.get(character.classId) ?? character.classId,
-          classprofileLabel: character.classProfiles
-            ? (classprofileMap.get(character.classProfiles) ?? character.classProfiles)
+          classProfileLabel: character.classProfiles
+            ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
             : null,
           hpPercent,
           hpState: this.getHpState(hpPercent),
         };
-      });
-    })
+      })
+    )
   );
 
   goToCharacter(characterId?: string): void {
@@ -52,6 +49,10 @@ export class CharactersComponent {
 
     // route détail à venir
     this.router.navigate(['/characters', characterId]);
+  }
+
+  goToCreate(): void {
+    this.router.navigate(['/characters/create']);
   }
 
   private getHpState(percent: number): 'healthy' | 'warning' | 'danger' | 'critical' {

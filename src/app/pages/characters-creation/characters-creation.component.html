@@ -1,0 +1,170 @@
+<section class="creation-page">
+  <div class="page-header">
+    <div>
+      <h1>Créer un personnage</h1>
+      <p>Définis les paramètres de création et vérifie les statistiques calculées.</p>
+    </div>
+
+    <a routerLink="/characters" class="secondary-btn">Retour à la liste</a>
+  </div>
+
+  <div class="layout">
+    <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid">
+        <label>
+          <span>Prénom</span>
+          <input type="text" formControlName="name" />
+        </label>
+
+        <label>
+          <span>Nom</span>
+          <input type="text" formControlName="surname" />
+        </label>
+
+        <label>
+          <span>Classe</span>
+          <select formControlName="classId">
+            <option value="">Choisir</option>
+            @for (item of classes; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Profil</span>
+          <select formControlName="classProfiles">
+            <option value="">{{ form.controls.classProfiles.disabled ? 'Choisir d’abord une classe' : 'Aucun' }}</option>
+            @for (profile of filteredProfiles; track profile.id) {
+              <option [value]="profile.id">{{ profile.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Race</span>
+          <select formControlName="raceId">
+            <option value="">Choisir</option>
+            @for (race of races; track race.id) {
+              <option [value]="race.id">{{ race.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Grade</span>
+          <select formControlName="gradeId">
+            @for (grade of grades; track grade.id) {
+              <option [value]="grade.id">{{ grade.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Poids naturel</span>
+          <select formControlName="weightClassId">
+            <option value="">Choisir</option>
+            @for (item of weightClasses; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Musculature</span>
+          <select formControlName="musculatureClassId">
+            <option value="">Choisir</option>
+            @for (item of musculatureClasses; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Taille</span>
+          <select formControlName="sizeClassId">
+            <option value="">Choisir</option>
+            @for (item of sizeClasses; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Armure</span>
+          <select formControlName="armorTypeId">
+            <option value="">Choisir</option>
+            @for (item of armorTypes; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Bouclier</span>
+          <select formControlName="shieldTypeId">
+            @for (item of filteredShields; track item.id) {
+              <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>Niveau</span>
+          <input type="number" formControlName="lvl" />
+        </label>
+
+        <label>
+          <span>XP</span>
+          <input type="number" formControlName="xp" />
+        </label>
+
+        <label>
+          <span>Ressource</span>
+          <input type="number" formControlName="ressource" />
+        </label>
+      </div>
+
+      <div class="checks">
+        <label class="check">
+          <input type="checkbox" formControlName="hasPet" />
+          <span>A un familier</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" formControlName="mystique" />
+          <span>Personnage mystique</span>
+        </label>
+      </div>
+
+      @if (validationMessage) {
+        <p class="error">{{ validationMessage }}</p>
+      }
+
+      <div class="actions">
+        <button type="submit" class="primary-btn" [disabled]="isSaving || !preview || !!validationMessage">
+          {{ isSaving ? 'Création...' : 'Créer le personnage' }}
+        </button>
+      </div>
+    </form>
+
+    <aside class="preview-card">
+      <h2>Aperçu des statistiques</h2>
+
+      @if (preview) {
+        <ul>
+          <li><strong>PV max :</strong> {{ preview.maxHp }}</li>
+          <li><strong>PV actuels :</strong> {{ preview.currentHp }}</li>
+          <li><strong>Armure :</strong> {{ preview.armor }}</li>
+          <li><strong>Esquive :</strong> {{ preview.dodge }}</li>
+          <li><strong>Agilité :</strong> {{ preview.agility }}</li>
+          <li><strong>Perception :</strong> {{ preview.perception }}</li>
+          <li><strong>Chance :</strong> {{ preview.luckpoint }} / {{ preview.luckMax }}</li>
+          <li><strong>Épaulières :</strong> {{ preview.hasShoulderPads ? 'Oui' : 'Non' }}</li>
+        </ul>
+      } @else {
+        <p>Complète les champs nécessaires pour voir l’aperçu.</p>
+      }
+    </aside>
+  </div>
+</section>

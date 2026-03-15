@@ -5,10 +5,15 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "deploy": "ng build --base-href=/infortune-rpg-tools/ && npx angular-cli-ghpages --dir=dist/infortune-rpg-tools",
+    "deploy": "ng build --base-href=/infortune-rpg-tools/ && npx angular-cli-ghpages --dir=dist/infortune-rpg-tools/browser",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "seed": "node firebase/seedSubprofiles.js"
+    "seed:classes": "node firebase/seeds/seedClasses.js",
+    "seed:subclasses": "node firebase/seeds/seedSubClasses.js",
+    "seed:weights": "node firebase/seeds/seedWeightClasses.js",
+    "seed:musculature": "node firebase/seeds/seedMusculatureClasses.js",
+    "seed:sizes": "node firebase/seeds/seedSizeClasses.js",
+    "seed:all": "node firebase/seeds/seedAll.js"
   },
   "prettier": {
     "printWidth": 100,
