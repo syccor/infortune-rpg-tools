@@ -5,12 +5,13 @@ import {
   collectionData,
   doc,
   docData,
+  getDoc,
   serverTimestamp,
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { User } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 
 export interface AppUser {
   uid: string;
@@ -25,31 +26,36 @@ export interface AppUser {
   providedIn: 'root',
 })
 export class UsersService {
-    private readonly firestore = inject(Firestore);
+  private readonly firestore = inject(Firestore);
 
-    async ensureUserDocument(user: User): Promise<void> {
-        const ref = doc(this.firestore, 'users', user.uid);
+  async ensureUserDocument(user: User): Promise<void> {
+    const ref = doc(this.firestore, 'users', user.uid);
+    const snapshot = await getDoc(ref);
 
-        await setDoc(
-        ref,
-        {
-            uid: user.uid,
-            email: user.email ?? null,
-            displayName: user.displayName ?? null,
-            role: null,
-            updatedAt: serverTimestamp(),
-            createdAt: serverTimestamp(),
-        },
-        { merge: true }
-        );
+    if (!snapshot.exists()) {
+      await setDoc(ref, {
+        uid: user.uid,
+        email: user.email ?? null,
+        displayName: user.displayName ?? null,
+        role: null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return;
     }
 
-    
+        await updateDoc(ref, {
+        email: user.email ?? null,
+        displayName: user.displayName ?? null,
+        updatedAt: serverTimestamp(),
+        });
+    }
+
     getUser(uid: string): Observable<AppUser | undefined> {
         const ref = doc(this.firestore, 'users', uid);
         return docData(ref) as Observable<AppUser | undefined>;
     }
-
+     
     getUsers(): Observable<AppUser[]> {
         const ref = collection(this.firestore, 'users');
         return collectionData(ref, { idField: 'uid' }) as Observable<AppUser[]>;
@@ -59,8 +65,9 @@ export class UsersService {
         const ref = doc(this.firestore, 'users', uid);
 
         await updateDoc(ref, {
-            role,
-            updatedAt: serverTimestamp(),
+        role,
+        updatedAt: serverTimestamp(),
         });
     }
+
 }
