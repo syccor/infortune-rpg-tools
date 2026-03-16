@@ -102,7 +102,7 @@ export class CharacterDetailComponent {
 
 ---
 
-## Passif racial :
+## Passif racial : ${character.race || ''}
 ## Classe / Profil classique : ${character.classLabel || ''}${character.classProfileLabel ? ` / ${character.classProfileLabel}` : ''}
 
 ---
