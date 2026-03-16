@@ -26,7 +26,7 @@
       <div class="characters-list">
         @for (character of characters; track character.id) {
           <article
-            class="character-row"
+            class="character-row" [class.dead]="character.isDead"
             (click)="goToCharacter(character.id)"
             tabindex="0"
           >
@@ -39,7 +39,11 @@
                     · {{ character.classProfileLabel }}
                   }
                 </span>
+                @if (character.isDead) {
+                   <span class="dead-badge">Mort</span>
+                }
               </div>
+
 
               <app-health-bar
                 [currentHp]="character.currentHp"

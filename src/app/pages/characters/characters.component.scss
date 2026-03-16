@@ -68,6 +68,11 @@
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
+.character-row.dead {
+  opacity: 0.6;
+  filter: grayscale(80%);
+}
+
 .character-row:hover {
   transform: translateY(-1px);
   background: #40444b;
@@ -207,4 +212,13 @@
 
 .health-fill {
   transition: width 0.6s ease;
+}
+
+.dead-badge {
+  background: #7a1f1f;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  margin-left: 8px;
 }
