@@ -50,7 +50,21 @@
         <h1>Infortune RPG Tools</h1>
         <p>Gestion de personnages et futurs outils de campagne</p>
       </div>
+      <div class="topbar__spacer"></div>
+      @if (user$ | async; as user) {
+        <div class="auth-box">
+          <span class="auth-name">{{ user.displayName || user.email }}</span>
+          <button class="icon-btn auth-btn" type="button" (click)="logout()">
+            Déconnexion
+          </button>
+        </div>
+      } @else {
+        <button class="icon-btn auth-btn" type="button" (click)="login()">
+          Connexion Google
+        </button>
+      }
     </header>
+
 
     <main class="content">
       <router-outlet></router-outlet>

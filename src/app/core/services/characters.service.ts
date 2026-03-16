@@ -10,6 +10,7 @@ import {
   getDocs,
   writeBatch,
 } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { Character } from '../models/character.model';
 
@@ -19,6 +20,7 @@ import { Character } from '../models/character.model';
 export class CharactersService {
   private readonly firestore = inject(Firestore);
   private readonly charactersCollection = collection(this.firestore, 'characters');
+  private readonly auth = inject(Auth);
 
   getCharacters(): Observable<Character[]> {
     return collectionData(this.charactersCollection, {
@@ -27,9 +29,16 @@ export class CharactersService {
   }
 
   addCharacter(character: Omit<Character, 'id' | 'createdAt' | 'updatedAt'>) {
+    const user = this.auth.currentUser;
+
+    if (!user) {
+      throw new Error('Utilisateur non connecté');
+    }
     return addDoc(this.charactersCollection, {
       ...character,
       isDead: false,
+      ownerUid: user.uid,
+      ownerEmail: user.email ?? null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -65,7 +74,7 @@ export class CharactersService {
     const snapshot = await getDocs(this.charactersCollection);
     const today = this.getTodayDateString();
     const batch = writeBatch(this.firestore);
-    
+
     let updatedCount = 0;
 
     snapshot.forEach((docSnap) => {
