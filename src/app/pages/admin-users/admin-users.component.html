@@ -1,0 +1,67 @@
+<section class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1>Administration des accès</h1>
+      <p>Attribue un rôle aux utilisateurs en attente de validation.</p>
+    </div>
+
+    <a routerLink="/" class="secondary-btn">Retour à l’accueil</a>
+  </div>
+
+  @if (actionMessage) {
+    <div class="info-message">
+      {{ actionMessage }}
+    </div>
+  }
+
+  <div class="admin-card">
+    <div class="table-head">
+      <span>Utilisateur</span>
+      <span>Email</span>
+      <span>Rôle</span>
+      <span>Action</span>
+    </div>
+
+    @for (user of users$ | async; track user.uid) {
+      <div class="table-row">
+        <div class="cell">
+          <strong>{{ user.displayName || 'Utilisateur sans nom' }}</strong>
+        </div>
+
+        <div class="cell">
+          {{ user.email || 'Aucun email' }}
+        </div>
+
+        <div class="cell">
+          <span class="role-badge" [class.dev]="user.role === 'dev'" [class.mj]="user.role === 'mj'" [class.pj]="user.role === 'pj'">
+            {{ getRoleLabel(user.role) }}
+          </span>
+        </div>
+
+        <div class="cell actions">
+          @if (canAssignRole(user)) {
+            <button
+              type="button"
+              class="secondary-btn"
+              (click)="assignRole(user, 'pj')"
+              [disabled]="isSaving"
+            >
+              Passer PJ
+            </button>
+
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="assignRole(user, 'mj')"
+              [disabled]="isSaving"
+            >
+              Passer MJ
+            </button>
+          } @else {
+            <span class="locked-text">Verrouillé</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

@@ -1,6 +1,31 @@
-<section class="home">
-  <h1>Bienvenue sur Infortune RPG Tools</h1>
+<section class="home-card">
+  <h2>Bienvenue</h2>
   <p>
-    Base de travail pour gérer les personnages, les missions, les combats et les statistiques.
+    Cette application sert à gérer les personnages, leurs profils,
+    leurs points de vie, les combats et les outils de campagne.
   </p>
+
+  @if (!(user$ | async)) {
+    <div class="home-alert">
+      <h3>Connexion requise</h3>
+      <p>
+        Connectez-vous avec Google avant d’accéder aux modules
+        Personnages et Combat.
+      </p>
+    </div>
+  }
+
+  @if (appUser$ | async; as appUser) {
+    @if (!appUser?.role) {
+      <div class="home-alert">
+        <h3>Accès en attente d’approbation</h3>
+
+        <p>
+          Votre compte a bien été enregistré.
+          L’accès aux modules sera activé dès que votre profil aura été
+          validé par un maître de jeu ou dev.
+        </p>
+      </div>
+    }
+  }
 </section>

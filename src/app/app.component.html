@@ -23,18 +23,24 @@
         <span>Accueil</span>
       </a>
 
-      <a
-        routerLink="/characters"
-        routerLinkActive="active"
-      >
-        <span class="nav-icon">⚔</span>
-        <span>Personnages</span>
-      </a>
+      @if (appUser$ | async; as appUser) {
+        <a routerLink="/characters" routerLinkActive="active">
+          <span class="nav-icon">⚔</span>
+          <span>Personnages</span>
+        </a>
 
-      <a routerLink="/combat" routerLinkActive="active">
-        <span class="nav-icon">🛡️</span>
-        <span>Combat</span>
-      </a>
+        <a routerLink="/combat" routerLinkActive="active">
+          <span class="nav-icon">🛡</span>
+          <span>Combat</span>
+        </a>
+
+        @if (appUser.role === 'dev' || appUser.role === 'mj') {
+          <a routerLink="/admin/users" routerLinkActive="active">
+            <span class="nav-icon">👑</span>
+            <span>Administration</span>
+          </a>
+        }
+      }
     </nav>
   </aside>
 

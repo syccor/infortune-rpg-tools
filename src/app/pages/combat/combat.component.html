@@ -7,7 +7,7 @@
         <span>Choisir un personnage</span>
         <select [formControl]="form.controls.characterId">
           <option value="">Sélectionner</option>
-          @for (character of characters$ | async; track character.id) {
+          @for (character of availableCharacters$ | async; track character.id) {
             <option [value]="character.id">
               {{ character.name }} — {{ character.classLabel }}
             </option>

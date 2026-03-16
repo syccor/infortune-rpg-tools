@@ -7,6 +7,7 @@ import { CharactersService } from '../../core/services/characters.service';
 import { GameDataService } from '../../core/services/game-data.service';
 import { HealthBarComponent } from '../../shared/health-bar/health-bar.component';
 import { applyCombatAction, CombatActionInput, CombatActionType} from '../../core/utils/combat-calculator';
+import { AuthService } from '../../core/services/auth.service';
 
 type CombatLogEntry = {
   timestamp: string;
@@ -30,6 +31,7 @@ export class CombatComponent {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
+ private readonly authService = inject(AuthService);
 
   logs: CombatLogEntry[] = [];
   lastResult: any = null;
@@ -42,51 +44,67 @@ export class CombatComponent {
     note: [''],
   });
 
-  readonly characters$ = combineLatest([
-    this.charactersService.getCharacters(),
-    this.gameDataService.getClassLabelMap(),
-    this.gameDataService.getSubClassLabelMap(),
-  ]).pipe(
-    map(([characters, classMap, subClassMap]) =>
-      characters.map((character) => ({
-        ...character,
-        classLabel: classMap.get(character.classId) ?? character.classId,
-        classProfileLabel: character.classProfiles
-          ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
-          : null,
-      }))
-    )
-  );
 
-  readonly selectedCharacter$ = combineLatest([
-    this.characters$,
-    this.form.controls.characterId.valueChanges.pipe(
-      startWith(this.form.controls.characterId.value)
-    ),
-  ]).pipe(
-    map(([characters, selectedId]) =>
-      characters.find((character) => character.id === selectedId) ?? null
-    )
-  );
+    readonly availableCharacters$ = combineLatest([
+      this.charactersService.getCharacters(),
+      this.gameDataService.getClassLabelMap(),
+      this.gameDataService.getSubClassLabelMap(),
+      this.authService.user$,
+      this.authService.appUser$,
+    ]).pipe(
+      
+      map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
+      
+      console.log('firebaseUser =>', firebaseUser);
+      console.log('appUser =>', appUser);
+      console.log('characters =>', characters);
+      let filteredCharacters = characters;
 
-  simulate(character: any): void {
-    if (!character || this.form.invalid) return;
+        if (appUser?.role === 'pj' && firebaseUser) {
+          filteredCharacters = characters.filter(
+            (character) => character.ownerUid === firebaseUser.uid
+          );
+        }
 
-    const raw = this.form.getRawValue();
-
-    const result = applyCombatAction(
-      {
-        maxHp: character.maxHp,
-        currentHp: character.currentHp,
-        armor: character.armor,
-        dodge: character.dodge,
-        healCapState: character.healCapState ?? 'none',
-      },
-      {
-        type: raw.type,
-        rawValue: Number(raw.rawValue),
-      }
+        return filteredCharacters.map((character) => ({
+          ...character,
+          classLabel: classMap.get(character.classId) ?? character.classId,
+          classProfileLabel: character.classProfiles
+            ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
+            : null,
+        }));
+      })
     );
+
+    readonly selectedCharacter$ = combineLatest([
+      this.availableCharacters$,
+      this.form.controls.characterId.valueChanges.pipe(
+        startWith(this.form.controls.characterId.value)
+      ),
+    ]).pipe(
+      map(([characters, selectedId]) =>
+        characters.find((character) => character.id === selectedId) ?? null
+      )
+    );
+
+    simulate(character: any): void {
+      if (!character || this.form.invalid) return;
+
+      const raw = this.form.getRawValue();
+
+      const result = applyCombatAction(
+        {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        },
+        {
+          type: raw.type,
+          rawValue: Number(raw.rawValue),
+        }
+      );
 
     this.lastResult = result;
 

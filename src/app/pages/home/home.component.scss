@@ -11,3 +11,21 @@
   color: #cbd5e1;
   line-height: 1.6;
 }
+
+.home-alert {
+  background: #2b2d31;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+}
+
+.home-alert h3 {
+  margin-top: 0;
+  color: #f0c674;
+}
+
+.home-alert p {
+  margin-bottom: 0;
+  color: #c9ccd1;
+}
