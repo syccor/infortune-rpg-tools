@@ -264,7 +264,6 @@ export class CharactersCreationComponent implements OnInit {
       agility: this.preview.agility,
       perception: this.preview.perception,
       luckpoint: this.preview.luckpoint,
-      luckMax: this.preview.luckMax,
       hasShoulderPads: this.preview.hasShoulderPads,
 
      /**  inventory: [],

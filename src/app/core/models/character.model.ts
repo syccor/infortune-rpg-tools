@@ -33,8 +33,7 @@ export interface Character {
   perception: number;
 
   luckpoint: number;
-  luckMax: number;
-
+  
   hasShoulderPads: boolean;
   isActive: boolean;
 

@@ -10,7 +10,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 1,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false,
@@ -25,7 +24,6 @@ const races =
     perceptionBonus: 10,
     ressourceBonus: 10,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
@@ -38,7 +36,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 10,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
@@ -51,7 +48,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 20,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
@@ -64,7 +60,6 @@ const races =
     armorBonus: 2,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: true
@@ -77,7 +72,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: true
@@ -90,7 +84,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: true
@@ -103,7 +96,6 @@ const races =
     armorBonus: 2,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: true,
@@ -118,7 +110,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     dodgeCapBonus: 15,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
@@ -132,7 +123,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     dodgeCapBonus: 15,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
@@ -147,7 +137,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
@@ -160,7 +149,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
@@ -173,7 +161,6 @@ const races =
     armorBonus: 0,
     perceptionBonus: 0,
     defaultLuck: 0,
-    maxLuck: 2,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false
