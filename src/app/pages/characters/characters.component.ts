@@ -50,9 +50,9 @@ export class CharactersComponent {
     try {
       const updatedCount = await this.charactersService.applyDailyRegenToAllCharacters();
       this.dailyRegenMessage =
-      updatedCount === 0
-        ? 'Aucun personnage n’avait besoin de régénération.'
-        : `${updatedCount} personnage(s) ont récupéré des PV.`;
+        updatedCount === 0
+          ? 'Aucun personnage n’avait besoin de régénération.'
+          : `${updatedCount} personnage(s) ont récupéré des PV.`;
     } catch (error) {
       console.error(error);
       this.dailyRegenMessage = 'Erreur lors de la régénération quotidienne.';

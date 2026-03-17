@@ -54,7 +54,7 @@ export class CharactersService {
       updatedAt: serverTimestamp(),
     });
   }
-    private getTodayDateString(): string {
+  private getTodayDateString(): string {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -78,46 +78,46 @@ export class CharactersService {
     let updatedCount = 0;
 
     snapshot.forEach((docSnap) => {
-    const data = docSnap.data() as any;
-    const isDead = data.isDead ?? false;
+      const data = docSnap.data() as any;
+      const isDead = data.isDead ?? false;
 
-    if (isDead) {
-      return;
-    }
-    const maxHp = Number(data.maxHp ?? 0);
-    const currentHp = Number(data.currentHp ?? 0);
-    const lastDailyRegenAt = data.lastDailyRegenAt ?? null;
-
-    if (maxHp <= 0 || currentHp >= maxHp) {
-      if (lastDailyRegenAt !== today) {
-        batch.update(docSnap.ref, {
-          lastDailyRegenAt: today,
-          updatedAt: serverTimestamp(),
-        });
-        updatedCount++;
+      if (isDead) {
+        return;
       }
-      return;
-    }
+      const maxHp = Number(data.maxHp ?? 0);
+      const currentHp = Number(data.currentHp ?? 0);
+      const lastDailyRegenAt = data.lastDailyRegenAt ?? null;
 
-    let missedDays = 1;
+      if (maxHp <= 0 || currentHp >= maxHp) {
+        if (lastDailyRegenAt !== today) {
+          batch.update(docSnap.ref, {
+            lastDailyRegenAt: today,
+            updatedAt: serverTimestamp(),
+          });
+          updatedCount++;
+        }
+        return;
+      }
 
-    if (lastDailyRegenAt) {
-      missedDays = this.diffDaysBetween(lastDailyRegenAt, today);
-    }
+      let missedDays = 1;
 
-    if (missedDays <= 0) {
-      return;
-    }
+      if (lastDailyRegenAt) {
+        missedDays = this.diffDaysBetween(lastDailyRegenAt, today);
+      }
 
-    const regenPerDay = Math.floor(maxHp * 0.1);
-    const totalRegen = regenPerDay * missedDays;
-    const newHp = Math.min(maxHp, currentHp + totalRegen);
+      if (missedDays <= 0) {
+        return;
+      }
 
-    batch.update(docSnap.ref, {
-      currentHp: newHp,
-      lastDailyRegenAt: today,
-      updatedAt: serverTimestamp(),
-    });
+      const regenPerDay = Math.floor(maxHp * 0.1);
+      const totalRegen = regenPerDay * missedDays;
+      const newHp = Math.min(maxHp, currentHp + totalRegen);
+
+      batch.update(docSnap.ref, {
+        currentHp: newHp,
+        lastDailyRegenAt: today,
+        updatedAt: serverTimestamp(),
+      });
       updatedCount++;
     });
 

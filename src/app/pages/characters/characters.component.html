@@ -5,70 +5,53 @@
       <p>Liste des personnages enregistrés.</p>
     </div>
     <div class="header-actions">
-      <button
-          type="button"
-          class="secondary-btn"
-          (click)="applyDailyRegen()"
-          [disabled]="isApplyingDailyRegen"
-        >
-          {{ isApplyingDailyRegen ? 'Régénération...' : 'Appliquer la régénération quotidienne' }}
+      <button type="button" class="secondary-btn" (click)="applyDailyRegen()" [disabled]="isApplyingDailyRegen">
+        {{ isApplyingDailyRegen ? 'Régénération...' : 'Appliquer la régénération quotidienne' }}
       </button>
       <a type="button" routerLink="/characters/create" class="primary-btn">
         Ajouter un personnage
       </a>
     </div>
   </div>
-    @if (dailyRegenMessage) {
-      <p class="regen-message">{{ dailyRegenMessage }}</p>
-    }
+  @if (dailyRegenMessage) {
+  <p class="regen-message">{{ dailyRegenMessage }}</p>
+  }
   @if (characters$ | async; as characters) {
-    @if (characters.length > 0) {
-      <div class="characters-list">
-        @for (character of characters; track character.id) {
-          <article
-            class="character-row" [class.dead]="character.isDead"
-            (click)="goToCharacter(character.id)"
-            tabindex="0"
-          >
-            <div class="character-main">
-              <div class="character-top">
-                <h3>{{ character.name }}</h3>
-                <span class="character-meta">
-                  {{ character.classLabel }}
-                  @if (character.classProfileLabel) {
-                    · {{ character.classProfileLabel }}
-                  }
-                </span>
-                @if (character.isDead) {
-                   <span class="dead-badge">Mort</span>
-                }
-              </div>
+  @if (characters.length > 0) {
+  <div class="characters-list">
+    @for (character of characters; track character.id) {
+    <article class="character-row" [class.dead]="character.isDead" (click)="goToCharacter(character.id)" tabindex="0">
+      <div class="character-main">
+        <div class="character-top">
+          <h3>{{ character.name }}</h3>
+          <span class="character-meta">
+            {{ character.classLabel }}
+            @if (character.classProfileLabel) {
+            · {{ character.classProfileLabel }}
+            }
+          </span>
+          @if (character.isDead) {
+          <span class="dead-badge">Mort</span>
+          }
+        </div>
 
 
-              <app-health-bar
-                [currentHp]="character.currentHp"
-                [maxHp]="character.maxHp"
-                [showValues]="true"
-                [height]="14"
-              ></app-health-bar>
-            </div>
-
-            <div class="character-actions">
-              <button
-                type="button"
-                class="secondary-btn"
-                (click)="goToCharacter(character.id); $event.stopPropagation()"
-              >
-                Visualiser
-              </button>
-            </div>
-          </article>
-        }
+        <app-health-bar [currentHp]="character.currentHp" [maxHp]="character.maxHp" [showValues]="true"
+          [height]="14"></app-health-bar>
       </div>
-    } @else {
-      <div class="empty-card">
-        <p>Aucun personnage pour le moment.</p>
+
+      <div class="character-actions">
+        <button type="button" class="secondary-btn" (click)="goToCharacter(character.id); $event.stopPropagation()">
+          Visualiser
+        </button>
       </div>
+    </article>
     }
+  </div>
+  } @else {
+  <div class="empty-card">
+    <p>Aucun personnage pour le moment.</p>
+  </div>
+  }
   }
 </section>

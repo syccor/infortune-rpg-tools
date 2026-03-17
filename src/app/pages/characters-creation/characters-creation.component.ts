@@ -82,41 +82,41 @@ export class CharactersCreationComponent implements OnInit {
     this.form.controls.classId.valueChanges
       .pipe(startWith(this.form.controls.classId.value))
       .subscribe((classId) => {
-    const profileControl = this.form.controls.classProfiles;
+        const profileControl = this.form.controls.classProfiles;
 
-    if (!classId) {
-      this.filteredProfiles = [];
-      profileControl.setValue('');
-      profileControl.disable({ emitEvent: false });
-      return;
-    }
-
-    const classicClasses = ['heavy-fighter', 'light-fighter', 'shooter'];
-
-    this.filteredProfiles = this.classProfiles
-      .filter((profile) => {
-        if (profile.classId === classId) {
-          return true;
+        if (!classId) {
+          this.filteredProfiles = [];
+          profileControl.setValue('');
+          profileControl.disable({ emitEvent: false });
+          return;
         }
 
-        if (profile.classId === 'classic' && classicClasses.includes(classId)) {
-          return true;
+        const classicClasses = ['heavy-fighter', 'light-fighter', 'shooter'];
+
+        this.filteredProfiles = this.classProfiles
+          .filter((profile) => {
+            if (profile.classId === classId) {
+              return true;
+            }
+
+            if (profile.classId === 'classic' && classicClasses.includes(classId)) {
+              return true;
+            }
+
+            return false;
+          })
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        profileControl.enable({ emitEvent: false });
+
+        const currentProfile = profileControl.value;
+        if (
+          currentProfile &&
+          !this.filteredProfiles.some((profile) => profile.id === currentProfile)
+        ) {
+          profileControl.setValue('');
         }
-
-        return false;
-      })
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
-      profileControl.enable({ emitEvent: false });
-
-      const currentProfile = profileControl.value;
-      if (
-        currentProfile &&
-        !this.filteredProfiles.some((profile) => profile.id === currentProfile)
-      ) {
-        profileControl.setValue('');
-      }
-    });
+      });
 
     this.form.controls.armorTypeId.valueChanges
       .pipe(startWith(this.form.controls.armorTypeId.value))
@@ -139,7 +139,6 @@ export class CharactersCreationComponent implements OnInit {
 
   private loadReferences(): void {
     this.gameDataService.getCreationData().subscribe((data) => {
-      console.log('CREATION DATA =>', data);
       this.classes = data.classes;
       this.classProfiles = data.classProfiles;
       this.races = data.races;
@@ -266,8 +265,8 @@ export class CharactersCreationComponent implements OnInit {
       luckpoint: this.preview.luckpoint,
       hasShoulderPads: this.preview.hasShoulderPads,
 
-     /**  inventory: [],
-      passives: [], */
+      /**  inventory: [],
+       passives: [], */
       isActive: true,
     };
 

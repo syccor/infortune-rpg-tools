@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, map, startWith } from 'rxjs';
@@ -27,11 +27,11 @@ type CombatLogEntry = {
   templateUrl: './combat.component.html',
   styleUrls: ['./combat.component.scss'],
 })
-export class CombatComponent implements OnInit {
+export class CombatComponent {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
- private readonly authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
 
   logs: CombatLogEntry[] = [];
   lastResult: any = null;
@@ -43,8 +43,6 @@ export class CombatComponent implements OnInit {
     rawValue: [0, [Validators.required, Validators.min(0)]],
     note: [''],
   });
-
-  
 
   readonly availableCharacters$ = combineLatest([
     this.charactersService.getCharacters(),
@@ -72,7 +70,7 @@ export class CombatComponent implements OnInit {
           : null,
       }));
     })
-);
+  );
 
   readonly selectedCharacter$ = combineLatest([
     this.availableCharacters$,
@@ -84,23 +82,6 @@ export class CombatComponent implements OnInit {
       characters.find((character) => character.id === selectedId) ?? null
     )
   );
-
-  ngOnInit(): void {
-    this.authService.appUser$.subscribe({
-      next: (value) => console.log('APP USER =>', value),
-      error: (err) => console.error('APP USER ERROR =>', err),
-    });
-
-    this.charactersService.getCharacters().subscribe({
-      next: (value) => console.log('CHARACTERS =>', value),
-      error: (err) => console.error('CHARACTERS ERROR =>', err),
-    });
-
-    this.gameDataService.getCreationData().subscribe({
-      next: (value) => console.log('GAME DATA =>', value),
-      error: (err) => console.error('GAME DATA ERROR =>', err),
-    });
-  }
 
     simulate(character: any): void {
       if (!character || this.form.invalid) return;
