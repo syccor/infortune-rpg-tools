@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, map, startWith } from 'rxjs';
@@ -27,7 +27,7 @@ type CombatLogEntry = {
   templateUrl: './combat.component.html',
   styleUrls: ['./combat.component.scss'],
 })
-export class CombatComponent {
+export class CombatComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
@@ -44,48 +44,63 @@ export class CombatComponent {
     note: [''],
   });
 
+  
 
-    readonly availableCharacters$ = combineLatest([
-      this.charactersService.getCharacters(),
-      this.gameDataService.getClassLabelMap(),
-      this.gameDataService.getSubClassLabelMap(),
-      this.authService.user$,
-      this.authService.appUser$,
-    ]).pipe(
-      
-      map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
-      
-      console.log('firebaseUser =>', firebaseUser);
-      console.log('appUser =>', appUser);
-      console.log('characters =>', characters);
-      let filteredCharacters = characters;
+  readonly availableCharacters$ = combineLatest([
+    this.charactersService.getCharacters(),
+    this.gameDataService.getClassLabelMap(),
+    this.gameDataService.getSubClassLabelMap(),
+    this.authService.user$,
+    this.authService.appUser$,
+  ]).pipe(
+    
+    map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
+    
+    let filteredCharacters = characters;
 
-        if (appUser?.role === 'pj' && firebaseUser) {
-          filteredCharacters = characters.filter(
-            (character) => character.ownerUid === firebaseUser.uid
-          );
-        }
+      if (appUser?.role === 'pj' && firebaseUser) {
+        filteredCharacters = characters.filter(
+          (character) => character.ownerUid === firebaseUser.uid
+        );
+      }
 
-        return filteredCharacters.map((character) => ({
-          ...character,
-          classLabel: classMap.get(character.classId) ?? character.classId,
-          classProfileLabel: character.classProfiles
-            ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
-            : null,
-        }));
-      })
-    );
+      return filteredCharacters.map((character) => ({
+        ...character,
+        classLabel: classMap.get(character.classId) ?? character.classId,
+        classProfileLabel: character.classProfiles
+          ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
+          : null,
+      }));
+    })
+);
 
-    readonly selectedCharacter$ = combineLatest([
-      this.availableCharacters$,
-      this.form.controls.characterId.valueChanges.pipe(
-        startWith(this.form.controls.characterId.value)
-      ),
-    ]).pipe(
-      map(([characters, selectedId]) =>
-        characters.find((character) => character.id === selectedId) ?? null
-      )
-    );
+  readonly selectedCharacter$ = combineLatest([
+    this.availableCharacters$,
+    this.form.controls.characterId.valueChanges.pipe(
+      startWith(this.form.controls.characterId.value)
+    ),
+  ]).pipe(
+    map(([characters, selectedId]) =>
+      characters.find((character) => character.id === selectedId) ?? null
+    )
+  );
+
+  ngOnInit(): void {
+    this.authService.appUser$.subscribe({
+      next: (value) => console.log('APP USER =>', value),
+      error: (err) => console.error('APP USER ERROR =>', err),
+    });
+
+    this.charactersService.getCharacters().subscribe({
+      next: (value) => console.log('CHARACTERS =>', value),
+      error: (err) => console.error('CHARACTERS ERROR =>', err),
+    });
+
+    this.gameDataService.getCreationData().subscribe({
+      next: (value) => console.log('GAME DATA =>', value),
+      error: (err) => console.error('GAME DATA ERROR =>', err),
+    });
+  }
 
     simulate(character: any): void {
       if (!character || this.form.invalid) return;

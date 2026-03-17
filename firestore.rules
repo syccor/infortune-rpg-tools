@@ -6,24 +6,27 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Utilisateurs
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn();
       allow update: if isSignedIn();
       allow delete: if false;
     }
 
+    // Personnages
     match /characters/{document} {
       allow read: if isSignedIn();
       allow write: if isSignedIn();
     }
 
+    // Référentiels
     match /classes/{document} {
       allow read: if isSignedIn();
       allow write: if false;
     }
 
-    match /subClasses/{document} {
+    match /classProfiles/{document} {
       allow read: if isSignedIn();
       allow write: if false;
     }
