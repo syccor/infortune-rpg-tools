@@ -284,3 +284,98 @@ select {
   color: #b5bac1;
   font-size: 0.85rem;
 }
+
+.action-type-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.action-type-label {
+  font-size: 0.85rem;
+  color: #b5bac1;
+  font-weight: 600;
+}
+
+.action-type-inline {
+  margin-top: 0.5px;
+  display: flex;
+  gap: 0.5rem;
+  align-self: center;
+  flex-wrap: wrap;
+}
+
+.action-chip {
+  position: relative;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+  opacity: 0.8;
+}
+
+.action-chip:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.action-chip.active {
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Hide radio */
+.action-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Colors */
+
+.action-chip.damage {
+  background: rgba(255, 80, 80, 0.12);
+  color: #ff6b6b;
+}
+
+.action-chip.damage.active {
+  background: rgba(255, 80, 80, 0.25);
+  border-color: rgba(255, 80, 80, 0.6);
+}
+
+.action-chip.piercing {
+  background: rgba(166, 24, 46, 0.15);
+  color: #ff4d6d;
+}
+
+.action-chip.piercing.active {
+  background: rgba(166, 24, 46, 0.3);
+  border-color: rgba(166, 24, 46, 0.7);
+}
+
+.action-chip.heal {
+  background: rgba(80, 220, 150, 0.12);
+  color: #4ade80;
+}
+
+.action-chip.heal.active {
+  background: rgba(80, 220, 150, 0.25);
+  border-color: rgba(80, 220, 150, 0.6);
+}
+
+.action-chip.divine {
+  background: rgba(255, 214, 102, 0.15);
+  color: #facc15;
+}
+
+.action-chip.divine.active {
+  background: rgba(255, 214, 102, 0.3);
+  border-color: rgba(255, 214, 102, 0.7);
+}

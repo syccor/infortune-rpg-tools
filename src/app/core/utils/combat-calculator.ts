@@ -42,10 +42,12 @@ export function applyCombatAction(
     if (action.rawValue <= state.dodge) {
       resolution = 'dodge';
       finalValue = 0;
+      hpAfter = state.currentHp;
     } else if (action.type === 'damage' && action.rawValue <= state.armor) {
       resolution = 'block';
       finalValue = 0;
       armorReduction = action.rawValue;
+      hpAfter = state.currentHp;
     } else {
       resolution = 'hit';
 

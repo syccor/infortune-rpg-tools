@@ -116,16 +116,59 @@
                   }
                 </div>
               </div>
-              <label>
-                <span>Type</span>
-                <select [formControl]="form.controls.type">
-                  <option value="damage">Dégâts</option>
-                  <option value="piercing-damage">Dégâts sans armure</option>
-                  <option value="heal">Soin</option>
-                  <option value="divine-heal">Soin divin</option>
-                </select>
-              </label>
+              <div class="action-type-group">
+              <span class="action-type-label">Type</span>
 
+              <div class="action-type-inline">
+                <label
+                  class="action-chip damage"
+                  [class.active]="form.controls.type.value === 'damage'"
+                >
+                  <input
+                    type="radio"
+                    [formControl]="form.controls.type"
+                    value="damage"
+                  />
+                  Dégâts
+                </label>
+
+                <label
+                  class="action-chip piercing"
+                  [class.active]="form.controls.type.value === 'piercing-damage'"
+                >
+                  <input
+                    type="radio"
+                    [formControl]="form.controls.type"
+                    value="piercing-damage"
+                  />
+                  Sans armure
+                </label>
+
+                <label
+                  class="action-chip heal"
+                  [class.active]="form.controls.type.value === 'heal'"
+                >
+                  <input
+                    type="radio"
+                    [formControl]="form.controls.type"
+                    value="heal"
+                  />
+                  Soin
+                </label>
+
+                <label
+                  class="action-chip divine"
+                  [class.active]="form.controls.type.value === 'divine-heal'"
+                >
+                  <input
+                    type="radio"
+                    [formControl]="form.controls.type"
+                    value="divine-heal"
+                  />
+                  Soin Divin
+                </label>
+              </div>
+            </div>
               <label>
                 <span>Valeur</span>
                 <input type="number" [formControl]="form.controls.rawValue" />
