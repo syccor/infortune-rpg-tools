@@ -51,11 +51,11 @@ export class CombatComponent {
   readonly availableCharacters$ = combineLatest([
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
-    this.gameDataService.getSubClassLabelMap(),
+    this.gameDataService.getClassProfileLabelMap(),
     this.authService.user$,
     this.authService.appUser$,
   ]).pipe(
-    map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
+    map(([characters, classMap, classProfilesMap, firebaseUser, appUser]) => {
       let filteredCharacters = characters;
 
       if (appUser?.role === 'pj' && firebaseUser) {
@@ -68,7 +68,7 @@ export class CombatComponent {
         ...character,
         classLabel: classMap.get(character.classId) ?? character.classId,
         classProfileLabel: character.classProfiles
-          ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
+          ? (classProfilesMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
       }));
     }),

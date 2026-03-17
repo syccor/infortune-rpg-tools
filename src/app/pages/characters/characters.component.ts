@@ -25,17 +25,21 @@ export class CharactersComponent {
   readonly characters$ = combineLatest([
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
-    this.gameDataService.getSubClassLabelMap(),
+    this.gameDataService.getClassProfileLabelMap(),
   ]).pipe(
-    map(([characters, classMap, subClassMap]): CharacterListItem[] =>
-      characters.map((character) => ({
+    map(([characters, classMap, classProfileMap]): CharacterListItem[] => {
+      const activeCharacters = characters.filter(
+        (character) => (character.status ?? 'active') === 'active'
+      );
+
+      return activeCharacters.map((character) => ({
         ...character,
         classLabel: classMap.get(character.classId) ?? character.classId,
         classProfileLabel: character.classProfiles
-          ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
+          ? (classProfileMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
-      })),
-    ),
+      }));
+    })
   );
 
   goToCharacter(characterId?: string): void {

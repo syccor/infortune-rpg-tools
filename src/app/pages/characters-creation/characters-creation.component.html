@@ -140,6 +140,15 @@
 
       <div class="actions">
         <button
+          type="button"
+          class="secondary-btn"
+          [disabled]="isSaving || !preview || !!validationMessage"
+          (click)="submitAsDraft()"
+        >
+          {{ isSaving ? 'Enregistrement...' : 'Enregistrer en brouillon' }}
+        </button>
+
+        <button
           type="submit"
           class="primary-btn"
           [disabled]="isSaving || !preview || !!validationMessage"

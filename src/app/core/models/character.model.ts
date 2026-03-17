@@ -1,4 +1,5 @@
 export type HealCapState = 'none' | 'cap50' | 'cap25';
+export type CharacterStatus = 'draft' | 'active' | 'archived';
 
 export interface Character {
   id?: string;
@@ -38,8 +39,10 @@ export interface Character {
   isActive: boolean;
 
   healCapState?: HealCapState;
+  
   isDead?: boolean | null;
 
+  status: CharacterStatus;
   lastDailyRegenAt?: string | null;
 
   ownerUid?: string;

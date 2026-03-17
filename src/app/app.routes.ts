@@ -4,6 +4,7 @@ import { CharactersComponent } from './pages/characters/characters.component';
 import { CharacterDetailComponent } from './pages/character-detail/character-detail.component';
 import { CharactersCreationComponent } from './pages/characters-creation/characters-creation.component';
 import { CombatComponent } from './pages/combat/combat.component';
+import { RerollsComponent } from './pages/rerolls/rerolls.component';
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
@@ -15,7 +16,7 @@ export const routes: Routes = [
   { path: 'characters', component: CharactersComponent, canActivate: [authGuard] },
   { path: 'characters/create', component: CharactersCreationComponent, canActivate: [authGuard] },
   { path: 'characters/:id', component: CharacterDetailComponent, canActivate: [authGuard] },
-
+  { path: 'rerolls', component: RerollsComponent, canActivate: [authGuard] },
   { path: 'combat', component: CombatComponent, canActivate: [authGuard] },
 
   { path: '**', redirectTo: '' },

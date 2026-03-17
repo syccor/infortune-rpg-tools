@@ -211,6 +211,14 @@ export class CharactersCreationComponent implements OnInit {
   }
 
   async submit(): Promise<void> {
+    await this.saveCharacter('active');
+  }
+
+  async submitAsDraft(): Promise<void> {
+    await this.saveCharacter('draft');
+  }
+
+  async saveCharacter(status: 'draft' | 'active'): Promise<void> {
     this.form.markAllAsTouched();
 
     if (this.form.invalid || !this.preview || this.validationMessage) {
@@ -258,12 +266,15 @@ export class CharactersCreationComponent implements OnInit {
 
       /**  inventory: [],
        passives: [], */
-      isActive: true,
+      isActive: status === 'active',
+      isDead: false,
+      status,
+      lastDailyRegenAt: null,
     };
 
     try {
       await this.charactersService.addCharacter(payload);
-      this.router.navigate(['/characters']);
+      await this.router.navigate([status === 'draft' ? '/rerolls' : '/characters']);
     } finally {
       this.isSaving = false;
     }

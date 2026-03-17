@@ -1,0 +1,79 @@
+<section class="characters-page">
+  <div class="page-header">
+    <div>
+      <h1>Mes rerolls</h1>
+      <p>Personnages brouillons et concepts en cours.</p>
+    </div>
+
+    <a routerLink="/characters/create" class="primary-btn">
+      Créer un reroll
+    </a>
+  </div>
+
+  @if (actionMessage) {
+    <div class="info-message">
+      {{ actionMessage }}
+    </div>
+  }
+
+  @if (rerolls$ | async; as rerolls) {
+    @if (rerolls.length > 0) {
+      <div class="characters-list">
+        @for (character of rerolls; track character.id) {
+          <article class="character-row" (click)="goToCharacter(character.id)">
+            <div class="character-main">
+              <div class="character-top">
+                <h3>{{ character.name }}</h3>
+                <span class="character-meta">
+                  {{ character.classLabel }}
+                  @if (character.classProfileLabel) {
+                    · {{ character.classProfileLabel }}
+                  }
+                </span>
+              </div>
+
+              <app-health-bar
+                [currentHp]="character.currentHp"
+                [maxHp]="character.maxHp"
+                [showValues]="true"
+                [height]="14"
+              ></app-health-bar>
+            </div>
+
+            <div class="character-actions">
+              <button
+                type="button"
+                class="secondary-btn"
+                (click)="goToCharacter(character.id); $event.stopPropagation()"
+              >
+                Visualiser
+              </button>
+
+              <button
+                type="button"
+                class="primary-btn"
+                [disabled]="isProcessing"
+                (click)="activateReroll(character.id, $event)"
+              >
+                Passer actif
+              </button>
+
+              <button
+                type="button"
+                class="danger-btn"
+                [disabled]="isProcessing"
+                (click)="deleteReroll(character.id, $event)"
+              >
+                Supprimer
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty-card">
+        <p>Aucun reroll enregistré pour le moment.</p>
+      </div>
+    }
+  }
+</section>

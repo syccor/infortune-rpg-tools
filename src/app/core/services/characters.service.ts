@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   getDocs,
+  deleteDoc,
   writeBatch,
 } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
@@ -129,5 +130,20 @@ export class CharactersService {
     }
 
     return updatedCount;
+  }
+
+  async activateCharacter(characterId: string): Promise<void> {
+    const ref = doc(this.firestore, 'characters', characterId);
+
+    await updateDoc(ref, {
+      status: 'active',
+      isActive: true,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  async deleteCharacter(characterId: string): Promise<void> {
+    const ref = doc(this.firestore, 'characters', characterId);
+    await deleteDoc(ref);
   }
 }

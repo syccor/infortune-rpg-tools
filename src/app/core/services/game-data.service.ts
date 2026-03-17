@@ -113,7 +113,7 @@ export class GameDataService {
     );
   }
 
-  getSubClassLabelMap() {
+  getClassProfileLabelMap() {
     return this.classProfiles$.pipe(
       map((items) => new Map(items.map((item) => [item.id, item.label]))),
       shareReplay(1),
