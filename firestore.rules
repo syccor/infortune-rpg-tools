@@ -2,52 +2,72 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    match /characters/{document} {
-      allow read, write: if true;
+    function isSignedIn() {
+      return request.auth != null;
     }
 
+    // Utilisateurs
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // Personnages
+    match /characters/{document} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Référentiels
     match /classes/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /classProfiles/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /races/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /grades/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /armorTypes/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /shieldTypes/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /weightClasses/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /musculatureClasses/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
 
     match /sizeClasses/{document} {
-      allow read: if true;
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    match /raceMorphologies/{document} {
+      allow read: if isSignedIn();
       allow write: if false;
     }
 

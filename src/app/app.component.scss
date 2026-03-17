@@ -196,3 +196,23 @@
 .app-footer p {
   margin: 0.25rem 0;
 }
+
+.topbar__spacer {
+  flex: 1;
+}
+
+.auth-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-name {
+  color: #c9ccd1;
+  font-size: 0.9rem;
+}
+
+.auth-btn {
+  width: auto;
+  padding: 0 1rem;
+}

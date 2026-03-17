@@ -10,6 +10,7 @@ import {
   getDocs,
   writeBatch,
 } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { Character } from '../models/character.model';
 
@@ -19,6 +20,7 @@ import { Character } from '../models/character.model';
 export class CharactersService {
   private readonly firestore = inject(Firestore);
   private readonly charactersCollection = collection(this.firestore, 'characters');
+  private readonly auth = inject(Auth);
 
   getCharacters(): Observable<Character[]> {
     return collectionData(this.charactersCollection, {
@@ -27,9 +29,16 @@ export class CharactersService {
   }
 
   addCharacter(character: Omit<Character, 'id' | 'createdAt' | 'updatedAt'>) {
+    const user = this.auth.currentUser;
+
+    if (!user) {
+      throw new Error('Utilisateur non connecté');
+    }
     return addDoc(this.charactersCollection, {
       ...character,
       isDead: false,
+      ownerUid: user.uid,
+      ownerEmail: user.email ?? null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -45,7 +54,7 @@ export class CharactersService {
       updatedAt: serverTimestamp(),
     });
   }
-    private getTodayDateString(): string {
+  private getTodayDateString(): string {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -65,50 +74,50 @@ export class CharactersService {
     const snapshot = await getDocs(this.charactersCollection);
     const today = this.getTodayDateString();
     const batch = writeBatch(this.firestore);
-    
+
     let updatedCount = 0;
 
     snapshot.forEach((docSnap) => {
-    const data = docSnap.data() as any;
-    const isDead = data.isDead ?? false;
+      const data = docSnap.data() as any;
+      const isDead = data.isDead ?? false;
 
-    if (isDead) {
-      return;
-    }
-    const maxHp = Number(data.maxHp ?? 0);
-    const currentHp = Number(data.currentHp ?? 0);
-    const lastDailyRegenAt = data.lastDailyRegenAt ?? null;
-
-    if (maxHp <= 0 || currentHp >= maxHp) {
-      if (lastDailyRegenAt !== today) {
-        batch.update(docSnap.ref, {
-          lastDailyRegenAt: today,
-          updatedAt: serverTimestamp(),
-        });
-        updatedCount++;
+      if (isDead) {
+        return;
       }
-      return;
-    }
+      const maxHp = Number(data.maxHp ?? 0);
+      const currentHp = Number(data.currentHp ?? 0);
+      const lastDailyRegenAt = data.lastDailyRegenAt ?? null;
 
-    let missedDays = 1;
+      if (maxHp <= 0 || currentHp >= maxHp) {
+        if (lastDailyRegenAt !== today) {
+          batch.update(docSnap.ref, {
+            lastDailyRegenAt: today,
+            updatedAt: serverTimestamp(),
+          });
+          updatedCount++;
+        }
+        return;
+      }
 
-    if (lastDailyRegenAt) {
-      missedDays = this.diffDaysBetween(lastDailyRegenAt, today);
-    }
+      let missedDays = 1;
 
-    if (missedDays <= 0) {
-      return;
-    }
+      if (lastDailyRegenAt) {
+        missedDays = this.diffDaysBetween(lastDailyRegenAt, today);
+      }
 
-    const regenPerDay = Math.floor(maxHp * 0.1);
-    const totalRegen = regenPerDay * missedDays;
-    const newHp = Math.min(maxHp, currentHp + totalRegen);
+      if (missedDays <= 0) {
+        return;
+      }
 
-    batch.update(docSnap.ref, {
-      currentHp: newHp,
-      lastDailyRegenAt: today,
-      updatedAt: serverTimestamp(),
-    });
+      const regenPerDay = Math.floor(maxHp * 0.1);
+      const totalRegen = regenPerDay * missedDays;
+      const newHp = Math.min(maxHp, currentHp + totalRegen);
+
+      batch.update(docSnap.ref, {
+        currentHp: newHp,
+        lastDailyRegenAt: today,
+        updatedAt: serverTimestamp(),
+      });
       updatedCount++;
     });
 

@@ -7,6 +7,7 @@ import { CharactersService } from '../../core/services/characters.service';
 import { GameDataService } from '../../core/services/game-data.service';
 import { HealthBarComponent } from '../../shared/health-bar/health-bar.component';
 import { applyCombatAction, CombatActionInput, CombatActionType} from '../../core/utils/combat-calculator';
+import { AuthService } from '../../core/services/auth.service';
 
 type CombatLogEntry = {
   timestamp: string;
@@ -30,6 +31,7 @@ export class CombatComponent {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
+  private readonly authService = inject(AuthService);
 
   logs: CombatLogEntry[] = [];
   lastResult: any = null;
@@ -42,24 +44,36 @@ export class CombatComponent {
     note: [''],
   });
 
-  readonly characters$ = combineLatest([
+  readonly availableCharacters$ = combineLatest([
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
     this.gameDataService.getSubClassLabelMap(),
+    this.authService.user$,
+    this.authService.appUser$,
   ]).pipe(
-    map(([characters, classMap, subClassMap]) =>
-      characters.map((character) => ({
+    
+    map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
+    
+    let filteredCharacters = characters;
+
+      if (appUser?.role === 'pj' && firebaseUser) {
+        filteredCharacters = characters.filter(
+          (character) => character.ownerUid === firebaseUser.uid
+        );
+      }
+
+      return filteredCharacters.map((character) => ({
         ...character,
         classLabel: classMap.get(character.classId) ?? character.classId,
         classProfileLabel: character.classProfiles
           ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
-      }))
-    )
+      }));
+    })
   );
 
   readonly selectedCharacter$ = combineLatest([
-    this.characters$,
+    this.availableCharacters$,
     this.form.controls.characterId.valueChanges.pipe(
       startWith(this.form.controls.characterId.value)
     ),
@@ -69,24 +83,24 @@ export class CombatComponent {
     )
   );
 
-  simulate(character: any): void {
-    if (!character || this.form.invalid) return;
+    simulate(character: any): void {
+      if (!character || this.form.invalid) return;
 
-    const raw = this.form.getRawValue();
+      const raw = this.form.getRawValue();
 
-    const result = applyCombatAction(
-      {
-        maxHp: character.maxHp,
-        currentHp: character.currentHp,
-        armor: character.armor,
-        dodge: character.dodge,
-        healCapState: character.healCapState ?? 'none',
-      },
-      {
-        type: raw.type,
-        rawValue: Number(raw.rawValue),
-      }
-    );
+      const result = applyCombatAction(
+        {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        },
+        {
+          type: raw.type,
+          rawValue: Number(raw.rawValue),
+        }
+      );
 
     this.lastResult = result;
 

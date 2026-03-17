@@ -23,18 +23,24 @@
         <span>Accueil</span>
       </a>
 
-      <a
-        routerLink="/characters"
-        routerLinkActive="active"
-      >
-        <span class="nav-icon">⚔</span>
-        <span>Personnages</span>
-      </a>
+      @if (appUser$ | async; as appUser) {
+        <a routerLink="/characters" routerLinkActive="active">
+          <span class="nav-icon">⚔</span>
+          <span>Personnages</span>
+        </a>
 
-      <a routerLink="/combat" routerLinkActive="active">
-        <span class="nav-icon">🛡️</span>
-        <span>Combat</span>
-      </a>
+        <a routerLink="/combat" routerLinkActive="active">
+          <span class="nav-icon">🛡</span>
+          <span>Combat</span>
+        </a>
+
+        @if (appUser.role === 'dev' || appUser.role === 'mj') {
+          <a routerLink="/admin/users" routerLinkActive="active">
+            <span class="nav-icon">👑</span>
+            <span>Administration</span>
+          </a>
+        }
+      }
     </nav>
   </aside>
 
@@ -50,7 +56,21 @@
         <h1>Infortune RPG Tools</h1>
         <p>Gestion de personnages et futurs outils de campagne</p>
       </div>
+      <div class="topbar__spacer"></div>
+      @if (user$ | async; as user) {
+        <div class="auth-box">
+          <span class="auth-name">{{ user.displayName || user.email }}</span>
+          <button class="icon-btn auth-btn" type="button" (click)="logout()">
+            Déconnexion
+          </button>
+        </div>
+      } @else {
+        <button class="icon-btn auth-btn" type="button" (click)="login()">
+          Connexion Google
+        </button>
+      }
     </header>
+
 
     <main class="content">
       <router-outlet></router-outlet>
