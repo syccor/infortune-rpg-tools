@@ -123,7 +123,7 @@ export class CombatComponent implements OnInit {
             currentHp: character.pet.currentHp,
             armor: character.pet.armor,
             dodge: character.pet.dodge,
-            healCapState: 'none' as const,
+            healCapState: character.pet.healCapState ?? 'none',
           }
       : {
           maxHp: character.maxHp,
@@ -190,6 +190,7 @@ export class CombatComponent implements OnInit {
       if (target === 'pet' && character.pet) {
         await this.charactersService.updatePetCombatState(character.id, {
           currentHp: result.hpAfter,
+          healCapState: result.newHealCapState,
           isDead: result.hpAfter <= 0,
         });
       } else {
@@ -240,6 +241,14 @@ export class CombatComponent implements OnInit {
       currentHp: character.maxHp,
       healCapState: 'none',
     });
+
+    if (character.pet) 
+    {
+      await this.charactersService.updatePetCombatState(character.id, {
+        currentHp: character.pet.maxHp,
+        healCapState: 'none',
+      });
+    }
 
     this.lastResult = null;
     this.logs = [];

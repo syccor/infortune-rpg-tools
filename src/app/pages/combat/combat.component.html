@@ -36,15 +36,7 @@
               }
             </p>
 
-            <app-health-bar
-              [currentHp]="character.pet.currentHp"
-              [maxHp]="character.pet.maxHp"
-              [showValues]="true"
-              [height]="14"
-            ></app-health-bar>
-
             <div class="stats">
-              <div><strong>Niveau :</strong> {{ character.pet.level }}</div>
               <div><strong>Armure :</strong> {{ character.pet.armor }}</div>
               <div><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
               <div><strong>Attaque :</strong> {{ character.pet.attack }}</div>
@@ -90,28 +82,40 @@
             <form class="combat-form">
               <div class="target-group">
                 <span class="target-label">Cible</span>
-                  <div class="target-options">
-                    <label class="target-option">
+                <div class="target-toggle">
+                  <label
+                    class="target-tile"
+                    [class.active]="form.controls.target.value === 'character'"
+                  >
+                    <input
+                      type="radio"
+                      [formControl]="form.controls.target"
+                      value="character"
+                    />
+                    <span class="target-tile__title">Personnage</span>
+                    <span class="target-tile__subtitle">
+                      {{ character.name }}
+                    </span>
+                  </label>
+
+                  @if (character.pet) {
+                    <label
+                      class="target-tile"
+                      [class.active]="form.controls.target.value === 'pet'"
+                    >
                       <input
                         type="radio"
                         [formControl]="form.controls.target"
-                        value="character"
+                        value="pet"
                       />
-                      <span>Personnage</span>
+                      <span class="target-tile__title">Familier</span>
+                      <span class="target-tile__subtitle">
+                        {{ character.pet.name }}
+                      </span>
                     </label>
-
-                    @if (character.pet) {
-                      <label class="target-option">
-                        <input
-                          type="radio"
-                          [formControl]="form.controls.target"
-                          value="pet"
-                        />
-                        <span>{{ character.pet.name }}</span>
-                      </label>
-                    }
-                  </div>
+                  }
                 </div>
+              </div>
               <label>
                 <span>Type</span>
                 <select [formControl]="form.controls.type">

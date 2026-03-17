@@ -65,7 +65,8 @@ export interface Pet {
   attack: number;
   dodgeCap: number;
   armorCap: number;
-
+  
+  healCapState?: 'none' | 'cap50' | 'cap25';
   isDead?: boolean;
   lastDailyRegenAt?: string | null;
 }
@@ -73,4 +74,6 @@ export interface Pet {
 export interface CharacterListItem extends Character {
   classLabel: string;
   classProfileLabel: string | null;
+  petSpeciesLabel: string | null;
+  petClassLabel: string | null;
 }

@@ -54,7 +54,15 @@
               @if (character.pet) {
               <div class="pet-row">
                 <div class="pet-label">
-                  {{ character.pet.name }}
+                  {{ character.pet.name }} 
+                  <span class="pet-meta">
+                    @if (character.petSpeciesLabel) {
+                  {{ character.petSpeciesLabel }}
+                    }
+                    @if (character.petClassLabel) {
+                      · {{ character.petClassLabel }}
+                    }
+                  </span>
                 </div>
 
                 <app-health-bar

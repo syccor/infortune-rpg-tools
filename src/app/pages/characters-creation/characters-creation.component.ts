@@ -326,6 +326,7 @@ export class CharactersCreationComponent implements OnInit {
           armorCap: this.petPreview.armorCap,
 
           isDead: false,
+          healCapState: 'none',
           lastDailyRegenAt: null,
         }
       : null,

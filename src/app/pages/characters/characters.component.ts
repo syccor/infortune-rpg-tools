@@ -26,8 +26,10 @@ export class CharactersComponent {
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
     this.gameDataService.getClassProfileLabelMap(),
+    this.gameDataService.getPetSpeciesLabelMap(),
+    this.gameDataService.getPetClassLabelMap(),
   ]).pipe(
-    map(([characters, classMap, classProfileMap]): CharacterListItem[] => {
+    map(([characters, classMap, classProfileMap, petSpeciesMap, petClassMap]): CharacterListItem[] => {
       const activeCharacters = characters.filter(
         (character) => (character.status ?? 'active') === 'active'
       );
@@ -37,6 +39,12 @@ export class CharactersComponent {
         classLabel: classMap.get(character.classId) ?? character.classId,
         classProfileLabel: character.classProfiles
           ? (classProfileMap.get(character.classProfiles) ?? character.classProfiles)
+          : null,
+        petSpeciesLabel: character.pet
+          ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
+          : null,
+        petClassLabel: character.pet
+          ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
           : null,
       }));
     })

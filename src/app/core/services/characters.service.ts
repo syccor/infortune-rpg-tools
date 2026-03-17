@@ -183,30 +183,32 @@ export class CharactersService {
   }
 
   async updatePetCombatState(
-  characterId: string,
-  data: {
-    currentHp: number;
-    isDead?: boolean;
-  },
-): Promise<void> {
-  const snapshot = await getDoc(doc(this.firestore, 'characters', characterId));
-  const character = snapshot.data() as Character | undefined;
+    characterId: string,
+    data: {
+      currentHp: number;
+      isDead?: boolean;
+      healCapState?: 'none' | 'cap50' | 'cap25';
+    },
+  ): Promise<void> {
+    const snapshot = await getDoc(doc(this.firestore, 'characters', characterId));
+    const character = snapshot.data() as Character | undefined;
 
-  if (!character?.pet) {
-    throw new Error('Familier introuvable');
+    if (!character?.pet) {
+      throw new Error('Familier introuvable');
+    }
+
+    const updatedPet = {
+      ...character.pet,
+      currentHp: data.currentHp,
+      healCapState: data.healCapState ?? character.pet.healCapState ?? 'none',
+      isDead: data.isDead ?? character.pet.isDead ?? false,
+    };
+
+    const ref = doc(this.firestore, 'characters', characterId);
+
+    await updateDoc(ref, {
+      pet: updatedPet,
+      updatedAt: serverTimestamp(),
+    });
   }
-
-  const updatedPet = {
-    ...character.pet,
-    currentHp: data.currentHp,
-    isDead: data.isDead ?? character.pet.isDead ?? false,
-  };
-
-  const ref = doc(this.firestore, 'characters', characterId);
-
-  await updateDoc(ref, {
-    pet: updatedPet,
-    updatedAt: serverTimestamp(),
-  });
-}
 }
