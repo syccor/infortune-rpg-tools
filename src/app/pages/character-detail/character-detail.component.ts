@@ -43,6 +43,8 @@ export class CharacterDetailComponent {
           const sizeMap = new Map(refs.sizeClasses.map((item) => [item.id, item.label]));
 
           const maxHp = character.maxHp ?? 0;
+          const petSpeciesMap = new Map(refs.petSpecies.map((item) => [item.id, item.label]));
+          const petClassMap = new Map(refs.petClasses.map((item) => [item.id, item.label]));
 
           return {
             ...character,
@@ -63,6 +65,12 @@ export class CharacterDetailComponent {
             hp50: Math.floor(maxHp * 0.5),
             hp25: Math.floor(maxHp * 0.25),
             hp10: Math.floor(maxHp * 0.1),
+            petSpeciesLabel: character.pet
+              ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
+              : null,
+            petClassLabel: character.pet
+              ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
+              : null,
           };
         }),
       ),

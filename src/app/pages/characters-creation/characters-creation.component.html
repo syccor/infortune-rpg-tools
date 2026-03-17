@@ -157,7 +157,9 @@
           <label>
             <span>Classe du familier</span>
             <select formControlName="petClassId">
-              <option value="">Choisir</option>
+            <option value="">
+              {{ form.controls.classProfiles.disabled ? 'Choisir d’abord une espèce' : 'Aucun' }}
+            </option>
               @for (petClass of filteredPetClasses; track petClass.id) {
                 <option [value]="petClass.id">{{ petClass.label }}</option>
               }

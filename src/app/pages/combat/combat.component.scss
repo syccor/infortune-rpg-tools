@@ -171,3 +171,19 @@ select {
   font-size: 0.9rem;
   font-weight: 600;
 }
+
+.pet-card {
+  background: #2b2d31;
+  border-radius: 14px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.pet-card h3 {
+  margin: 0;
+}
+
+.pet-card p {
+  margin: 0.35rem 0 0.75rem;
+  color: #b5bac1;
+}

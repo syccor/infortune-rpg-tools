@@ -81,7 +81,7 @@ export class CharactersCreationComponent implements OnInit {
     hasPet: [false],
     petName: [''],
     petSpeciesId: [''],
-    petClassId: [''],
+    petClassId: this.fb.control({ value: '', disabled: true }),
     petLevel: [1],
 
     lvl: [1, [Validators.required, Validators.min(1)]],
@@ -146,33 +146,37 @@ export class CharactersCreationComponent implements OnInit {
     });
 
     this.form.controls.petSpeciesId.valueChanges
-    .pipe(startWith(this.form.controls.petSpeciesId.value))
-    .subscribe((speciesId) => {
-      const species = this.petSpecies.find((item) => item.id === speciesId);
+      .pipe(startWith(this.form.controls.petSpeciesId.value))
+      .subscribe((speciesId) => {
+        const petClassControl = this.form.controls.petClassId;
+        const species = this.petSpecies.find((item) => item.id === speciesId);
 
-      if (!species) {
-        this.filteredPetClasses = [];
-        this.form.controls.petClassId.setValue('');
-        return;
-      }
+        if (!species) {
+          this.filteredPetClasses = [];
+          petClassControl.setValue('');
+          petClassControl.disable({ emitEvent: false });
+          return;
+        }
 
-      this.filteredPetClasses = this.petClasses.filter((petClass) =>
-        species.allowedClassIds.includes(petClass.id ?? ''),
-      );
+        this.filteredPetClasses = this.petClasses.filter((petClass) =>
+          species.allowedClassIds.includes(petClass.id ?? ''),
+        );
 
-      const currentPetClass = this.form.controls.petClassId.value;
-      if (
-        currentPetClass &&
-        !this.filteredPetClasses.some((item) => item.id === currentPetClass)
-      ) {
-        this.form.controls.petClassId.setValue('');
-      }
-    });
+        petClassControl.enable({ emitEvent: false });
+
+        const currentPetClass = petClassControl.value;
+        if (
+          currentPetClass &&
+          !this.filteredPetClasses.some((item) => item.id === currentPetClass)
+        ) {
+          petClassControl.setValue('');
+        }
+      });
     
-    this.form.valueChanges
-      .pipe(startWith(this.form.getRawValue()))
-      .subscribe(() => this.updatePreview());
-  }
+      this.form.valueChanges
+        .pipe(startWith(this.form.getRawValue()))
+        .subscribe(() => this.updatePreview());
+    }
 
   private loadReferences(): void {
     this.gameDataService.getCreationData().subscribe((data) => {
@@ -303,25 +307,28 @@ export class CharactersCreationComponent implements OnInit {
 
       hasPet: raw.hasPet,
       pet:
-        raw.hasPet && this.petPreview
+        raw.hasPet &&
+        this.petPreview &&
+        raw.petSpeciesId &&
+        raw.petClassId
           ? {
-              name: raw.petName?.trim() || 'Familier',
-              speciesId: raw.petSpeciesId,
-              classId: raw.petClassId,
-              level: Number(raw.petLevel || 1),
+          name: raw.petName?.trim() || 'Familier',
+          speciesId: raw.petSpeciesId,
+          classId: raw.petClassId,
+          level: Number(raw.petLevel || 1),
 
-              maxHp: this.petPreview.maxHp,
-              currentHp: this.petPreview.currentHp,
-              armor: this.petPreview.armor,
-              dodge: this.petPreview.dodge,
-              attack: this.petPreview.attack,
-              dodgeCap: this.petPreview.dodgeCap,
-              armorCap: this.petPreview.armorCap,
+          maxHp: this.petPreview.maxHp,
+          currentHp: this.petPreview.currentHp,
+          armor: this.petPreview.armor,
+          dodge: this.petPreview.dodge,
+          attack: this.petPreview.attack,
+          dodgeCap: this.petPreview.dodgeCap,
+          armorCap: this.petPreview.armorCap,
 
-              isDead: false,
-              lastDailyRegenAt: null,
-            }
-          : null,
+          isDead: false,
+          lastDailyRegenAt: null,
+        }
+      : null,
       mystique: mystique,
       lvl: Number(raw.lvl),
       xp: Number(raw.xp),

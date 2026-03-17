@@ -53,10 +53,12 @@ export class CombatComponent {
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
     this.gameDataService.getClassProfileLabelMap(),
+    this.gameDataService.getPetSpeciesLabelMap(),
+    this.gameDataService.getPetClassLabelMap(),
     this.authService.user$,
     this.authService.appUser$,
   ]).pipe(
-    map(([characters, classMap, classProfilesMap, firebaseUser, appUser]) => {
+    map(([characters, classMap, classProfilesMap, petSpeciesMap, petClassMap, firebaseUser, appUser]) => {
       let filteredCharacters = characters;
 
       if (appUser?.role === 'pj' && firebaseUser) {
@@ -70,6 +72,12 @@ export class CombatComponent {
         classLabel: classMap.get(character.classId) ?? character.classId,
         classProfileLabel: character.classProfiles
           ? (classProfilesMap.get(character.classProfiles) ?? character.classProfiles)
+          : null,
+        petSpeciesLabel: character.pet
+          ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
+          : null,
+        petClassLabel: character.pet
+          ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
           : null,
       }));
     }),
@@ -87,25 +95,25 @@ export class CombatComponent {
       ),
     );
 
-    simulate(character: any): void {
-      if (!character || this.form.invalid) return;
+  simulate(character: any): void {
+    if (!character || this.form.invalid) return;
 
-      const raw = this.form.getRawValue();
-  const target = raw.target;
+    const raw = this.form.getRawValue();
+    const target = raw.target;
 
-  if (target === 'pet' && !character.pet) {
-    return;
-  }
+    if (target === 'pet' && !character.pet) {
+      return;
+    }
 
-  const state =
-    target === 'pet' && character.pet
-      ? {
-          maxHp: character.pet.maxHp,
-          currentHp: character.pet.currentHp,
-          armor: character.pet.armor,
-          dodge: character.pet.dodge,
-          healCapState: 'none' as const,
-        }
+    const state =
+      target === 'pet' && character.pet
+        ? {
+            maxHp: character.pet.maxHp,
+            currentHp: character.pet.currentHp,
+            armor: character.pet.armor,
+            dodge: character.pet.dodge,
+            healCapState: 'none' as const,
+          }
       : {
           maxHp: character.maxHp,
           currentHp: character.currentHp,
@@ -127,22 +135,22 @@ export class CombatComponent {
         },
       );
 
-    this.lastResult = result;
+      this.lastResult = result;
 
-    this.logs.unshift({
-      timestamp: new Date().toLocaleTimeString(),
-      characterName:
-      target === 'pet' && character.pet
-        ? `${character.name} → ${character.pet.name}`
-        : character.name,
-      type: raw.type,
-      rawValue: Number(raw.rawValue),
-      resultText: this.getResultText(result, raw.type),
-      hpBefore: result.hpBefore,
-      hpAfter: result.hpAfter,
-      applied: false,
-    });
-  }
+      this.logs.unshift({
+        timestamp: new Date().toLocaleTimeString(),
+        characterName:
+        target === 'pet' && character.pet
+          ? `${character.name} → ${character.pet.name}`
+          : character.name,
+        type: raw.type,
+        rawValue: Number(raw.rawValue),
+        resultText: this.getResultText(result, raw.type),
+        hpBefore: result.hpBefore,
+        hpAfter: result.hpAfter,
+        applied: false,
+      });
+    }
 
   async apply(character: any): Promise<void> {
     if (!character || this.form.invalid) return;

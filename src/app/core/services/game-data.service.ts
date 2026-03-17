@@ -142,6 +142,20 @@ export class GameDataService {
     return this.petClasses$;
   }
 
+  getPetSpeciesLabelMap() {
+    return this.petSpecies$.pipe(
+      map((items) => new Map(items.map((item) => [item.id, item.label]))),
+      shareReplay(1),
+    );
+  }
+
+  getPetClassLabelMap() {
+    return this.petClasses$.pipe(
+      map((items) => new Map(items.map((item) => [item.id, item.label]))),
+      shareReplay(1),
+    );
+  }
+
   private getCollection<T>(collectionName: string): Observable<T[]> {
     return collectionData(collection(this.firestore, collectionName), {
       idField: 'id',

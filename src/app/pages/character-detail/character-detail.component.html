@@ -59,6 +59,37 @@
           </div>
         </div>
       </div>
+      @if (character.pet) {
+      <div class="detail-card">
+        <h2>Familier</h2>
+
+        <p>
+          <strong>{{ character.pet.name }}</strong>
+          @if (character.petSpeciesLabel || character.petClassLabel) {
+            · {{ character.petSpeciesLabel }}
+            @if (character.petClassLabel) {
+              · {{ character.petClassLabel }}
+            }
+          }
+        </p>
+
+        <app-health-bar
+          [currentHp]="character.pet.currentHp"
+          [maxHp]="character.pet.maxHp"
+          [showValues]="true"
+          [height]="16"
+        ></app-health-bar>
+
+        <div class="stats-grid">
+          <div class="stat-item"><strong>Niveau :</strong> {{ character.pet.level }}</div>
+          <div class="stat-item"><strong>Armure :</strong> {{ character.pet.armor }}</div>
+          <div class="stat-item"><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
+          <div class="stat-item"><strong>Attaque :</strong> {{ character.pet.attack }}</div>
+          <div class="stat-item"><strong>Cap armure :</strong> {{ character.pet.armorCap }}</div>
+          <div class="stat-item"><strong>Cap esquive :</strong> {{ character.pet.dodgeCap }}</div>
+        </div>
+      </div>
+}
     </section>
   } @else {
     <p>Personnage introuvable.</p>
