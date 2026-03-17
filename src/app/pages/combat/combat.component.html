@@ -24,6 +24,25 @@
             <div><strong>Cap soin :</strong> {{ character.healCapState || 'none' }}</div>
           </div>
         }
+        @if (character.pet) {
+          <div class="pet-card">
+            <h3>{{ character.pet.name }}</h3>
+            <p>
+              @if (character.petSpeciesLabel) {
+                {{ character.petSpeciesLabel }}
+              }
+              @if (character.petClassLabel) {
+                · {{ character.petClassLabel }}
+              }
+            </p>
+
+            <div class="stats">
+              <div><strong>Armure :</strong> {{ character.pet.armor }}</div>
+              <div><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
+              <div><strong>Attaque :</strong> {{ character.pet.attack }}</div>
+            </div>
+          </div>
+        }
       }
     </aside>
 
@@ -45,12 +64,58 @@
               [showValues]="true"
               [height]="22"
             ></app-health-bar>
+            @if (character.pet) {
+              <div class="combat-pet-bar">
+                <span>{{ character.pet.name }}</span>
+                <app-health-bar
+                  [currentHp]="character.pet.currentHp"
+                  [maxHp]="character.pet.maxHp"
+                  [showValues]="true"
+                  [height]="14"
+                ></app-health-bar>
+              </div>
+            }
           </div>
 
           <div class="action-card">
             <h2>Action</h2>
-
             <form class="combat-form">
+              <div class="target-group">
+                <span class="target-label">Cible</span>
+                <div class="target-toggle">
+                  <label
+                    class="target-tile"
+                    [class.active]="form.controls.target.value === 'character'"
+                  >
+                    <input
+                      type="radio"
+                      [formControl]="form.controls.target"
+                      value="character"
+                    />
+                    <span class="target-tile__title">Personnage</span>
+                    <span class="target-tile__subtitle">
+                      {{ character.name }}
+                    </span>
+                  </label>
+
+                  @if (character.pet) {
+                    <label
+                      class="target-tile"
+                      [class.active]="form.controls.target.value === 'pet'"
+                    >
+                      <input
+                        type="radio"
+                        [formControl]="form.controls.target"
+                        value="pet"
+                      />
+                      <span class="target-tile__title">Familier</span>
+                      <span class="target-tile__subtitle">
+                        {{ character.pet.name }}
+                      </span>
+                    </label>
+                  }
+                </div>
+              </div>
               <label>
                 <span>Type</span>
                 <select [formControl]="form.controls.type">

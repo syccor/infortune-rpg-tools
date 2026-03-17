@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, map, startWith } from 'rxjs';
@@ -31,7 +32,7 @@ type CombatLogEntry = {
   templateUrl: './combat.component.html',
   styleUrls: ['./combat.component.scss'],
 })
-export class CombatComponent {
+export class CombatComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
@@ -45,6 +46,7 @@ export class CombatComponent {
     characterId: ['', Validators.required],
     type: ['damage' as 'damage' | 'piercing-damage' | 'heal' | 'divine-heal', Validators.required],
     rawValue: [0, [Validators.required, Validators.min(0)]],
+    target: ['character' as 'character' | 'pet', Validators.required],
     note: [''],
   });
 
@@ -52,10 +54,12 @@ export class CombatComponent {
     this.charactersService.getCharacters(),
     this.gameDataService.getClassLabelMap(),
     this.gameDataService.getClassProfileLabelMap(),
+    this.gameDataService.getPetSpeciesLabelMap(),
+    this.gameDataService.getPetClassLabelMap(),
     this.authService.user$,
     this.authService.appUser$,
   ]).pipe(
-    map(([characters, classMap, classProfilesMap, firebaseUser, appUser]) => {
+    map(([characters, classMap, classProfilesMap, petSpeciesMap, petClassMap, firebaseUser, appUser]) => {
       let filteredCharacters = characters;
 
       if (appUser?.role === 'pj' && firebaseUser) {
@@ -70,59 +74,100 @@ export class CombatComponent {
         classProfileLabel: character.classProfiles
           ? (classProfilesMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
+        petSpeciesLabel: character.pet
+          ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
+          : null,
+        petClassLabel: character.pet
+          ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
+          : null,
       }));
     }),
   );
 
   readonly selectedCharacter$ = combineLatest([
     this.availableCharacters$,
-    this.form.controls.characterId.valueChanges.pipe(
-      startWith(this.form.controls.characterId.value),
-    ),
-  ]).pipe(
-    map(
-      ([characters, selectedId]) =>
-        characters.find((character) => character.id === selectedId) ?? null,
-    ),
-  );
+      this.form.controls.characterId.valueChanges.pipe(
+        startWith(this.form.controls.characterId.value),
+      ),
+    ]).pipe(
+      map(
+        ([characters, selectedId]) =>
+          characters.find((character) => character.id === selectedId) ?? null,
+      ),
+    );
+
+    ngOnInit(): void {
+    this.selectedCharacter$
+      .pipe(takeUntilDestroyed())
+      .subscribe((character) => {
+        if (!character?.pet && this.form.controls.target.value === 'pet') {
+          this.form.controls.target.setValue('character');
+        }
+      });
+  }
 
   simulate(character: any): void {
     if (!character || this.form.invalid) return;
 
     const raw = this.form.getRawValue();
+    const target = raw.target;
 
-    const result = applyCombatAction(
-      {
-        maxHp: character.maxHp,
-        currentHp: character.currentHp,
-        armor: character.armor,
-        dodge: character.dodge,
-        healCapState: character.healCapState ?? 'none',
-      },
-      {
+    if (target === 'pet' && !character.pet) {
+      return;
+    }
+
+    const state =
+      target === 'pet' && character.pet
+        ? {
+            maxHp: character.pet.maxHp,
+            currentHp: character.pet.currentHp,
+            armor: character.pet.armor,
+            dodge: character.pet.dodge,
+            healCapState: character.pet.healCapState ?? 'none',
+          }
+      : {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        };
+      const result = applyCombatAction(
+        {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        },
+        {
+          type: raw.type,
+          rawValue: Number(raw.rawValue),
+        },
+      );
+
+      this.lastResult = result;
+
+      this.logs.unshift({
+        timestamp: new Date().toLocaleTimeString(),
+        characterName:
+        target === 'pet' && character.pet
+          ? `${character.name} → ${character.pet.name}`
+          : character.name,
         type: raw.type,
         rawValue: Number(raw.rawValue),
-      },
-    );
-
-    this.lastResult = result;
-
-    this.logs.unshift({
-      timestamp: new Date().toLocaleTimeString(),
-      characterName: character.name,
-      type: raw.type,
-      rawValue: Number(raw.rawValue),
-      resultText: this.getResultText(result, raw.type),
-      hpBefore: result.hpBefore,
-      hpAfter: result.hpAfter,
-      applied: false,
-    });
-  }
+        resultText: this.getResultText(result, raw.type),
+        hpBefore: result.hpBefore,
+        hpAfter: result.hpAfter,
+        applied: false,
+      });
+    }
 
   async apply(character: any): Promise<void> {
     if (!character || this.form.invalid) return;
 
     const raw = this.form.getRawValue();
+    const target = raw.target;
 
     const result = applyCombatAction(
       {
@@ -142,10 +187,19 @@ export class CombatComponent {
     this.isApplying = true;
 
     try {
-      await this.charactersService.updateCharacterCombatState(character.id, {
-        currentHp: result.hpAfter,
-        healCapState: result.newHealCapState,
-      });
+      if (target === 'pet' && character.pet) {
+        await this.charactersService.updatePetCombatState(character.id, {
+          currentHp: result.hpAfter,
+          healCapState: result.newHealCapState,
+          isDead: result.hpAfter <= 0,
+        });
+      } else {
+        await this.charactersService.updateCharacterCombatState(character.id, {
+          currentHp: result.hpAfter,
+          healCapState: result.newHealCapState,
+          isDead: result.hpAfter <= 0,
+        });
+      }
 
       this.logs.unshift({
         timestamp: new Date().toLocaleTimeString(),
@@ -187,6 +241,14 @@ export class CombatComponent {
       currentHp: character.maxHp,
       healCapState: 'none',
     });
+
+    if (character.pet) 
+    {
+      await this.charactersService.updatePetCombatState(character.id, {
+        currentHp: character.pet.maxHp,
+        healCapState: 'none',
+      });
+    }
 
     this.lastResult = null;
     this.logs = [];

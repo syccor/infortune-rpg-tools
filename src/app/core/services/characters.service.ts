@@ -6,6 +6,7 @@ import {
   addDoc,
   serverTimestamp,
   doc,
+  getDoc,
   updateDoc,
   getDocs,
   deleteDoc,
@@ -50,6 +51,7 @@ export class CharactersService {
     data: {
       currentHp: number;
       healCapState: 'none' | 'cap50' | 'cap25';
+      isDead?: boolean;
     },
   ) {
     const ref = doc(this.firestore, 'characters', characterId);
@@ -84,6 +86,7 @@ export class CharactersService {
     snapshot.forEach((docSnap) => {
       const data = docSnap.data() as any;
       const isDead = data.isDead ?? false;
+      const pet = data.pet ?? null;
 
       if (isDead) {
         return;
@@ -117,9 +120,41 @@ export class CharactersService {
       const totalRegen = regenPerDay * missedDays;
       const newHp = Math.min(maxHp, currentHp + totalRegen);
 
+      let updatedPet = pet;
+
+      if (pet && !pet.isDead) {
+        const petMaxHp = Number(pet.maxHp ?? 0);
+        const petCurrentHp = Number(pet.currentHp ?? 0);
+        const petLastDailyRegenAt = pet.lastDailyRegenAt ?? null;
+
+        let petMissedDays = 1;
+
+        if (petLastDailyRegenAt) {
+          petMissedDays = this.diffDaysBetween(petLastDailyRegenAt, today);
+        }
+
+        if (petMissedDays > 0 && petCurrentHp < petMaxHp) {
+          const petRegenPerDay = Math.floor(petMaxHp * 0.1);
+          const petTotalRegen = petRegenPerDay * petMissedDays;
+          const petNewHp = Math.min(petMaxHp, petCurrentHp + petTotalRegen);
+
+          updatedPet = {
+            ...pet,
+            currentHp: petNewHp,
+            lastDailyRegenAt: today,
+          };
+        } else if (petLastDailyRegenAt !== today) {
+          updatedPet = {
+            ...pet,
+            lastDailyRegenAt: today,
+          };
+        }
+      }
+
       batch.update(docSnap.ref, {
         currentHp: newHp,
         lastDailyRegenAt: today,
+        pet: updatedPet,
         updatedAt: serverTimestamp(),
       });
       updatedCount++;
@@ -145,5 +180,35 @@ export class CharactersService {
   async deleteCharacter(characterId: string): Promise<void> {
     const ref = doc(this.firestore, 'characters', characterId);
     await deleteDoc(ref);
+  }
+
+  async updatePetCombatState(
+    characterId: string,
+    data: {
+      currentHp: number;
+      isDead?: boolean;
+      healCapState?: 'none' | 'cap50' | 'cap25';
+    },
+  ): Promise<void> {
+    const snapshot = await getDoc(doc(this.firestore, 'characters', characterId));
+    const character = snapshot.data() as Character | undefined;
+
+    if (!character?.pet) {
+      throw new Error('Familier introuvable');
+    }
+
+    const updatedPet = {
+      ...character.pet,
+      currentHp: data.currentHp,
+      healCapState: data.healCapState ?? character.pet.healCapState ?? 'none',
+      isDead: data.isDead ?? character.pet.isDead ?? false,
+    };
+
+    const ref = doc(this.firestore, 'characters', characterId);
+
+    await updateDoc(ref, {
+      pet: updatedPet,
+      updatedAt: serverTimestamp(),
+    });
   }
 }

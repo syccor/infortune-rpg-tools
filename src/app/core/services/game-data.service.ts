@@ -11,6 +11,8 @@ import {
   ShieldType,
   SizeClass,
   WeightClass,
+  PetClass,
+  PetSpecies
 } from '../models/reference.model';
 
 @Injectable({
@@ -28,6 +30,8 @@ export class GameDataService {
   readonly weightClasses$ = this.getCollection<WeightClass>('weightClasses');
   readonly musculatureClasses$ = this.getCollection<MusculatureClass>('musculatureClasses');
   readonly sizeClasses$ = this.getCollection<SizeClass>('sizeClasses');
+  readonly petSpecies$ = this.getCollection<PetSpecies>('petSpecies');
+  readonly petClasses$ = this.getCollection<PetClass>('petClasses');
 
   readonly creationData$ = combineLatest([
     this.classes$,
@@ -39,30 +43,34 @@ export class GameDataService {
     this.weightClasses$,
     this.musculatureClasses$,
     this.sizeClasses$,
+    this.petSpecies$,
+    this.petClasses$,
   ]).pipe(
-    map(
-      ([
-        classes,
-        classProfiles,
-        races,
-        grades,
-        armorTypes,
-        shieldTypes,
-        weightClasses,
-        musculatureClasses,
-        sizeClasses,
-      ]) => ({
-        classes: this.sortByOrder(classes),
-        classProfiles: this.sortByOrder(classProfiles),
-        races: this.sortByOrder(races),
-        grades: this.sortByOrder(grades),
-        armorTypes: this.sortByOrder(armorTypes),
-        shieldTypes: this.sortByOrder(shieldTypes),
-        weightClasses: this.sortByOrder(weightClasses),
-        musculatureClasses: this.sortByOrder(musculatureClasses),
-        sizeClasses: this.sortByOrder(sizeClasses),
-      }),
-    ),
+    map(([
+      classes,
+      classProfiles,
+      races,
+      grades,
+      armorTypes,
+      shieldTypes,
+      weightClasses,
+      musculatureClasses,
+      sizeClasses,
+      petSpecies,
+      petClasses,
+    ]) => ({
+      classes: this.sortByOrder(classes),
+      classProfiles: this.sortByOrder(classProfiles),
+      races: this.sortByOrder(races),
+      grades: this.sortByOrder(grades),
+      armorTypes: this.sortByOrder(armorTypes),
+      shieldTypes: this.sortByOrder(shieldTypes),
+      weightClasses: this.sortByOrder(weightClasses),
+      musculatureClasses: this.sortByOrder(musculatureClasses),
+      sizeClasses: this.sortByOrder(sizeClasses),
+      petSpecies: this.sortByOrder(petSpecies),
+      petClasses: this.sortByOrder(petClasses),
+    })),
     shareReplay(1),
   );
 
@@ -123,6 +131,28 @@ export class GameDataService {
   getSubClassesForClass(classId: string) {
     return this.classProfiles$.pipe(
       map((items) => this.sortByOrder(items.filter((item) => item.classId === classId))),
+    );
+  }
+
+  getPetSpecies() {
+    return this.petSpecies$;
+  }
+
+  getPetClasses() {
+    return this.petClasses$;
+  }
+
+  getPetSpeciesLabelMap() {
+    return this.petSpecies$.pipe(
+      map((items) => new Map(items.map((item) => [item.id, item.label]))),
+      shareReplay(1),
+    );
+  }
+
+  getPetClassLabelMap() {
+    return this.petClasses$.pipe(
+      map((items) => new Map(items.map((item) => [item.id, item.label]))),
+      shareReplay(1),
     );
   }
 

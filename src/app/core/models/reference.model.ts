@@ -62,3 +62,21 @@ export interface ShieldType extends BaseRef {
   dodgeModifier: number;
   attackModifier: number;
 }
+
+
+export interface PetSpecies extends BaseRef {
+  baseHp: number;
+  baseArmor: number;
+  baseAttack: number;
+  baseDodge: number;
+  allowedClassIds: string[];
+}
+
+export interface PetClass extends BaseRef {
+  hpModifier: number;
+  armorModifier: number;
+  dodgeModifier: number;
+  attackModifier: number;
+  dodgeCap: number;
+  armorCap: number;
+}
