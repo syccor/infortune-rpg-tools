@@ -190,7 +190,8 @@ export class CharactersService {
       healCapState?: 'none' | 'cap50' | 'cap25';
     },
   ): Promise<void> {
-    const snapshot = await getDoc(doc(this.firestore, 'characters', characterId));
+    const ref = doc(this.firestore, 'characters', characterId);
+    const snapshot = await getDoc(ref);
     const character = snapshot.data() as Character | undefined;
 
     if (!character?.pet) {
@@ -200,11 +201,9 @@ export class CharactersService {
     const updatedPet = {
       ...character.pet,
       currentHp: data.currentHp,
-      healCapState: data.healCapState ?? character.pet.healCapState ?? 'none',
       isDead: data.isDead ?? character.pet.isDead ?? false,
+      healCapState: data.healCapState ?? character.pet.healCapState ?? 'none',
     };
-
-    const ref = doc(this.firestore, 'characters', characterId);
 
     await updateDoc(ref, {
       pet: updatedPet,
