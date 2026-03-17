@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, map, startWith } from 'rxjs';
@@ -31,7 +32,7 @@ type CombatLogEntry = {
   templateUrl: './combat.component.html',
   styleUrls: ['./combat.component.scss'],
 })
-export class CombatComponent {
+export class CombatComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly charactersService = inject(CharactersService);
   private readonly gameDataService = inject(GameDataService);
@@ -94,6 +95,16 @@ export class CombatComponent {
           characters.find((character) => character.id === selectedId) ?? null,
       ),
     );
+
+    ngOnInit(): void {
+    this.selectedCharacter$
+      .pipe(takeUntilDestroyed())
+      .subscribe((character) => {
+        if (!character?.pet && this.form.controls.target.value === 'pet') {
+          this.form.controls.target.setValue('character');
+        }
+      });
+  }
 
   simulate(character: any): void {
     if (!character || this.form.invalid) return;

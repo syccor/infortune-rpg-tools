@@ -24,62 +24,34 @@
             <div><strong>Cap soin :</strong> {{ character.healCapState || 'none' }}</div>
           </div>
         }
-      }
-      @if (selectedCharacter$ | async; as character) {
-  @if (character) {
-    <div class="character-card">
-      <h3>{{ character.name }}</h3>
-      <p>
-        {{ character.classLabel }}
-        @if (character.classProfileLabel) {
-          · {{ character.classProfileLabel }}
-        }
-      </p>
+        @if (character.pet) {
+          <div class="pet-card">
+            <h3>{{ character.pet.name }}</h3>
+            <p>
+              @if (character.petSpeciesLabel) {
+                {{ character.petSpeciesLabel }}
+              }
+              @if (character.petClassLabel) {
+                · {{ character.petClassLabel }}
+              }
+            </p>
 
-      <app-health-bar
-        [currentHp]="character.currentHp"
-        [maxHp]="character.maxHp"
-        [showValues]="true"
-        [height]="16"
-      ></app-health-bar>
+            <app-health-bar
+              [currentHp]="character.pet.currentHp"
+              [maxHp]="character.pet.maxHp"
+              [showValues]="true"
+              [height]="14"
+            ></app-health-bar>
 
-      <div class="stats">
-        <div><strong>Armure :</strong> {{ character.armor }}</div>
-        <div><strong>Esquive :</strong> {{ character.dodge }}</div>
-        <div><strong>Agilité :</strong> R{{ character.agility }}</div>
-        <div><strong>Cap soin :</strong> {{ character.healCapState || 'none' }}</div>
-      </div>
-    </div>
-
-    @if (character.pet) {
-      <div class="pet-card">
-          <h3>{{ character.pet.name }}</h3>
-          <p>
-            @if (character.petSpeciesLabel) {
-              {{ character.petSpeciesLabel }}
-            }
-            @if (character.petClassLabel) {
-              · {{ character.petClassLabel }}
-            }
-          </p>
-
-          <app-health-bar
-            [currentHp]="character.pet.currentHp"
-            [maxHp]="character.pet.maxHp"
-            [showValues]="true"
-            [height]="14"
-          ></app-health-bar>
-
-          <div class="stats">
-            <div><strong>Niveau :</strong> {{ character.pet.level }}</div>
-            <div><strong>Armure :</strong> {{ character.pet.armor }}</div>
-            <div><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
-            <div><strong>Attaque :</strong> {{ character.pet.attack }}</div>
+            <div class="stats">
+              <div><strong>Niveau :</strong> {{ character.pet.level }}</div>
+              <div><strong>Armure :</strong> {{ character.pet.armor }}</div>
+              <div><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
+              <div><strong>Attaque :</strong> {{ character.pet.attack }}</div>
+            </div>
           </div>
-        </div>
         }
       }
-    }
     </aside>
 
     <main class="combat-panel center-panel">
@@ -115,16 +87,31 @@
 
           <div class="action-card">
             <h2>Action</h2>
-          <form class="combat-form">
-            <label>
-            <span>Cible</span>
-              <select [formControl]="form.controls.target">
-                <option value="character">Personnage</option>
-                @if (character.pet) {
-                  <option value="pet">{{ character.pet.name }}</option>
-                }
-              </select>
-            </label>
+            <form class="combat-form">
+              <div class="target-group">
+                <span class="target-label">Cible</span>
+                  <div class="target-options">
+                    <label class="target-option">
+                      <input
+                        type="radio"
+                        [formControl]="form.controls.target"
+                        value="character"
+                      />
+                      <span>Personnage</span>
+                    </label>
+
+                    @if (character.pet) {
+                      <label class="target-option">
+                        <input
+                          type="radio"
+                          [formControl]="form.controls.target"
+                          value="pet"
+                        />
+                        <span>{{ character.pet.name }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
               <label>
                 <span>Type</span>
                 <select [formControl]="form.controls.type">
