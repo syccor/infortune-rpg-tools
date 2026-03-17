@@ -14,11 +14,7 @@
     </div>
 
     <nav class="sidebar__nav">
-      <a
-        routerLink="/"
-        [routerLinkActiveOptions]="{ exact: true }"
-        routerLinkActive="active"
-      >
+      <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">
         <span class="nav-icon">⌂</span>
         <span>Accueil</span>
       </a>
@@ -48,7 +44,12 @@
 
   <div class="main-area" [class.menu-open]="menuOpen">
     <header class="topbar">
-      <button class="icon-btn burger-btn" type="button" (click)="toggleMenu()" aria-label="Ouvrir le menu">
+      <button
+        class="icon-btn burger-btn"
+        type="button"
+        (click)="toggleMenu()"
+        aria-label="Ouvrir le menu"
+      >
         ☰
       </button>
 
@@ -60,27 +61,23 @@
       @if (user$ | async; as user) {
         <div class="auth-box">
           <span class="auth-name">{{ user.displayName || user.email }}</span>
-          <button class="icon-btn auth-btn" type="button" (click)="logout()">
-            Déconnexion
-          </button>
+          <button class="icon-btn auth-btn" type="button" (click)="logout()">Déconnexion</button>
         </div>
       } @else {
-        <button class="icon-btn auth-btn" type="button" (click)="login()">
-          Connexion Google
-        </button>
+        <button class="icon-btn auth-btn" type="button" (click)="login()">Connexion Google</button>
       }
     </header>
-
 
     <main class="content">
       <router-outlet></router-outlet>
       <footer class="app-footer">
         <p>
-          Les règles de jeu utilisées pour ce site sont la propriété intellectuelle d'<strong>Assast</strong>.
-          Tous droits réservés.
+          Les règles de jeu utilisées pour ce site sont la propriété intellectuelle
+          d'<strong>Assast</strong>. Tous droits réservés.
         </p>
         <p>
-          Cet outil de gestion de personnages est un projet non commercial développé par <strong>Syccor</strong>. Infortune RPG Tools v1.0
+          Cet outil de gestion de personnages est un projet non commercial développé par
+          <strong>Syccor</strong>. Infortune RPG Tools v1.0
         </p>
       </footer>
     </main>

@@ -6,7 +6,11 @@ import { combineLatest, map, startWith } from 'rxjs';
 import { CharactersService } from '../../core/services/characters.service';
 import { GameDataService } from '../../core/services/game-data.service';
 import { HealthBarComponent } from '../../shared/health-bar/health-bar.component';
-import { applyCombatAction, CombatActionInput, CombatActionType} from '../../core/utils/combat-calculator';
+import {
+  applyCombatAction,
+  CombatActionInput,
+  CombatActionType,
+} from '../../core/utils/combat-calculator';
 import { AuthService } from '../../core/services/auth.service';
 
 type CombatLogEntry = {
@@ -51,14 +55,12 @@ export class CombatComponent {
     this.authService.user$,
     this.authService.appUser$,
   ]).pipe(
-    
     map(([characters, classMap, subClassMap, firebaseUser, appUser]) => {
-    
-    let filteredCharacters = characters;
+      let filteredCharacters = characters;
 
       if (appUser?.role === 'pj' && firebaseUser) {
         filteredCharacters = characters.filter(
-          (character) => character.ownerUid === firebaseUser.uid
+          (character) => character.ownerUid === firebaseUser.uid,
         );
       }
 
@@ -69,38 +71,39 @@ export class CombatComponent {
           ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
       }));
-    })
+    }),
   );
 
   readonly selectedCharacter$ = combineLatest([
     this.availableCharacters$,
     this.form.controls.characterId.valueChanges.pipe(
-      startWith(this.form.controls.characterId.value)
+      startWith(this.form.controls.characterId.value),
     ),
   ]).pipe(
-    map(([characters, selectedId]) =>
-      characters.find((character) => character.id === selectedId) ?? null
-    )
+    map(
+      ([characters, selectedId]) =>
+        characters.find((character) => character.id === selectedId) ?? null,
+    ),
   );
 
-    simulate(character: any): void {
-      if (!character || this.form.invalid) return;
+  simulate(character: any): void {
+    if (!character || this.form.invalid) return;
 
-      const raw = this.form.getRawValue();
+    const raw = this.form.getRawValue();
 
-      const result = applyCombatAction(
-        {
-          maxHp: character.maxHp,
-          currentHp: character.currentHp,
-          armor: character.armor,
-          dodge: character.dodge,
-          healCapState: character.healCapState ?? 'none',
-        },
-        {
-          type: raw.type,
-          rawValue: Number(raw.rawValue),
-        }
-      );
+    const result = applyCombatAction(
+      {
+        maxHp: character.maxHp,
+        currentHp: character.currentHp,
+        armor: character.armor,
+        dodge: character.dodge,
+        healCapState: character.healCapState ?? 'none',
+      },
+      {
+        type: raw.type,
+        rawValue: Number(raw.rawValue),
+      },
+    );
 
     this.lastResult = result;
 
@@ -132,7 +135,7 @@ export class CombatComponent {
       {
         type: raw.type,
         rawValue: Number(raw.rawValue),
-      }
+      },
     );
 
     this.lastResult = result;
@@ -188,5 +191,4 @@ export class CombatComponent {
     this.lastResult = null;
     this.logs = [];
   }
-
 }

@@ -34,14 +34,14 @@ export class CharactersComponent {
         classProfileLabel: character.classProfiles
           ? (subClassMap.get(character.classProfiles) ?? character.classProfiles)
           : null,
-      }))
-    )
+      })),
+    ),
   );
 
   goToCharacter(characterId?: string): void {
     if (!characterId) return;
     this.router.navigate(['/characters', characterId]);
-  };
+  }
 
   async applyDailyRegen(): Promise<void> {
     this.isApplyingDailyRegen = true;

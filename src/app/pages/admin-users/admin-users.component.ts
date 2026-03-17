@@ -23,9 +23,11 @@ export class AdminUsersComponent {
       [...users].sort((a, b) => {
         const roleA = a.role ?? '';
         const roleB = b.role ?? '';
-        return roleA.localeCompare(roleB) || (a.displayName ?? '').localeCompare(b.displayName ?? '');
-      })
-    )
+        return (
+          roleA.localeCompare(roleB) || (a.displayName ?? '').localeCompare(b.displayName ?? '')
+        );
+      }),
+    ),
   );
 
   canAssignRole(user: AppUser): boolean {

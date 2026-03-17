@@ -34,7 +34,9 @@
         <label>
           <span>Profil</span>
           <select formControlName="classProfiles">
-            <option value="">{{ form.controls.classProfiles.disabled ? 'Choisir d’abord une classe' : 'Aucun' }}</option>
+            <option value="">
+              {{ form.controls.classProfiles.disabled ? 'Choisir d’abord une classe' : 'Aucun' }}
+            </option>
             @for (profile of filteredProfiles; track profile.id) {
               <option [value]="profile.id">{{ profile.label }}</option>
             }
@@ -137,7 +139,11 @@
       }
 
       <div class="actions">
-        <button type="submit" class="primary-btn" [disabled]="isSaving || !preview || !!validationMessage">
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="isSaving || !preview || !!validationMessage"
+        >
           {{ isSaving ? 'Création...' : 'Créer le personnage' }}
         </button>
       </div>

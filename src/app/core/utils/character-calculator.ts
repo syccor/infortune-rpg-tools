@@ -47,26 +47,20 @@ export function calculateCharacterStats(input: {
     sizeDodge = 0;
   }
 
-  const hasShoulderPads =
-    input.grade.hasShoulderPads && input.armorType.id !== 'cloth';
+  const hasShoulderPads = input.grade.hasShoulderPads && input.armorType.id !== 'cloth';
 
   const armorFromArmorType =
-    input.armorType.baseArmor +
-    (hasShoulderPads ? input.armorType.shoulderArmorBonus : 0);
+    input.armorType.baseArmor + (hasShoulderPads ? input.armorType.shoulderArmorBonus : 0);
 
   const dodgeFromArmorType =
     input.armorType.baseDodgeModifier +
     (hasShoulderPads ? input.armorType.shoulderDodgeModifier : 0);
 
   const shieldArmor =
-    input.armorType.shieldAllowed && input.shieldType
-      ? input.shieldType.armorBonus
-      : 0;
+    input.armorType.shieldAllowed && input.shieldType ? input.shieldType.armorBonus : 0;
 
   const shieldDodge =
-    input.armorType.shieldAllowed && input.shieldType
-      ? input.shieldType.dodgeModifier
-      : 0;
+    input.armorType.shieldAllowed && input.shieldType ? input.shieldType.dodgeModifier : 0;
 
   const maxHp =
     baseHp +
@@ -76,21 +70,11 @@ export function calculateCharacterStats(input: {
     input.race.hpBonus;
 
   const dodge =
-    baseDodge +
-    weightDodge +
-    sizeDodge +
-    input.race.dodgeBonus +
-    dodgeFromArmorType +
-    shieldDodge;
+    baseDodge + weightDodge + sizeDodge + input.race.dodgeBonus + dodgeFromArmorType + shieldDodge;
 
-  const armor =
-    armorFromArmorType +
-    input.race.armorBonus +
-    shieldArmor;
+  const armor = armorFromArmorType + input.race.armorBonus + shieldArmor;
 
-  const perception =
-    input.race.perceptionBonus +
-    input.armorType.perceptionBonus;
+  const perception = input.race.perceptionBonus + input.armorType.perceptionBonus;
 
   const agility = dodge + 100;
 

@@ -33,7 +33,7 @@ export interface Character {
   perception: number;
 
   luckpoint: number;
-  
+
   hasShoulderPads: boolean;
   isActive: boolean;
 
@@ -47,7 +47,6 @@ export interface Character {
   createdAt?: unknown;
   updatedAt?: unknown;
 }
-
 
 export interface CharacterListItem extends Character {
   classLabel: string;

@@ -1,11 +1,7 @@
 export type HealCapState = 'none' | 'cap50' | 'cap25';
 export type CombatResolution = 'dodge' | 'block' | 'hit' | 'heal';
 
-export type CombatActionType =
-  | 'damage'
-  | 'piercing-damage'
-  | 'heal'
-  | 'divine-heal';
+export type CombatActionType = 'damage' | 'piercing-damage' | 'heal' | 'divine-heal';
 
 export interface CombatState {
   maxHp: number;
@@ -32,7 +28,7 @@ export interface CombatActionResult {
 
 export function applyCombatAction(
   state: CombatState,
-  action: CombatActionInput
+  action: CombatActionInput,
 ): CombatActionResult {
   const hpBefore = state.currentHp;
   let hpAfter = state.currentHp;

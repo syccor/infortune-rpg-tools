@@ -44,10 +44,13 @@ export class CharactersService {
     });
   }
 
-  updateCharacterCombatState(characterId: string, data: {
-    currentHp: number;
-    healCapState: 'none' | 'cap50' | 'cap25';
-  }) {
+  updateCharacterCombatState(
+    characterId: string,
+    data: {
+      currentHp: number;
+      healCapState: 'none' | 'cap50' | 'cap25';
+    },
+  ) {
     const ref = doc(this.firestore, 'characters', characterId);
     return updateDoc(ref, {
       ...data,

@@ -71,7 +71,12 @@
               <button class="secondary-btn" type="button" (click)="simulate(character)">
                 Simuler
               </button>
-              <button class="primary-btn" type="button" (click)="apply(character)" [disabled]="isApplying">
+              <button
+                class="primary-btn"
+                type="button"
+                (click)="apply(character)"
+                [disabled]="isApplying"
+              >
                 {{ isApplying ? 'Application...' : 'Appliquer' }}
               </button>
               <button class="secondary-btn" type="button" (click)="resetCombatState(character)">
@@ -108,8 +113,8 @@
 
             <p>{{ entry.resultText }}</p>
             <small>
-              {{ entry.hpBefore }} → {{ entry.hpAfter }}
-              · {{ entry.applied ? 'Appliqué' : 'Simulation' }}
+              {{ entry.hpBefore }} → {{ entry.hpAfter }} ·
+              {{ entry.applied ? 'Appliqué' : 'Simulation' }}
             </small>
           </div>
         } @empty {

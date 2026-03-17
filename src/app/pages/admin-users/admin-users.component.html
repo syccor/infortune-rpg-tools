@@ -33,7 +33,12 @@
         </div>
 
         <div class="cell">
-          <span class="role-badge" [class.dev]="user.role === 'dev'" [class.mj]="user.role === 'mj'" [class.pj]="user.role === 'pj'">
+          <span
+            class="role-badge"
+            [class.dev]="user.role === 'dev'"
+            [class.mj]="user.role === 'mj'"
+            [class.pj]="user.role === 'pj'"
+          >
             {{ getRoleLabel(user.role) }}
           </span>
         </div>

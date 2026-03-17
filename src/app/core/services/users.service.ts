@@ -44,30 +44,29 @@ export class UsersService {
       return;
     }
 
-        await updateDoc(ref, {
-        email: user.email ?? null,
-        displayName: user.displayName ?? null,
-        updatedAt: serverTimestamp(),
-        });
-    }
+    await updateDoc(ref, {
+      email: user.email ?? null,
+      displayName: user.displayName ?? null,
+      updatedAt: serverTimestamp(),
+    });
+  }
 
-    getUser(uid: string): Observable<AppUser | undefined> {
-        const ref = doc(this.firestore, 'users', uid);
-        return docData(ref) as Observable<AppUser | undefined>;
-    }
-     
-    getUsers(): Observable<AppUser[]> {
-        const ref = collection(this.firestore, 'users');
-        return collectionData(ref, { idField: 'uid' }) as Observable<AppUser[]>;
-    }
+  getUser(uid: string): Observable<AppUser | undefined> {
+    const ref = doc(this.firestore, 'users', uid);
+    return docData(ref) as Observable<AppUser | undefined>;
+  }
 
-    async assignRole(uid: string, role: 'pj' | 'mj'): Promise<void> {
-        const ref = doc(this.firestore, 'users', uid);
+  getUsers(): Observable<AppUser[]> {
+    const ref = collection(this.firestore, 'users');
+    return collectionData(ref, { idField: 'uid' }) as Observable<AppUser[]>;
+  }
 
-        await updateDoc(ref, {
-        role,
-        updatedAt: serverTimestamp(),
-        });
-    }
+  async assignRole(uid: string, role: 'pj' | 'mj'): Promise<void> {
+    const ref = doc(this.firestore, 'users', uid);
 
+    await updateDoc(ref, {
+      role,
+      updatedAt: serverTimestamp(),
+    });
+  }
 }

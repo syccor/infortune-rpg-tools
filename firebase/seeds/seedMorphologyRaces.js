@@ -12,7 +12,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 73.5,
     averageWeightMinKg: 45.4,
     averageWeightMaxKg: 79.4,
-    notes: 'Poids basé sur la ligne High elf / Blood elf.'
+    notes: 'Poids basé sur la ligne High elf / Blood elf.',
   },
   {
     id: 'draenei',
@@ -27,7 +27,7 @@ const raceMorphologies = [
 
     averageWeightMinKg: 145,
     averageWeightMaxKg: 172,
-    notes: 'Poids non fourni dans la capture source.'
+    notes: 'Poids non fourni dans la capture source.',
   },
   {
     id: 'dwarf',
@@ -40,7 +40,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 88.9,
     averageWeightMinKg: 63.5,
     averageWeightMaxKg: 72.6,
-    notes: 'Poids basé sur la ligne Ironforge dwarf / Dwarf.'
+    notes: 'Poids basé sur la ligne Ironforge dwarf / Dwarf.',
   },
   {
     id: 'gnome',
@@ -53,7 +53,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 19.5,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: ''
+    notes: '',
   },
   {
     id: 'mechagnome',
@@ -66,7 +66,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 19.5,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: 'Poids basé sur la ligne Gnome.'
+    notes: 'Poids basé sur la ligne Gnome.',
   },
   {
     id: 'human',
@@ -79,7 +79,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 111.1,
     averageWeightMinKg: 81.6,
     averageWeightMaxKg: 81.6,
-    notes: ''
+    notes: '',
   },
   {
     id: 'kul-tiran',
@@ -92,7 +92,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: null,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: 'Poids non fourni dans la capture source.'
+    notes: 'Poids non fourni dans la capture source.',
   },
   {
     id: 'night-elf',
@@ -105,7 +105,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: 144.2,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: ''
+    notes: '',
   },
   {
     id: 'pandaren',
@@ -118,7 +118,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: null,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: 'Poids non fourni dans la capture source.'
+    notes: 'Poids non fourni dans la capture source.',
   },
   {
     id: 'worgen',
@@ -131,7 +131,7 @@ const raceMorphologies = [
     femaleWeightMaxKg: null,
     averageWeightMinKg: null,
     averageWeightMaxKg: null,
-    notes: 'Poids non fourni dans la capture source.'
+    notes: 'Poids non fourni dans la capture source.',
   },
 ];
 

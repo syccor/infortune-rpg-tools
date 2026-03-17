@@ -26,10 +26,8 @@ export class AuthService {
         return of(null);
       }
 
-      return this.usersService.getUser(user.uid).pipe(
-        switchMap((appUser) => of(appUser ?? null))
-      );
-    })
+      return this.usersService.getUser(user.uid).pipe(switchMap((appUser) => of(appUser ?? null)));
+    }),
   );
 
   async loginWithGoogle(): Promise<void> {

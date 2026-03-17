@@ -1,7 +1,6 @@
-import { seedCollection } from "../seedUtils.js";
+import { seedCollection } from '../seedUtils.js';
 
-const races = 
-[
+const races = [
   {
     id: 'human',
     label: 'Humain',
@@ -13,7 +12,7 @@ const races =
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false,
-    notes: "Esprit d’aventure"
+    notes: 'Esprit d’aventure',
   },
   {
     id: 'queldorei',
@@ -26,7 +25,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'rendorei',
@@ -38,7 +37,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'kaldorei',
@@ -50,7 +49,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'dwarf-bronzebeard',
@@ -62,7 +61,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: true
+    ignoreSizeDodgeBonus: true,
   },
   {
     id: 'dwarf-darkiron',
@@ -74,7 +73,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: true
+    ignoreSizeDodgeBonus: true,
   },
   {
     id: 'dwarf-wildhammer',
@@ -86,7 +85,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: true
+    ignoreSizeDodgeBonus: true,
   },
   {
     id: 'earthen',
@@ -100,7 +99,7 @@ const races =
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: true,
     requiredWeightIds: ['very-heavy', 'anvil'],
-    requiredMusculatureIds: ['solide', 'imposante', 'colossale']
+    requiredMusculatureIds: ['solide', 'imposante', 'colossale'],
   },
   {
     id: 'gnome',
@@ -113,7 +112,7 @@ const races =
     dodgeCapBonus: 15,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'mechagnome',
@@ -127,7 +126,7 @@ const races =
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
     ignoreSizeDodgeBonus: false,
-    requiredMusculatureIds: ['rachitique']
+    requiredMusculatureIds: ['rachitique'],
   },
   {
     id: 'worgen',
@@ -139,7 +138,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'pandaren',
@@ -151,7 +150,7 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: true,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
+    ignoreSizeDodgeBonus: false,
   },
   {
     id: 'draenei',
@@ -163,8 +162,8 @@ const races =
     defaultLuck: 0,
     ignoreWeightDodgeMalus: false,
     ignoreWeightDodgeBonus: false,
-    ignoreSizeDodgeBonus: false
-  }
-]
+    ignoreSizeDodgeBonus: false,
+  },
+];
 
-await seedCollection("races", races);
+await seedCollection('races', races);

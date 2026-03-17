@@ -1,7 +1,6 @@
 import { seedCollection } from '../seedUtils.js';
 
-const armorTypes =
-[
+const armorTypes = [
   {
     id: 'plate',
     label: 'Plaques',
@@ -11,7 +10,7 @@ const armorTypes =
     shoulderDodgeModifier: -5,
     perceptionBonus: 0,
     shieldAllowed: true,
-    order: 1
+    order: 1,
   },
   {
     id: 'mail',
@@ -22,7 +21,7 @@ const armorTypes =
     shoulderDodgeModifier: 0,
     perceptionBonus: 0,
     shieldAllowed: false,
-    order: 2
+    order: 2,
   },
   {
     id: 'leather',
@@ -33,7 +32,7 @@ const armorTypes =
     shoulderDodgeModifier: 0,
     perceptionBonus: 0,
     shieldAllowed: false,
-    order: 3
+    order: 3,
   },
   {
     id: 'cloth',
@@ -44,8 +43,8 @@ const armorTypes =
     shoulderDodgeModifier: 0,
     perceptionBonus: 5,
     shieldAllowed: false,
-    order: 4
-  }
+    order: 4,
+  },
 ];
 
 await seedCollection('armorTypes', armorTypes);

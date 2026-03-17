@@ -14,7 +14,7 @@ export class AppComponent {
   private readonly authService = inject(AuthService);
   readonly user$ = this.authService.user$;
   readonly appUser$ = this.authService.appUser$;
-  
+
   menuOpen = true;
 
   toggleMenu(): void {

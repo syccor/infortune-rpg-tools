@@ -37,7 +37,9 @@ export class CharacterDetailComponent {
           const armorTypeMap = new Map(refs.armorTypes.map((item) => [item.id, item.label]));
           const shieldTypeMap = new Map(refs.shieldTypes.map((item) => [item.id, item.label]));
           const weightMap = new Map(refs.weightClasses.map((item) => [item.id, item.label]));
-          const musculatureMap = new Map(refs.musculatureClasses.map((item) => [item.id, item.label]));
+          const musculatureMap = new Map(
+            refs.musculatureClasses.map((item) => [item.id, item.label]),
+          );
           const sizeMap = new Map(refs.sizeClasses.map((item) => [item.id, item.label]));
 
           const maxHp = character.maxHp ?? 0;
@@ -62,9 +64,9 @@ export class CharacterDetailComponent {
             hp25: Math.floor(maxHp * 0.25),
             hp10: Math.floor(maxHp * 0.1),
           };
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
   async copyDiscord(character: any): Promise<void> {

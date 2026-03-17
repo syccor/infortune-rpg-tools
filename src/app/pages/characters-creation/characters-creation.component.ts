@@ -168,28 +168,21 @@ export class CharactersCreationComponent implements OnInit {
     const armorType = this.armorTypes.find((item) => item.id === raw.armorTypeId);
     const shieldType =
       raw.shieldTypeId && raw.shieldTypeId !== 'none'
-        ? this.shieldTypes.find((item) => item.id === raw.shieldTypeId) ?? null
+        ? (this.shieldTypes.find((item) => item.id === raw.shieldTypeId) ?? null)
         : null;
 
     if (!weight || !musculature || !size || !race || !grade || !armorType) {
       return;
     }
 
-    if (
-      musculature.minWeightClassOrder &&
-      (weight.order ?? 0) < musculature.minWeightClassOrder
-    ) {
+    if (musculature.minWeightClassOrder && (weight.order ?? 0) < musculature.minWeightClassOrder) {
       this.validationMessage =
         'Cette musculature est incompatible avec la catégorie de poids choisie.';
       return;
     }
 
-    if (
-      race.requiredWeightIds?.length &&
-      !race.requiredWeightIds.includes(weight.id ?? '')
-    ) {
-      this.validationMessage =
-        'Cette race impose une catégorie de poids spécifique.';
+    if (race.requiredWeightIds?.length && !race.requiredWeightIds.includes(weight.id ?? '')) {
+      this.validationMessage = 'Cette race impose une catégorie de poids spécifique.';
       return;
     }
 
@@ -197,14 +190,12 @@ export class CharactersCreationComponent implements OnInit {
       race.requiredMusculatureIds?.length &&
       !race.requiredMusculatureIds.includes(musculature.id ?? '')
     ) {
-      this.validationMessage =
-        'Cette race impose une musculature spécifique.';
+      this.validationMessage = 'Cette race impose une musculature spécifique.';
       return;
     }
 
     if (shieldType && !armorType.shieldAllowed) {
-      this.validationMessage =
-        'Ce type de bouclier n’est pas autorisé avec cette armure.';
+      this.validationMessage = 'Ce type de bouclier n’est pas autorisé avec cette armure.';
       return;
     }
 

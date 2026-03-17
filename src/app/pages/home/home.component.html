@@ -1,17 +1,14 @@
 <section class="home-card">
   <h2>Bienvenue</h2>
   <p>
-    Cette application sert à gérer les personnages, leurs profils,
-    leurs points de vie, les combats et les outils de campagne.
+    Cette application sert à gérer les personnages, leurs profils, leurs points de vie, les combats
+    et les outils de campagne.
   </p>
 
   @if (!(user$ | async)) {
     <div class="home-alert">
       <h3>Connexion requise</h3>
-      <p>
-        Connectez-vous avec Google avant d’accéder aux modules
-        Personnages et Combat.
-      </p>
+      <p>Connectez-vous avec Google avant d’accéder aux modules Personnages et Combat.</p>
     </div>
   }
 
@@ -21,9 +18,8 @@
         <h3>Accès en attente d’approbation</h3>
 
         <p>
-          Votre compte a bien été enregistré.
-          L’accès aux modules sera activé dès que votre profil aura été
-          validé par un maître de jeu ou dev.
+          Votre compte a bien été enregistré. L’accès aux modules sera activé dès que votre profil
+          aura été validé par un maître de jeu ou dev.
         </p>
       </div>
     }

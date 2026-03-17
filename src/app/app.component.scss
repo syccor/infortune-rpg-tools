@@ -120,7 +120,9 @@
   color: #dbdee1;
   padding: 0.9rem 1rem;
   border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .sidebar__nav a:hover {
@@ -187,7 +189,7 @@
 .app-footer {
   margin-top: 3rem;
   padding: 1rem 0;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.85rem;
   color: #9ca3af;
   text-align: center;

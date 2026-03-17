@@ -40,65 +40,67 @@ export class GameDataService {
     this.musculatureClasses$,
     this.sizeClasses$,
   ]).pipe(
-    map(([
-      classes,
-      classProfiles,
-      races,
-      grades,
-      armorTypes,
-      shieldTypes,
-      weightClasses,
-      musculatureClasses,
-      sizeClasses,
-    ]) => ({
-      classes: this.sortByOrder(classes),
-      classProfiles: this.sortByOrder(classProfiles),
-      races: this.sortByOrder(races),
-      grades: this.sortByOrder(grades),
-      armorTypes: this.sortByOrder(armorTypes),
-      shieldTypes: this.sortByOrder(shieldTypes),
-      weightClasses: this.sortByOrder(weightClasses),
-      musculatureClasses: this.sortByOrder(musculatureClasses),
-      sizeClasses: this.sortByOrder(sizeClasses),
-    })),
-    shareReplay(1)
+    map(
+      ([
+        classes,
+        classProfiles,
+        races,
+        grades,
+        armorTypes,
+        shieldTypes,
+        weightClasses,
+        musculatureClasses,
+        sizeClasses,
+      ]) => ({
+        classes: this.sortByOrder(classes),
+        classProfiles: this.sortByOrder(classProfiles),
+        races: this.sortByOrder(races),
+        grades: this.sortByOrder(grades),
+        armorTypes: this.sortByOrder(armorTypes),
+        shieldTypes: this.sortByOrder(shieldTypes),
+        weightClasses: this.sortByOrder(weightClasses),
+        musculatureClasses: this.sortByOrder(musculatureClasses),
+        sizeClasses: this.sortByOrder(sizeClasses),
+      }),
+    ),
+    shareReplay(1),
   );
 
-    getClasses(): Observable<GameClass[]> {
+  getClasses(): Observable<GameClass[]> {
     return this.getCollection<GameClass>('classes');
-    }
+  }
 
-    getClassProfiles(): Observable<ClassProfile[]> {
+  getClassProfiles(): Observable<ClassProfile[]> {
     return this.getCollection<ClassProfile>('classProfiles');
-    }
+  }
 
-    getRaces(): Observable<Race[]> {
+  getRaces(): Observable<Race[]> {
     return this.getCollection<Race>('races');
-    }
+  }
 
-    getGrades(): Observable<Grade[]> {
+  getGrades(): Observable<Grade[]> {
     return this.getCollection<Grade>('grades');
-    }
+  }
 
-    getArmorTypes(): Observable<ArmorType[]> {
+  getArmorTypes(): Observable<ArmorType[]> {
     return this.getCollection<ArmorType>('armorTypes');
-    }
+  }
 
-    getShieldTypes(): Observable<ShieldType[]> {
+  getShieldTypes(): Observable<ShieldType[]> {
     return this.getCollection<ShieldType>('shieldTypes');
-    }
+  }
 
-    getWeightClasses(): Observable<WeightClass[]> {
+  getWeightClasses(): Observable<WeightClass[]> {
     return this.getCollection<WeightClass>('weightClasses');
-    }
+  }
 
-    getMusculatureClasses(): Observable<MusculatureClass[]> {
+  getMusculatureClasses(): Observable<MusculatureClass[]> {
     return this.getCollection<MusculatureClass>('musculatureClasses');
-    }
+  }
 
-    getSizeClasses(): Observable<SizeClass[]> {
+  getSizeClasses(): Observable<SizeClass[]> {
     return this.getCollection<SizeClass>('sizeClasses');
-    }
+  }
 
   getCreationData() {
     return this.creationData$;
@@ -107,32 +109,28 @@ export class GameDataService {
   getClassLabelMap() {
     return this.classes$.pipe(
       map((items) => new Map(items.map((item) => [item.id, item.label]))),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
   getSubClassLabelMap() {
     return this.classProfiles$.pipe(
       map((items) => new Map(items.map((item) => [item.id, item.label]))),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
   getSubClassesForClass(classId: string) {
     return this.classProfiles$.pipe(
-      map((items) =>
-        this.sortByOrder(
-          items.filter((item) => item.classId === classId)
-        )
-      )
+      map((items) => this.sortByOrder(items.filter((item) => item.classId === classId))),
     );
   }
 
-    private getCollection<T>(collectionName: string): Observable<T[]> {
+  private getCollection<T>(collectionName: string): Observable<T[]> {
     return collectionData(collection(this.firestore, collectionName), {
-        idField: 'id',
+      idField: 'id',
     }) as Observable<T[]>;
-    }
+  }
 
   private sortByOrder<T extends { order?: number }>(items: T[]): T[] {
     return [...items].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
