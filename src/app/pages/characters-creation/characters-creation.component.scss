@@ -136,3 +136,27 @@ select {
     grid-template-columns: 1fr;
   }
 }
+
+.pet-section {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pet-section h3 {
+  margin-top: 0;
+}
+
+.pet-preview {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.pet-preview p {
+  margin: 0;
+  background: #2b2d31;
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+}

@@ -20,6 +20,7 @@ export interface Character {
   shieldTypeId: string | null;
 
   hasPet: boolean;
+  pet?: Pet | null;
   mystique: boolean;
   lvl: number;
   xp: number;
@@ -49,6 +50,24 @@ export interface Character {
   ownerEmail?: string | null;
   createdAt?: unknown;
   updatedAt?: unknown;
+}
+
+export interface Pet {
+  name: string;
+  speciesId: string;
+  classId: string;
+  level: number;
+
+  maxHp: number;
+  currentHp: number;
+  armor: number;
+  dodge: number;
+  attack: number;
+  dodgeCap: number;
+  armorCap: number;
+
+  isDead?: boolean;
+  lastDailyRegenAt?: string | null;
 }
 
 export interface CharacterListItem extends Character {

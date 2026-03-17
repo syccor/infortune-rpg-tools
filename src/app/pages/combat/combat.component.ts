@@ -45,6 +45,7 @@ export class CombatComponent {
     characterId: ['', Validators.required],
     type: ['damage' as 'damage' | 'piercing-damage' | 'heal' | 'divine-heal', Validators.required],
     rawValue: [0, [Validators.required, Validators.min(0)]],
+    target: ['character' as 'character' | 'pet', Validators.required],
     note: [''],
   });
 
@@ -76,40 +77,64 @@ export class CombatComponent {
 
   readonly selectedCharacter$ = combineLatest([
     this.availableCharacters$,
-    this.form.controls.characterId.valueChanges.pipe(
-      startWith(this.form.controls.characterId.value),
-    ),
-  ]).pipe(
-    map(
-      ([characters, selectedId]) =>
-        characters.find((character) => character.id === selectedId) ?? null,
-    ),
-  );
-
-  simulate(character: any): void {
-    if (!character || this.form.invalid) return;
-
-    const raw = this.form.getRawValue();
-
-    const result = applyCombatAction(
-      {
-        maxHp: character.maxHp,
-        currentHp: character.currentHp,
-        armor: character.armor,
-        dodge: character.dodge,
-        healCapState: character.healCapState ?? 'none',
-      },
-      {
-        type: raw.type,
-        rawValue: Number(raw.rawValue),
-      },
+      this.form.controls.characterId.valueChanges.pipe(
+        startWith(this.form.controls.characterId.value),
+      ),
+    ]).pipe(
+      map(
+        ([characters, selectedId]) =>
+          characters.find((character) => character.id === selectedId) ?? null,
+      ),
     );
+
+    simulate(character: any): void {
+      if (!character || this.form.invalid) return;
+
+      const raw = this.form.getRawValue();
+  const target = raw.target;
+
+  if (target === 'pet' && !character.pet) {
+    return;
+  }
+
+  const state =
+    target === 'pet' && character.pet
+      ? {
+          maxHp: character.pet.maxHp,
+          currentHp: character.pet.currentHp,
+          armor: character.pet.armor,
+          dodge: character.pet.dodge,
+          healCapState: 'none' as const,
+        }
+      : {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        };
+      const result = applyCombatAction(
+        {
+          maxHp: character.maxHp,
+          currentHp: character.currentHp,
+          armor: character.armor,
+          dodge: character.dodge,
+          healCapState: character.healCapState ?? 'none',
+        },
+        {
+          type: raw.type,
+          rawValue: Number(raw.rawValue),
+        },
+      );
 
     this.lastResult = result;
 
     this.logs.unshift({
       timestamp: new Date().toLocaleTimeString(),
-      characterName: character.name,
+      characterName:
+      target === 'pet' && character.pet
+        ? `${character.name} → ${character.pet.name}`
+        : character.name,
       type: raw.type,
       rawValue: Number(raw.rawValue),
       resultText: this.getResultText(result, raw.type),
@@ -123,6 +148,7 @@ export class CombatComponent {
     if (!character || this.form.invalid) return;
 
     const raw = this.form.getRawValue();
+    const target = raw.target;
 
     const result = applyCombatAction(
       {
@@ -142,10 +168,18 @@ export class CombatComponent {
     this.isApplying = true;
 
     try {
-      await this.charactersService.updateCharacterCombatState(character.id, {
-        currentHp: result.hpAfter,
-        healCapState: result.newHealCapState,
-      });
+      if (target === 'pet' && character.pet) {
+        await this.charactersService.updatePetCombatState(character.id, {
+          currentHp: result.hpAfter,
+          isDead: result.hpAfter <= 0,
+        });
+      } else {
+        await this.charactersService.updateCharacterCombatState(character.id, {
+          currentHp: result.hpAfter,
+          healCapState: result.newHealCapState,
+          isDead: result.hpAfter <= 0,
+        });
+      }
 
       this.logs.unshift({
         timestamp: new Date().toLocaleTimeString(),

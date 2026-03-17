@@ -9,3 +9,5 @@ import './seedShieldTypes.js';
 import './seedWeightClasses.js';
 import './seedMusculatureClasses.js';
 import './seedSizeClasses.js';
+import './seedpetSpecies.js';
+import './seedpetClasses.js';

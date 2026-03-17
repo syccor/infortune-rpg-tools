@@ -158,3 +158,16 @@ select {
   margin-top: 0.35rem;
   color: #b5bac1;
 }
+
+.combat-pet-bar {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.combat-pet-bar span {
+  color: #b5bac1;
+  font-size: 0.9rem;
+  font-weight: 600;
+}

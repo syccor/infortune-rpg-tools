@@ -134,6 +134,55 @@
         </label>
       </div>
 
+      @if (form.controls.hasPet.value) {
+      <div class="pet-section">
+        <h3>Familier</h3>
+
+        <div class="grid">
+          <label>
+            <span>Nom du familier</span>
+            <input type="text" formControlName="petName" />
+          </label>
+
+          <label>
+            <span>Espèce</span>
+            <select formControlName="petSpeciesId">
+              <option value="">Choisir</option>
+              @for (species of petSpecies; track species.id) {
+                <option [value]="species.id">{{ species.label }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Classe du familier</span>
+            <select formControlName="petClassId">
+              <option value="">Choisir</option>
+              @for (petClass of filteredPetClasses; track petClass.id) {
+                <option [value]="petClass.id">{{ petClass.label }}</option>
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Niveau</span>
+            <input type="number" formControlName="petLevel" min="1" max="5" />
+          </label>
+        </div>
+
+        @if (petPreview) {
+          <div class="pet-preview">
+            <p><strong>PV :</strong> {{ petPreview.maxHp }}</p>
+            <p><strong>Armure :</strong> {{ petPreview.armor }}</p>
+            <p><strong>Esquive :</strong> {{ petPreview.dodge }}</p>
+            <p><strong>Attaque :</strong> {{ petPreview.attack }}</p>
+            <p><strong>Cap armure :</strong> {{ petPreview.armorCap }}</p>
+            <p><strong>Cap esquive :</strong> {{ petPreview.dodgeCap }}</p>
+          </div>
+        }
+      </div>
+    }
+
       @if (validationMessage) {
         <p class="error">{{ validationMessage }}</p>
       }

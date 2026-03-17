@@ -45,12 +45,31 @@
               [showValues]="true"
               [height]="22"
             ></app-health-bar>
+            @if (character.pet) {
+              <div class="combat-pet-bar">
+                <span>{{ character.pet.name }}</span>
+                <app-health-bar
+                  [currentHp]="character.pet.currentHp"
+                  [maxHp]="character.pet.maxHp"
+                  [showValues]="true"
+                  [height]="14"
+                ></app-health-bar>
+              </div>
+            }
           </div>
 
           <div class="action-card">
             <h2>Action</h2>
-
-            <form class="combat-form">
+          <form class="combat-form">
+            <label>
+            <span>Cible</span>
+              <select [formControl]="form.controls.target">
+                <option value="character">Personnage</option>
+                @if (character.pet) {
+                  <option value="pet">{{ character.pet.name }}</option>
+                }
+              </select>
+            </label>
               <label>
                 <span>Type</span>
                 <select [formControl]="form.controls.type">

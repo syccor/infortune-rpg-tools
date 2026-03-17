@@ -51,6 +51,20 @@
                 [showValues]="true"
                 [height]="14"
               ></app-health-bar>
+              @if (character.pet) {
+              <div class="pet-row">
+                <div class="pet-label">
+                  {{ character.pet.name }}
+                </div>
+
+                <app-health-bar
+                  [currentHp]="character.pet.currentHp"
+                  [maxHp]="character.pet.maxHp"
+                  [showValues]="true"
+                  [height]="12"
+                ></app-health-bar>
+              </div>
+            }
             </div>
 
             <div class="character-actions">

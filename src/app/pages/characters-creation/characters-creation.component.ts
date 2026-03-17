@@ -16,8 +16,11 @@ import {
   ShieldType,
   SizeClass,
   WeightClass,
+  PetClass,
+  PetSpecies,
 } from '../../core/models/reference.model';
 import { Character } from '../../core/models/character.model';
+import { calculatePetStats, PetPreviewStats } from '../../core/utils/pet-calculator';
 import {
   CharacterPreviewStats,
   calculateCharacterStats,
@@ -46,6 +49,11 @@ export class CharactersCreationComponent implements OnInit {
   armorTypes: ArmorType[] = [];
   shieldTypes: ShieldType[] = [];
 
+  petSpecies: PetSpecies[] = [];
+  petClasses: PetClass[] = [];
+  filteredPetClasses: PetClass[] = [];
+  petPreview: PetPreviewStats | null = null;
+
   filteredProfiles: ClassProfile[] = [];
   filteredShields: ShieldType[] = [];
 
@@ -71,6 +79,11 @@ export class CharactersCreationComponent implements OnInit {
     shieldTypeId: ['none'],
 
     hasPet: [false],
+    petName: [''],
+    petSpeciesId: [''],
+    petClassId: [''],
+    petLevel: [1],
+
     lvl: [1, [Validators.required, Validators.min(1)]],
     xp: [0, [Validators.required, Validators.min(0)]],
     ressource: [0, [Validators.required, Validators.min(0)]],
@@ -130,8 +143,32 @@ export class CharactersCreationComponent implements OnInit {
         }
 
         this.filteredShields = [...this.shieldTypes];
-      });
+    });
 
+    this.form.controls.petSpeciesId.valueChanges
+    .pipe(startWith(this.form.controls.petSpeciesId.value))
+    .subscribe((speciesId) => {
+      const species = this.petSpecies.find((item) => item.id === speciesId);
+
+      if (!species) {
+        this.filteredPetClasses = [];
+        this.form.controls.petClassId.setValue('');
+        return;
+      }
+
+      this.filteredPetClasses = this.petClasses.filter((petClass) =>
+        species.allowedClassIds.includes(petClass.id ?? ''),
+      );
+
+      const currentPetClass = this.form.controls.petClassId.value;
+      if (
+        currentPetClass &&
+        !this.filteredPetClasses.some((item) => item.id === currentPetClass)
+      ) {
+        this.form.controls.petClassId.setValue('');
+      }
+    });
+    
     this.form.valueChanges
       .pipe(startWith(this.form.getRawValue()))
       .subscribe(() => this.updatePreview());
@@ -151,6 +188,10 @@ export class CharactersCreationComponent implements OnInit {
 
       this.filteredProfiles = data.classProfiles;
       this.filteredShields = data.shieldTypes;
+      // pet
+      this.petSpecies = data.petSpecies;
+      this.petClasses = data.petClasses;
+      this.filteredPetClasses = data.petClasses;
     });
   }
 
@@ -197,6 +238,17 @@ export class CharactersCreationComponent implements OnInit {
     if (shieldType && !armorType.shieldAllowed) {
       this.validationMessage = 'Ce type de bouclier n’est pas autorisé avec cette armure.';
       return;
+    }
+
+    this.petPreview = null;
+
+    if (raw.hasPet) {
+      const species = this.petSpecies.find((item) => item.id === raw.petSpeciesId);
+      const petClass = this.petClasses.find((item) => item.id === raw.petClassId);
+
+      if (species && petClass) {
+        this.petPreview = calculatePetStats(species, petClass);
+      }
     }
 
     this.preview = calculateCharacterStats({
@@ -250,6 +302,26 @@ export class CharactersCreationComponent implements OnInit {
       shieldTypeId: raw.shieldTypeId === 'none' ? null : raw.shieldTypeId,
 
       hasPet: raw.hasPet,
+      pet:
+        raw.hasPet && this.petPreview
+          ? {
+              name: raw.petName?.trim() || 'Familier',
+              speciesId: raw.petSpeciesId,
+              classId: raw.petClassId,
+              level: Number(raw.petLevel || 1),
+
+              maxHp: this.petPreview.maxHp,
+              currentHp: this.petPreview.currentHp,
+              armor: this.petPreview.armor,
+              dodge: this.petPreview.dodge,
+              attack: this.petPreview.attack,
+              dodgeCap: this.petPreview.dodgeCap,
+              armorCap: this.petPreview.armorCap,
+
+              isDead: false,
+              lastDailyRegenAt: null,
+            }
+          : null,
       mystique: mystique,
       lvl: Number(raw.lvl),
       xp: Number(raw.xp),
