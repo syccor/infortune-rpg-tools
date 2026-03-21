@@ -14,7 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
-import { Character } from '../models/character.model';
+import { Character, CharacterLevelChoice } from '../models/character.model';
 
 @Injectable({
   providedIn: 'root',
@@ -209,5 +209,13 @@ export class CharactersService {
       pet: updatedPet,
       updatedAt: serverTimestamp(),
     });
+  }
+
+  async applyCharacterLevelChoice(
+    characterId: string,
+    choice: CharacterLevelChoice
+  ): Promise<void> 
+  {
+    
   }
 }

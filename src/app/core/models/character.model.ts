@@ -22,9 +22,13 @@ export interface Character {
   hasPet: boolean;
   pet?: Pet | null;
   mystique: boolean;
+  ressource: number;
+
   lvl: number;
   xp: number;
-  ressource: number;
+
+  pendingLevelChoices?: number;
+  levelChoicesHistory?: CharacterLevelChoice[];
 
   maxHp: number;
   currentHp: number;
@@ -57,7 +61,8 @@ export interface Pet {
   speciesId: string;
   classId: string;
   level: number;
-
+  xp: number;
+  
   maxHp: number;
   currentHp: number;
   armor: number;
@@ -65,6 +70,9 @@ export interface Pet {
   attack: number;
   dodgeCap: number;
   armorCap: number;
+  authorityPoints?: number;
+  pendingLevelChoices?: number;
+  levelChoicesHistory?: PetLevelChoice[];
   
   healCapState?: 'none' | 'cap50' | 'cap25';
   isDead?: boolean;
@@ -76,4 +84,29 @@ export interface CharacterListItem extends Character {
   classProfileLabel: string | null;
   petSpeciesLabel: string | null;
   petClassLabel: string | null;
+}
+
+export interface CharacterLevelChoice {
+  level: number;
+  type:
+    | 'armor'
+    | 'hp'
+    | 'dodge'
+    | 'perception'
+    | 'attack'
+    | 'resource'
+    | 'luck'
+    | 'technique';
+  value?: number;
+  attackMode?: 'melee' | 'ranged';
+  resourceAmount?: number;
+  validatedAt?: unknown;
+}
+
+export interface PetLevelChoice {
+  level: number;
+  type: 'armor' | 'hp' | 'dodge' | 'attack' | 'special';
+  value?: number;
+  grantsAuthority?: boolean;
+  validatedAt?: unknown;
 }
