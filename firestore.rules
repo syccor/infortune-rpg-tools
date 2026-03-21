@@ -20,6 +20,12 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
+    // Buff actif
+    match /activeBuff/{document} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
     // Référentiels
     match /classes/{document} {
       allow read: if isSignedIn();

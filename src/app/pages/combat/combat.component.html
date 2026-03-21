@@ -19,7 +19,7 @@
         @if (character) {
           <div class="stats">
             <div><strong>Armure :</strong> {{ character.armor }}</div>
-            <div><strong>Esquive :</strong> {{ character.dodge }}</div>
+            <div><strong>Esquive :</strong> {{ character.effectiveDodge }}</div>
             <div><strong>Agilité :</strong> R{{ character.agility }}</div>
             <div><strong>Cap soin :</strong> {{ character.healCapState || 'none' }}</div>
           </div>
@@ -38,7 +38,7 @@
 
             <div class="stats">
               <div><strong>Armure :</strong> {{ character.pet.armor }}</div>
-              <div><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
+              <div><strong>Esquive :</strong> {{ character.pet.effectiveDodge }}</div>
               <div><strong>Attaque :</strong> {{ character.pet.attack }}</div>
             </div>
           </div>
@@ -60,7 +60,7 @@
 
             <app-health-bar
               [currentHp]="character.currentHp"
-              [maxHp]="character.maxHp"
+              [maxHp]="character.effectiveMaxHp"
               [showValues]="true"
               [height]="22"
             ></app-health-bar>
@@ -69,7 +69,7 @@
                 <span>{{ character.pet.name }}</span>
                 <app-health-bar
                   [currentHp]="character.pet.currentHp"
-                  [maxHp]="character.pet.maxHp"
+                  [maxHp]="character.pet.effectiveMaxHp"
                   [showValues]="true"
                   [height]="14"
                 ></app-health-bar>
@@ -218,15 +218,13 @@
               <strong>{{ entry.characterName }}</strong>
               <span>{{ entry.timestamp }}</span>
             </div>
-
+            <div class="log-middle">
+              <span>{{ entry.type }}</span>
+              <span>Valeur : {{ entry.rawValue }}</span>
+            </div>
             <p>{{ entry.resultText }}</p>
-            <small>
-              {{ entry.hpBefore }} → {{ entry.hpAfter }} ·
-              {{ entry.applied ? 'Appliqué' : 'Simulation' }}
-            </small>
+            <small>PV : {{ entry.hpBefore }} → {{ entry.hpAfter }}</small>
           </div>
-        } @empty {
-          <p class="empty-log">Aucune action pour le moment.</p>
         }
       </div>
     </aside>

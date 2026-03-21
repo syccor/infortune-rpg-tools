@@ -47,7 +47,7 @@
 
               <app-health-bar
                 [currentHp]="character.currentHp"
-                [maxHp]="character.maxHp"
+                [maxHp]="character.effectiveMaxHp"
                 [showValues]="true"
                 [height]="14"
               ></app-health-bar>
@@ -67,7 +67,7 @@
 
                 <app-health-bar
                   [currentHp]="character.pet.currentHp"
-                  [maxHp]="character.pet.maxHp"
+                  [maxHp]="character.pet.effectiveMaxHp"
                   [showValues]="true"
                   [height]="12"
                 ></app-health-bar>

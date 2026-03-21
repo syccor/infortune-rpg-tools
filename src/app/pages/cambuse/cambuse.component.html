@@ -1,0 +1,51 @@
+<section class="cambuse-page">
+  <div class="page-header">
+    <div>
+      <h1>Cambuse</h1>
+      <p>Gestion du buff global de la compagnie.</p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="secondary-btn"
+        (click)="clearBuff()"
+        [disabled]="isSaving"
+      >
+        Désactiver le buff
+      </button>
+    </div>
+  </div>
+
+  @if (message) {
+    <p class="status-message">{{ message }}</p>
+  }
+
+  @if (activeBuff$ | async; as activeBuff) {
+    <div class="buff-list">
+      @for (buff of buffs; track buff.id) {
+        <article class="buff-card" [class.active]="activeBuff === buff.id">
+          <div class="buff-card__content">
+            <h2>{{ buff.title }}</h2>
+            <p>{{ buff.description }}</p>
+
+            @if (activeBuff === buff.id) {
+              <span class="buff-badge">Actif</span>
+            }
+          </div>
+
+          <div class="buff-card__actions">
+            <button
+              type="button"
+              class="primary-btn"
+              (click)="activateBuff(buff.id)"
+              [disabled]="isSaving || activeBuff === buff.id"
+            >
+              Activer
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
