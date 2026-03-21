@@ -1,0 +1,48 @@
+.cambuse-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.status-message {
+  margin: 0;
+}
+
+.buff-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.buff-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+
+  &.active {
+    border-color: #d7b46a;
+    box-shadow: 0 0 0 1px rgba(215, 180, 106, 0.35);
+  }
+}
+
+.buff-card__content {
+  display: grid;
+  gap: 0.5rem;
+
+  h2,
+  p {
+    margin: 0;
+  }
+}
+
+.buff-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(215, 180, 106, 0.18);
+  font-size: 0.9rem;
+}

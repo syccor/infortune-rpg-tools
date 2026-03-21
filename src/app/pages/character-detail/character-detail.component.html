@@ -23,7 +23,7 @@
       <div class="detail-card">
         <app-health-bar
           [currentHp]="character.currentHp"
-          [maxHp]="character.maxHp"
+          [maxHp]="character.effectiveMaxHp"
           [showValues]="true"
           [height]="18"
         ></app-health-bar>
@@ -33,6 +33,10 @@
           <span>25 % : {{ character.hp25 }}</span>
           <span>10 % : {{ character.hp10 }}</span>
         </div>
+
+        @if (character.activeBuff !== 'none') {
+          <p><strong>Buff de compagnie :</strong> {{ character.activeBuff }}</p>
+        }
 
         <div class="stats-grid">
           <div class="stat-item"><strong>Race :</strong> {{ character.raceLabel }}</div>
@@ -47,7 +51,7 @@
             <strong>Type d’armure :</strong> {{ character.armorTypeLabel }}
           </div>
           <div class="stat-item"><strong>Bouclier :</strong> {{ character.shieldTypeLabel }}</div>
-          <div class="stat-item"><strong>Esquive :</strong> {{ character.dodge }}</div>
+          <div class="stat-item"><strong>Esquive :</strong> {{ character.effectiveDodge }}</div>
           <div class="stat-item"><strong>Agilité :</strong> R{{ character.agility }}</div>
           <div class="stat-item"><strong>Perception :</strong> {{ character.perception }}</div>
           <div class="stat-item"><strong>Chance :</strong> {{ character.luckpoint }}</div>
@@ -75,7 +79,7 @@
 
         <app-health-bar
           [currentHp]="character.pet.currentHp"
-          [maxHp]="character.pet.maxHp"
+          [maxHp]="character.pet.effectiveMaxHp"
           [showValues]="true"
           [height]="16"
         ></app-health-bar>
@@ -83,7 +87,7 @@
         <div class="stats-grid">
           <div class="stat-item"><strong>Niveau :</strong> {{ character.pet.level }}</div>
           <div class="stat-item"><strong>Armure :</strong> {{ character.pet.armor }}</div>
-          <div class="stat-item"><strong>Esquive :</strong> {{ character.pet.dodge }}</div>
+          <div class="stat-item"><strong>Esquive :</strong> {{ character.pet.effectiveDodge }}</div>
           <div class="stat-item"><strong>Attaque :</strong> {{ character.pet.attack }}</div>
           <div class="stat-item"><strong>Cap armure :</strong> {{ character.pet.armorCap }}</div>
           <div class="stat-item"><strong>Cap esquive :</strong> {{ character.pet.dodgeCap }}</div>

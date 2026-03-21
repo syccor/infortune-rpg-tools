@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { combineLatest, map } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 
-import { CharactersService } from '../../core/services/characters.service';
-import { GameDataService } from '../../core/services/game-data.service';
-import { CharacterListItem } from '../../core/models/character.model';
+import { CharactersService } from '@services/characters.service';
+import { GameDataService } from '@services/game-data.service';
+import { CharacterListItem } from '@models/character.model';
 import { HealthBarComponent } from '../../shared/health-bar/health-bar.component';
+import { CompanyBuffService } from '@services/company-buff.service';
+import { getBuffedPet, getEffectiveCharacterStats } from '@utils/company-buff.utils';
 
 @Component({
   selector: 'app-characters',
@@ -19,6 +21,8 @@ export class CharactersComponent {
   private readonly charactersService = inject(CharactersService);
   private readonly router = inject(Router);
   private readonly gameDataService = inject(GameDataService);
+  private readonly companyBuffService = inject(CompanyBuffService);
+
   isApplyingDailyRegen = false;
   dailyRegenMessage = '';
 
@@ -28,26 +32,36 @@ export class CharactersComponent {
     this.gameDataService.getClassProfileLabelMap(),
     this.gameDataService.getPetSpeciesLabelMap(),
     this.gameDataService.getPetClassLabelMap(),
+    this.companyBuffService.getBuffState(),
   ]).pipe(
-    map(([characters, classMap, classProfileMap, petSpeciesMap, petClassMap]): CharacterListItem[] => {
-      const activeCharacters = characters.filter(
-        (character) => (character.status ?? 'active') === 'active'
-      );
+    map(
+      ([characters, classMap, classProfileMap, petSpeciesMap, petClassMap, buffState]): CharacterListItem[] => {
+        const activeCharacters = characters.filter(
+          (character) => (character.status ?? 'active') === 'active'
+        );
 
-      return activeCharacters.map((character) => ({
-        ...character,
-        classLabel: classMap.get(character.classId) ?? character.classId,
-        classProfileLabel: character.classProfiles
-          ? (classProfileMap.get(character.classProfiles) ?? character.classProfiles)
-          : null,
-        petSpeciesLabel: character.pet
-          ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
-          : null,
-        petClassLabel: character.pet
-          ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
-          : null,
-      }));
-    })
+        return activeCharacters.map((character) => {
+          const stats = getEffectiveCharacterStats(character, buffState.activeBuff);
+
+          return {
+            ...character,
+            effectiveMaxHp: stats.effectiveMaxHp,
+            effectiveDodge: stats.effectiveDodge,
+            pet: getBuffedPet(character.pet, buffState.activeBuff),
+            classLabel: classMap.get(character.classId) ?? character.classId,
+            classProfileLabel: character.classProfiles
+              ? (classProfileMap.get(character.classProfiles) ?? character.classProfiles)
+              : null,
+            petSpeciesLabel: character.pet
+              ? (petSpeciesMap.get(character.pet.speciesId) ?? character.pet.speciesId)
+              : null,
+            petClassLabel: character.pet
+              ? (petClassMap.get(character.pet.classId) ?? character.pet.classId)
+              : null,
+          };
+        });
+      }
+    )
   );
 
   goToCharacter(characterId?: string): void {

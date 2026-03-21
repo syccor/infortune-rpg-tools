@@ -50,6 +50,8 @@ export interface Character {
   ownerEmail?: string | null;
   createdAt?: unknown;
   updatedAt?: unknown;
+
+  dodgeCap?: number;
 }
 
 export interface Pet {
@@ -71,9 +73,17 @@ export interface Pet {
   lastDailyRegenAt?: string | null;
 }
 
+export interface BuffedPetView extends Pet {
+  effectiveMaxHp: number;
+  effectiveDodge: number;
+}
+
 export interface CharacterListItem extends Character {
   classLabel: string;
   classProfileLabel: string | null;
   petSpeciesLabel: string | null;
   petClassLabel: string | null;
+  effectiveMaxHp: number;
+  effectiveDodge: number;
+  pet?: BuffedPetView | null;
 }
