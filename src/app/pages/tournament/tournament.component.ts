@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth, user } from '@angular/fire/auth';
+import { AuthService } from '@services/auth.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, firstValueFrom, map } from 'rxjs';
 
@@ -22,6 +23,7 @@ import {
   TournamentProfile,
   TournamentFighterTechnique,
 } from '@models/tournament.model';
+
 import { simulateTournamentFight, simulateTournamentPrediction } from '@utils/tournament-simulator';
 
 interface TournamentCharacterView {
@@ -47,6 +49,7 @@ export class TournamentComponent {
   private readonly tournamentProfilesService = inject(TournamentProfilesService);
   private readonly auth = inject(Auth);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
 
   readonly skillOptions = TOURNAMENT_SKILL_TIERS;
   readonly styleOptions = TOURNAMENT_FIGHTER_STYLES;
@@ -107,11 +110,29 @@ export class TournamentComponent {
     }),
   );
 
-  readonly ownCharacters$ = combineLatest([this.characters$, user(this.auth)]).pipe(
-    map(([characters, currentUser]) =>
-      characters.filter((item) => !!currentUser && item.ownerUid === currentUser.uid),
-    ),
-  );
+  readonly ownCharacters$ = combineLatest([
+    this.characters$,
+    this.authService.user$,
+    this.authService.appUser$,
+  ]).pipe(
+  map(([characters, firebaseUser, appUser]) => {
+    const role = appUser?.role ?? null;
+
+    if (!role) {
+      return [];
+    }
+
+    if (role === 'mj' || role === 'dev') {
+      return characters;
+    }
+
+    if (role === 'pj' && firebaseUser) {
+      return characters.filter((item) => item.ownerUid === firebaseUser.uid);
+    }
+
+    return [];
+  }),
+);
 
   readonly duelCandidates$ = this.characters$.pipe(
     map((characters) => characters.filter((item) => item.hasProfile)),
