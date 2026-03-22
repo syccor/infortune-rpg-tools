@@ -284,44 +284,48 @@ function chooseAttackerTechnique(
   defender: RuntimeFighter,
 ): TournamentFighterTechnique | null {
   const remainingToWin = 3 - attacker.touches;
+  const earlyFight = isEarlyFight(attacker, defender);
 
   if (isUnarmed(attacker.combatMode)) {
     if (hasTechnique(attacker, 'no-mercy') && remainingToWin === 1) {
       return 'no-mercy';
     }
-    if (hasTechnique(attacker, 'brutal-blow') && remainingToWin === 1) {
-      return 'brutal-blow';
-    }
-    if (hasTechnique(attacker, 'intimidation')) {
+
+    if (hasTechnique(attacker, 'intimidation') && earlyFight) {
       return 'intimidation';
     }
-    if (hasTechnique(attacker, 'maim')) {
+
+    if (hasTechnique(attacker, 'maim') && earlyFight) {
       return 'maim';
     }
+
     if (hasTechnique(attacker, 'brutal-blow')) {
       return 'brutal-blow';
     }
+
     return null;
   }
 
   if (hasTechnique(attacker, 'execution') && remainingToWin === 1) {
     return 'execution';
   }
-  if (hasTechnique(attacker, 'heroic-strike') && remainingToWin === 1) {
-    return 'heroic-strike';
+
+  if (hasTechnique(attacker, 'intimidation') && earlyFight) {
+    return 'intimidation';
   }
+
+  if (hasTechnique(attacker, 'crash') && earlyFight) {
+    return 'crash';
+  }
+
   if (hasTechnique(attacker, 'shield-break') && hasShield(defender.weaponStyle)) {
     return 'shield-break';
   }
-  if (hasTechnique(attacker, 'intimidation')) {
-    return 'intimidation';
-  }
-  if (hasTechnique(attacker, 'crash')) {
-    return 'crash';
-  }
+
   if (hasTechnique(attacker, 'heroic-strike')) {
     return 'heroic-strike';
   }
+
   if (
     hasTechnique(attacker, 'berserker') &&
     !hasShield(attacker.weaponStyle) &&
@@ -336,16 +340,19 @@ function chooseAttackerTechnique(
 function chooseDefenderTechnique(
   defender: RuntimeFighter,
   attacker: RuntimeFighter,
+  attackerTechnique: TournamentFighterTechnique | null,
 ): TournamentFighterTechnique | null {
   const attackTarget = currentAttackTarget(attacker);
   const defenseTarget = currentDefenseTarget(defender);
   const gap = attackTarget - defenseTarget;
+  const currentRound = getCurrentRoundNumber(attacker, defender);
+  const dangerousAttack = isDangerousAttackTechnique(attackerTechnique);
 
   if (
     hasTechnique(defender, 'roll') &&
     !hasShield(defender.weaponStyle) &&
     !isTwoHanded(defender.weaponStyle) &&
-    gap >= 20
+    (dangerousAttack || gap >= 18)
   ) {
     return 'roll';
   }
@@ -353,13 +360,33 @@ function chooseDefenderTechnique(
   if (
     hasTechnique(defender, 'shield-block') &&
     hasShield(defender.weaponStyle) &&
-    attacker.touches >= 2
+    (dangerousAttack || attacker.touches >= 2)
   ) {
     return 'shield-block';
   }
 
-  if (hasTechnique(defender, 'parry') && gap >= 0) {
+  if (
+    hasTechnique(defender, 'parry') &&
+    (dangerousAttack || gap >= 0)
+  ) {
     return 'parry';
+  }
+
+  if (
+    isUnarmed(defender.combatMode) &&
+    hasTechnique(defender, 'second-wind') &&
+    currentRound >= 3 &&
+    defender.fatiguePenalty >= 10
+  ) {
+    return 'second-wind';
+  }
+
+  if (hasTechnique(defender, 'feint') && dangerousAttack) {
+    return 'feint';
+  }
+
+  if (hasTechnique(defender, 'sand') && currentRound <= 2) {
+    return 'sand';
   }
 
   if (hasTechnique(defender, 'feint')) {
@@ -368,14 +395,6 @@ function chooseDefenderTechnique(
 
   if (hasTechnique(defender, 'sand')) {
     return 'sand';
-  }
-
-  if (
-    isUnarmed(defender.combatMode) &&
-    hasTechnique(defender, 'second-wind') &&
-    defender.fatiguePenalty >= 10
-  ) {
-    return 'second-wind';
   }
 
   return null;
@@ -489,11 +508,15 @@ function runRound(
   attacker: RuntimeFighter,
   defender: RuntimeFighter,
 ): InternalRound {
-  const attackerTechnique = chooseAttackerTechnique(attacker, defender);
-  const defenderTechnique = chooseDefenderTechnique(defender, attacker);
+const attackerTechnique = chooseAttackerTechnique(attacker, defender);
+const defenderTechnique = chooseDefenderTechnique(
+  defender,
+  attacker,
+  attackerTechnique,
+);
 
-  applyTechniqueBeforeRoll(attacker, defender, attackerTechnique, 'attacker');
-  applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
+applyTechniqueBeforeRoll(attacker, defender, attackerTechnique, 'attacker');
+applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
 
   const attackTarget = currentAttackTarget(attacker);
   const defenseTarget = currentDefenseTarget(defender);
@@ -584,6 +607,7 @@ function toRoundLog(round: InternalRound): TournamentRoundLog {
   };
 }
 
+
 export function simulateTournamentFight(
   config: TournamentSimulationConfig,
 ): TournamentSimulationResult {
@@ -637,4 +661,24 @@ export function simulateTournamentPrediction(
     leftWinRate: Number(((leftWins / totalSimulations) * 100).toFixed(1)),
     rightWinRate: Number(((rightWins / totalSimulations) * 100).toFixed(1)),
   };
+}
+
+function getCurrentRoundNumber(attacker: RuntimeFighter, defender: RuntimeFighter): number {
+  return attacker.touches + defender.touches + 1;
+}
+
+function isDangerousAttackTechnique(
+  technique: TournamentFighterTechnique | null,
+): boolean {
+  return (
+    technique === 'execution' ||
+    technique === 'no-mercy' ||
+    technique === 'heroic-strike' ||
+    technique === 'brutal-blow' ||
+    technique === 'shield-break'
+  );
+}
+
+function isEarlyFight(attacker: RuntimeFighter, defender: RuntimeFighter): boolean {
+  return getCurrentRoundNumber(attacker, defender) <= 2;
 }
