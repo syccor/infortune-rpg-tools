@@ -592,15 +592,17 @@ export function simulateTournamentFight(
 
   const initiativeWinner = resolveInitiative(left, right);
 
-  const fixedAttacker = initiativeWinner === 'left' ? left : right;
-  const fixedDefender = initiativeWinner === 'left' ? right : left;
+  let currentAttacker = initiativeWinner === 'left' ? left : right;
+  let currentDefender = initiativeWinner === 'left' ? right : left;
 
   const rounds: TournamentRoundLog[] = [];
   let roundNumber = 1;
 
   while (left.touches < 3 && right.touches < 3) {
-    const internalRound = runRound(roundNumber, fixedAttacker, fixedDefender);
+    const internalRound = runRound(roundNumber, currentAttacker, currentDefender);
     rounds.push(toRoundLog(internalRound));
+
+    [currentAttacker, currentDefender] = [currentDefender, currentAttacker];
     roundNumber += 1;
   }
 
