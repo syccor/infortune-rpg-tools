@@ -295,6 +295,7 @@
                 <select formControlName="predictionCount" class="field-input">
                   <option [value]="20">20</option>
                   <option [value]="50">50</option>
+                  <option [value]="100">100</option>
                 </select>
               </label>
             </div>
@@ -403,7 +404,7 @@
                   <article class="round-card">
                     <div class="round-header">
                       <div>
-                        <h3>Manche {{ round.round }}</h3>
+                        <h3>Manche {{ round.manche }}</h3>
                         <p>
                           Attaquant :
                           {{ round.attacker === 'left' ? leftCharacterName : rightCharacterName }}
@@ -419,20 +420,26 @@
                     </div>
 
                     <div class="round-grid">
-                      <div class="round-side">
-                        <h4>Gauche</h4>
-                        <p><strong>Jet :</strong> {{ round.leftRoll }}</p>
-                        <p><strong>Total :</strong> {{ round.leftAttackTotal }}</p>
+                      <div class="round-side"
+                        [class.attacker-side]="round.attacker === 'left'"
+                        [class.defender-side]="round.attacker !== 'left'"
+                      >
+                        <h4>{{ leftCharacterName }}</h4>
+                        <p><strong>Seuil :</strong> R{{ round.leftThreshold }}</p>
+                        <p><strong>Résultat :</strong> {{ round.leftResult }}</p>
                         <p>
                           <strong>Technique :</strong>
                           {{ round.leftTechnique || 'Aucune' }}
                         </p>
                       </div>
 
-                      <div class="round-side">
+                      <div class="round-side"
+                        [class.attacker-side]="round.attacker === 'right'"
+                        [class.defender-side]="round.attacker !== 'right'"
+                      >
                         <h4>{{ rightCharacterName }}</h4>
-                        <p><strong>Jet :</strong> {{ round.rightRoll }}</p>
-                        <p><strong>Total :</strong> {{ round.rightDefenseTotal }}</p>
+                        <p><strong>Seuil :</strong> R{{ round.rightThreshold }}</p>
+                        <p><strong>Résultat :</strong> {{ round.rightResult }}</p>
                         <p>
                           <strong>Technique :</strong>
                           {{ round.rightTechnique || 'Aucune' }}

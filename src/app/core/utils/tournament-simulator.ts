@@ -54,12 +54,19 @@ interface InternalRound {
   defenderName: string;
   attackerTechnique: TournamentFighterTechnique | null;
   defenderTechnique: TournamentFighterTechnique | null;
+
+  attackThreshold: number;
+  defenseThreshold: number;
+
   attackRoll: number;
   defenseRoll: number;
-  attackTotal: number;
-  defenseTotal: number;
+
+  attackResult: number;
+  defenseResult: number;
+
   attackCritical: boolean;
   defenseCritical: boolean;
+
   winner: Side;
   reason: string;
   leftTouches: number;
@@ -68,6 +75,15 @@ interface InternalRound {
 
 function rand100(): number {
   return Math.floor(Math.random() * 100) + 1;
+}
+
+function clampThreshold(value: number): number {
+  return Math.max(1, value);
+}
+
+function randOnThreshold(threshold: number): number {
+  const capped = clampThreshold(threshold);
+  return Math.floor(Math.random() * capped) + 1;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -255,8 +271,9 @@ function hasTechnique(
   return fighter.techniques.includes(technique) && !fighter.usedTechniques.has(technique);
 }
 
-function currentAttackTarget(fighter: RuntimeFighter): number {
+function currentAttackThreshold(fighter: RuntimeFighter): number {
   const raw =
+    100 +
     fighter.attackBase +
     fighter.permanentAttackMod +
     fighter.berserkerBonus +
@@ -265,8 +282,9 @@ function currentAttackTarget(fighter: RuntimeFighter): number {
   return fighter.nextAttackFloor50 ? Math.max(raw, 50) : raw;
 }
 
-function currentDefenseTarget(fighter: RuntimeFighter): number {
+function currentDefenseThreshold(fighter: RuntimeFighter): number {
   const raw =
+    100 +
     fighter.defenseBase +
     fighter.permanentDefenseMod +
     fighter.nextDefenseMod -
@@ -275,8 +293,8 @@ function currentDefenseTarget(fighter: RuntimeFighter): number {
   return Math.max(raw, 50 + fighter.shieldBonus);
 }
 
-function isCritical(roll: number, total: number): boolean {
-  return roll === 100 || total >= 100;
+function isCritical(roll: number, threshold: number): boolean {
+  return roll === threshold;
 }
 
 function chooseAttackerTechnique(
@@ -342,9 +360,9 @@ function chooseDefenderTechnique(
   attacker: RuntimeFighter,
   attackerTechnique: TournamentFighterTechnique | null,
 ): TournamentFighterTechnique | null {
-  const attackTarget = currentAttackTarget(attacker);
-  const defenseTarget = currentDefenseTarget(defender);
-  const gap = attackTarget - defenseTarget;
+  const attackThreshold = currentAttackThreshold(attacker);
+  const defenseThreshold = currentDefenseThreshold(defender);
+  const gap = attackThreshold - defenseThreshold;
   const currentRound = getCurrentRoundNumber(attacker, defender);
   const dangerousAttack = isDangerousAttackTechnique(attackerTechnique);
 
@@ -518,17 +536,17 @@ const defenderTechnique = chooseDefenderTechnique(
 applyTechniqueBeforeRoll(attacker, defender, attackerTechnique, 'attacker');
 applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
 
-  const attackTarget = currentAttackTarget(attacker);
-  const defenseTarget = currentDefenseTarget(defender);
+  const attackThreshold = currentAttackThreshold(attacker);
+  const defenseThreshold = currentDefenseThreshold(defender);
 
-  const attackRoll = rand100();
-  const defenseRoll = rand100();
+  const attackRoll = randOnThreshold(attackThreshold);
+  const defenseRoll = randOnThreshold(defenseThreshold);
 
-  const attackTotal = attackRoll + attackTarget;
-  const defenseTotal = defenseRoll + defenseTarget;
+  const attackResult = attackRoll;
+  const defenseResult = defenseRoll;
 
-  const attackCritical = isCritical(attackRoll, attackTotal);
-  const defenseCritical = isCritical(defenseRoll, defenseTotal);
+  const attackCritical = isCritical(attackRoll, attackThreshold);
+  const defenseCritical = isCritical(defenseRoll, defenseThreshold);
 
   let winner: Side;
   let reason = '';
@@ -542,7 +560,7 @@ applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
   } else if (defenseCritical && !attackCritical) {
     winner = defender.side;
     reason = 'Critique du défenseur';
-  } else if (attackTotal > defenseTotal) {
+  } else if (attackResult > defenseResult) {
     winner = attacker.side;
     reason = 'Attaque supérieure';
   } else {
@@ -576,10 +594,12 @@ applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
     defenderName: defender.name,
     attackerTechnique,
     defenderTechnique,
+    attackThreshold,
+    defenseThreshold,
     attackRoll,
     defenseRoll,
-    attackTotal,
-    defenseTotal,
+    attackResult,
+    defenseResult,
     attackCritical,
     defenseCritical,
     winner,
@@ -590,17 +610,35 @@ applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
 }
 
 function toRoundLog(round: InternalRound): TournamentRoundLog {
+  const manche = Math.ceil(round.roundNumber / 2);
+  const isRiposte = round.roundNumber % 2 === 0;
+
   return {
     round: round.roundNumber,
+    manche,
+    isRiposte,
     attacker: round.attacker,
-    leftAttackTotal: round.attacker === 'left' ? round.attackTotal : round.defenseTotal,
-    rightDefenseTotal: round.attacker === 'left' ? round.defenseTotal : round.attackTotal,
-    leftRoll: round.attacker === 'left' ? round.attackRoll : round.defenseRoll,
-    rightRoll: round.attacker === 'left' ? round.defenseRoll : round.attackRoll,
+
+    leftThreshold:
+      round.attacker === 'left' ? round.attackThreshold : round.defenseThreshold,
+    rightThreshold:
+      round.attacker === 'left' ? round.defenseThreshold : round.attackThreshold,
+
+    leftRoll:
+      round.attacker === 'left' ? round.attackRoll : round.defenseRoll,
+    rightRoll:
+      round.attacker === 'left' ? round.defenseRoll : round.attackRoll,
+
+    leftResult:
+      round.attacker === 'left' ? round.attackResult : round.defenseResult,
+    rightResult:
+      round.attacker === 'left' ? round.defenseResult : round.attackResult,
+
     leftTechnique:
       round.attacker === 'left' ? round.attackerTechnique : round.defenderTechnique,
     rightTechnique:
       round.attacker === 'left' ? round.defenderTechnique : round.attackerTechnique,
+
     winner: round.winner,
     reason: round.reason,
     score: `${round.leftTouches} - ${round.rightTouches}`,

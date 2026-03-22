@@ -532,7 +532,7 @@
 .round-side {
   padding: 0.95rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
   h4 {
     margin: 0 0 0.55rem;
@@ -543,6 +543,26 @@
     margin: 0.28rem 0;
     color: #dce4f7;
     font-size: 0.9rem;
+  }
+
+  &.attacker-side {
+    background: rgba(220, 68, 90, 0.12);
+    border-color: rgba(220, 68, 90, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(220, 68, 90, 0.06);
+
+    h4 {
+      color: #ffb8c3;
+    }
+  }
+
+  &.defender-side {
+    background: rgba(76, 175, 120, 0.12);
+    border-color: rgba(76, 175, 120, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(76, 175, 120, 0.06);
+
+    h4 {
+      color: #b9f0cb;
+    }
   }
 }
 

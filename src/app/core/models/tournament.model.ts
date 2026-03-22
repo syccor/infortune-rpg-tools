@@ -102,13 +102,22 @@ export interface TournamentSimulationRequest {
 
 export interface TournamentRoundLog {
   round: number;
+  manche: number;
+  isRiposte: boolean;
   attacker: 'left' | 'right';
-  leftAttackTotal: number;
-  rightDefenseTotal: number;
+
+  leftThreshold: number;
+  rightThreshold: number;
+
   leftRoll: number;
   rightRoll: number;
+
+  leftResult: number;
+  rightResult: number;
+
   leftTechnique?: string | null;
   rightTechnique?: string | null;
+
   winner: 'left' | 'right';
   reason: string;
   score: string;
