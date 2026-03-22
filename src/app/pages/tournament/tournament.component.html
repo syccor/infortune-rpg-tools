@@ -337,18 +337,18 @@
                 <div class="result-title-row">
                   <h3>Simulation détaillée</h3>
                   <span class="winner-badge">
-                    Gagnant : {{ simulationResult.winner === 'left' ? 'Gauche' : 'Droite' }}
+                      Gagnant : {{ simulationResult.winner === 'left' ? leftCharacterName : rightCharacterName }}
                   </span>
                 </div>
 
                 <div class="score-board">
                   <div class="score-box">
-                    <span class="score-label">Gauche</span>
+                    <span class="score-label">{{ leftCharacterName }}</span>
                     <strong>{{ simulationResult.leftTouches }}</strong>
                   </div>
                   <div class="score-separator">-</div>
                   <div class="score-box">
-                    <span class="score-label">Droite</span>
+                    <span class="score-label">{{ rightCharacterName }}</span>
                     <strong>{{ simulationResult.rightTouches }}</strong>
                   </div>
                 </div>
@@ -366,13 +366,13 @@
 
                 <div class="prediction-grid">
                   <div class="prediction-box">
-                    <span class="prediction-label">Victoire gauche</span>
+                    <span class="prediction-label">Victoire {{ leftCharacterName }}</span>
                     <strong>{{ predictionResult.leftWins }}</strong>
                     <span class="prediction-rate">{{ predictionResult.leftWinRate }} %</span>
                   </div>
 
                   <div class="prediction-box">
-                    <span class="prediction-label">Victoire droite</span>
+                    <span class="prediction-label">Victoire {{ rightCharacterName }}</span>
                     <strong>{{ predictionResult.rightWins }}</strong>
                     <span class="prediction-rate">{{ predictionResult.rightWinRate }} %</span>
                   </div>
@@ -406,13 +406,13 @@
                         <h3>Manche {{ round.round }}</h3>
                         <p>
                           Attaquant :
-                          {{ round.attacker === 'left' ? 'Gauche' : 'Droite' }}
+                          {{ round.attacker === 'left' ? leftCharacterName : rightCharacterName }}
                         </p>
                       </div>
 
                       <div class="round-meta">
                         <span class="winner-badge small">
-                          {{ round.winner === 'left' ? 'Gauche' : 'Droite' }}
+                          {{ round.winner === 'left' ? leftCharacterName : rightCharacterName }}
                         </span>
                         <span class="subtle-badge">{{ round.score }}</span>
                       </div>
@@ -430,7 +430,7 @@
                       </div>
 
                       <div class="round-side">
-                        <h4>Droite</h4>
+                        <h4>{{ rightCharacterName }}</h4>
                         <p><strong>Jet :</strong> {{ round.rightRoll }}</p>
                         <p><strong>Total :</strong> {{ round.rightDefenseTotal }}</p>
                         <p>

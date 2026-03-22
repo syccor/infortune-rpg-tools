@@ -395,4 +395,14 @@ export class TournamentComponent {
       unarmedTechniques: profile.unarmed.techniques,
     }, { emitEvent: false });
   }
+
+  get leftCharacterName(): string {
+    const id = this.duelForm.controls.leftCharacterId.value;
+    return this.cachedCharacters.find((item) => item.id === id)?.name ?? 'Gauche';
+  }
+
+  get rightCharacterName(): string {
+    const id = this.duelForm.controls.rightCharacterId.value;
+    return this.cachedCharacters.find((item) => item.id === id)?.name ?? 'Droite';
+  }
 }
