@@ -1,0 +1,457 @@
+<section class="tournament-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">MODULE JCJ</p>
+      <h1>Tournoi</h1>
+      <p class="page-subtitle">
+        Gère les profils tournoi de tes personnages, puis lance des simulations
+        détaillées ou des pronostics.
+      </p>
+    </div>
+
+    <div class="tab-switcher">
+      <button
+        type="button"
+        class="tab-button"
+        [class.active]="activeTab === 'profiles'"
+        (click)="activeTab = 'profiles'"
+      >
+        Profils
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active]="activeTab === 'simulation'"
+        (click)="activeTab = 'simulation'"
+      >
+        Simulations & pronostics
+      </button>
+    </div>
+  </header>
+
+  @if (activeTab === 'profiles') {
+    <div class="tab-content">
+      <div class="content-grid profile-layout">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Personnage</h2>
+              <p>Sélectionne un personnage que tu possèdes.</p>
+            </div>
+          </div>
+
+          <form [formGroup]="profileForm" class="panel-body">
+            <label class="field">
+              <span class="field-label">Personnage</span>
+              <select formControlName="characterId" class="field-input">
+                <option value="">Choisir un personnage</option>
+                @if (ownCharacters$ | async; as ownCharacters) {
+                  @for (character of ownCharacters; track character.id) {
+                    <option [value]="character.id">
+                      {{ character.name }} · {{ character.raceLabel }}
+                      @if (character.hasProfile) {
+                        · profil existant
+                      }
+                    </option>
+                  }
+                }
+              </select>
+            </label>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Profil armé</h2>
+              <p>Paramètres du combat avec armes.</p>
+            </div>
+            <span class="slot-badge">
+              {{ profileForm.controls.armedTechniques.value.length }} / {{ getArmedSlots() }} technique(s)
+            </span>
+          </div>
+
+          <form [formGroup]="profileForm" class="panel-body panel-form">
+            <div class="fields-grid">
+              <label class="field">
+                <span class="field-label">Niveau de combattant</span>
+                <select formControlName="armedSkillTier" class="field-input">
+                  @for (option of skillOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Type de combattant</span>
+                <select formControlName="armedFighterStyle" class="field-input">
+                  @for (option of styleOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Fatigue</span>
+                <select formControlName="armedFatigueTier" class="field-input">
+                  @for (option of fatigueOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Style d’arme</span>
+                <select formControlName="weaponStyle" class="field-input">
+                  @for (option of weaponOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="techniques-section">
+              <div class="section-title-row">
+                <h3>Techniques armées</h3>
+                <p>
+                  Choisis jusqu’à {{ getArmedSlots() }} technique(s).
+                </p>
+              </div>
+
+              <div class="techniques-grid">
+                @for (technique of armedTechniques; track technique.id) {
+                  <button
+                    type="button"
+                    class="technique-chip"
+                    [class.selected]="isTechniqueChecked('armedTechniques', technique.id)"
+                    [disabled]="isTechniqueDisabled('armedTechniques', technique.id)"
+                    (click)="toggleTechnique('armedTechniques', technique.id)"
+                  >
+                    <span class="technique-name">{{ technique.label }}</span>
+                    @if (technique.description) {
+                      <span class="technique-description">{{ technique.description }}</span>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Profil sans armes</h2>
+              <p>Paramètres du combat aux poings.</p>
+            </div>
+            <span class="slot-badge">
+              {{ profileForm.controls.unarmedTechniques.value.length }} / {{ getUnarmedSlots() }} technique(s)
+            </span>
+          </div>
+
+          <form [formGroup]="profileForm" class="panel-body panel-form">
+            <label class="toggle-row">
+              <input type="checkbox" formControlName="unarmedEnabled" />
+              <span>Activer le profil sans armes</span>
+            </label>
+
+            <div class="fields-grid" [class.disabled-block]="!profileForm.controls.unarmedEnabled.value">
+              <label class="field">
+                <span class="field-label">Niveau de combattant</span>
+                <select formControlName="unarmedSkillTier" class="field-input">
+                  @for (option of skillOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Type de combattant</span>
+                <select formControlName="unarmedFighterStyle" class="field-input">
+                  @for (option of styleOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Fatigue</span>
+                <select formControlName="unarmedFatigueTier" class="field-input">
+                  @for (option of fatigueOptions; track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div
+              class="techniques-section"
+              [class.disabled-block]="!profileForm.controls.unarmedEnabled.value"
+            >
+              <div class="section-title-row">
+                <h3>Techniques sans armes</h3>
+                <p>
+                  Choisis jusqu’à {{ getUnarmedSlots() }} technique(s).
+                </p>
+              </div>
+
+              <div class="techniques-grid">
+                @for (technique of unarmedTechniques; track technique.id) {
+                  <button
+                    type="button"
+                    class="technique-chip"
+                    [class.selected]="isTechniqueChecked('unarmedTechniques', technique.id)"
+                    [disabled]="
+                      !profileForm.controls.unarmedEnabled.value ||
+                      isTechniqueDisabled('unarmedTechniques', technique.id)
+                    "
+                    (click)="toggleTechnique('unarmedTechniques', technique.id)"
+                  >
+                    <span class="technique-name">{{ technique.label }}</span>
+                    @if (technique.description) {
+                      <span class="technique-description">{{ technique.description }}</span>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button
+                type="button"
+                class="primary-button"
+                [disabled]="isSavingProfile"
+                (click)="saveProfile()"
+              >
+                @if (isSavingProfile) {
+                  Enregistrement...
+                } @else {
+                  Enregistrer le profil
+                }
+              </button>
+            </div>
+
+            @if (profileMessage) {
+              <p class="status-message">{{ profileMessage }}</p>
+            }
+          </form>
+        </section>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'simulation') {
+    <div class="tab-content">
+      <div class="content-grid simulation-layout">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Configuration du duel</h2>
+              <p>Choisis les deux personnages et le mode de tournoi.</p>
+            </div>
+          </div>
+
+          <form [formGroup]="duelForm" class="panel-body panel-form">
+            <div class="fields-grid">
+              <label class="field">
+                <span class="field-label">Combattant gauche</span>
+                <select formControlName="leftCharacterId" class="field-input">
+                  <option value="">Choisir</option>
+                  @if (duelCandidates$ | async; as duelCandidates) {
+                    @for (character of duelCandidates; track character.id) {
+                      <option [value]="character.id">
+                        {{ character.name }} · {{ character.raceLabel }}
+                      </option>
+                    }
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Combattant droite</span>
+                <select formControlName="rightCharacterId" class="field-input">
+                  <option value="">Choisir</option>
+                  @if (duelCandidates$ | async; as duelCandidates) {
+                    @for (character of duelCandidates; track character.id) {
+                      <option [value]="character.id">
+                        {{ character.name }} · {{ character.raceLabel }}
+                      </option>
+                    }
+                  }
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Mode</span>
+                <select formControlName="mode" class="field-input">
+                  <option value="armed">Armé</option>
+                  <option value="unarmed">Sans armes</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Nombre de simulations</span>
+                <select formControlName="predictionCount" class="field-input">
+                  <option [value]="20">20</option>
+                  <option [value]="50">50</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="actions-row">
+              <button
+                type="button"
+                class="primary-button"
+                (click)="runSimulation()"
+              >
+                Lancer une simulation
+              </button>
+
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="runPrediction()"
+              >
+                Lancer le pronostic
+              </button>
+            </div>
+
+            @if (simulationMessage) {
+              <p class="status-message">{{ simulationMessage }}</p>
+            }
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Résumé</h2>
+              <p>Résultat rapide du duel ou du pronostic.</p>
+            </div>
+          </div>
+
+          <div class="panel-body results-stack">
+            @if (simulationResult) {
+              <div class="result-card">
+                <div class="result-title-row">
+                  <h3>Simulation détaillée</h3>
+                  <span class="winner-badge">
+                    Gagnant : {{ simulationResult.winner === 'left' ? 'Gauche' : 'Droite' }}
+                  </span>
+                </div>
+
+                <div class="score-board">
+                  <div class="score-box">
+                    <span class="score-label">Gauche</span>
+                    <strong>{{ simulationResult.leftTouches }}</strong>
+                  </div>
+                  <div class="score-separator">-</div>
+                  <div class="score-box">
+                    <span class="score-label">Droite</span>
+                    <strong>{{ simulationResult.rightTouches }}</strong>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (predictionResult) {
+              <div class="result-card">
+                <div class="result-title-row">
+                  <h3>Pronostic</h3>
+                  <span class="subtle-badge">
+                    {{ predictionResult.totalSimulations }} simulations
+                  </span>
+                </div>
+
+                <div class="prediction-grid">
+                  <div class="prediction-box">
+                    <span class="prediction-label">Victoire gauche</span>
+                    <strong>{{ predictionResult.leftWins }}</strong>
+                    <span class="prediction-rate">{{ predictionResult.leftWinRate }} %</span>
+                  </div>
+
+                  <div class="prediction-box">
+                    <span class="prediction-label">Victoire droite</span>
+                    <strong>{{ predictionResult.rightWins }}</strong>
+                    <span class="prediction-rate">{{ predictionResult.rightWinRate }} %</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (!simulationResult && !predictionResult) {
+              <div class="empty-state">
+                <p>Aucun résultat pour le moment.</p>
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="panel log-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Journal du combat</h2>
+              <p>Détail tour par tour de la simulation.</p>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            @if (simulationResult?.rounds?.length) {
+              <div class="round-list">
+                @for (round of simulationResult!.rounds; track round.round) {
+                  <article class="round-card">
+                    <div class="round-header">
+                      <div>
+                        <h3>Manche {{ round.round }}</h3>
+                        <p>
+                          Attaquant :
+                          {{ round.attacker === 'left' ? 'Gauche' : 'Droite' }}
+                        </p>
+                      </div>
+
+                      <div class="round-meta">
+                        <span class="winner-badge small">
+                          {{ round.winner === 'left' ? 'Gauche' : 'Droite' }}
+                        </span>
+                        <span class="subtle-badge">{{ round.score }}</span>
+                      </div>
+                    </div>
+
+                    <div class="round-grid">
+                      <div class="round-side">
+                        <h4>Gauche</h4>
+                        <p><strong>Jet :</strong> {{ round.leftRoll }}</p>
+                        <p><strong>Total :</strong> {{ round.leftAttackTotal }}</p>
+                        <p>
+                          <strong>Technique :</strong>
+                          {{ round.leftTechnique || 'Aucune' }}
+                        </p>
+                      </div>
+
+                      <div class="round-side">
+                        <h4>Droite</h4>
+                        <p><strong>Jet :</strong> {{ round.rightRoll }}</p>
+                        <p><strong>Total :</strong> {{ round.rightDefenseTotal }}</p>
+                        <p>
+                          <strong>Technique :</strong>
+                          {{ round.rightTechnique || 'Aucune' }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p class="round-reason">{{ round.reason }}</p>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="empty-state">
+                <p>Lance une simulation détaillée pour afficher le journal.</p>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  }
+</section>

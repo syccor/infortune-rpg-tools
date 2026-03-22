@@ -6,7 +6,7 @@ import { CharactersCreationComponent } from './pages/characters-creation/charact
 import { CombatComponent } from './pages/combat/combat.component';
 import { RerollsComponent } from './pages/rerolls/rerolls.component';
 import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
-import { CambuseComponent } from './pages/cambuse/cambuse.component';
+import { TournamentComponent } from './pages/tournament/tournament.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
@@ -19,7 +19,7 @@ export const routes: Routes = [
   { path: 'characters/:id', component: CharacterDetailComponent, canActivate: [authGuard] },
   { path: 'rerolls', component: RerollsComponent, canActivate: [authGuard] },
   { path: 'combat', component: CombatComponent, canActivate: [authGuard] },
-  { path: 'cambuse', component: CambuseComponent, canActivate: [adminGuard] },
+  { path: 'tournament', component: TournamentComponent, canActivate: [authGuard] },
 
   { path: '**', redirectTo: '' },
 ];
