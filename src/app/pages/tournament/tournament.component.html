@@ -306,7 +306,7 @@
                 class="primary-button"
                 (click)="runSimulation()"
               >
-                Lancer une simulation
+                Lancer un combat
               </button>
 
               <button
@@ -314,7 +314,7 @@
                 class="secondary-button"
                 (click)="runPrediction()"
               >
-                Lancer le pronostic
+                Lancer {{ duelForm.controls.predictionCount }} simulations
               </button>
             </div>
 
@@ -328,7 +328,7 @@
           <div class="panel-header">
             <div>
               <h2>Résumé</h2>
-              <p>Résultat rapide du duel ou du pronostic.</p>
+              <p>Résultat rapide du duel ou des simulations.</p>
             </div>
           </div>
 
@@ -336,7 +336,7 @@
             @if (simulationResult) {
               <div class="result-card">
                 <div class="result-title-row">
-                  <h3>Simulation détaillée</h3>
+                  <h3>Score/simulations détaillée</h3>
                   <span class="winner-badge">
                       Gagnant : {{ simulationResult.winner === 'left' ? leftCharacterName : rightCharacterName }}
                   </span>
@@ -393,7 +393,7 @@
           <div class="panel-header">
             <div>
               <h2>Journal du combat</h2>
-              <p>Détail tour par tour de la simulation.</p>
+              <p>Détail tour par tour du combat.</p>
             </div>
           </div>
 

@@ -359,12 +359,17 @@ function chooseDefenderTechnique(
   const gap = attackThreshold - defenseThreshold;
   const currentRound = getCurrentRoundNumber(attacker, defender);
   const dangerousAttack = isDangerousAttackTechnique(attackerTechnique);
+  const lethalPoint = attacker.touches >= 2;
 
   if (
-    hasTechnique(defender, 'roll') &&
+     hasTechnique(defender, 'roll') &&
     !hasShield(defender.weaponStyle) &&
     !isTwoHanded(defender.weaponStyle) &&
-    (dangerousAttack || gap >= 18)
+    (
+      dangerousAttack ||
+      (lethalPoint && gap >= 30) ||
+      (currentRound >= 3 && gap >= 20)
+    )
   ) {
     return 'roll';
   }
