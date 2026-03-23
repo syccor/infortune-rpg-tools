@@ -41,9 +41,6 @@ interface RuntimeFighter {
   nextAttackFloor50: boolean;
   nextDefenseFloor50: boolean;
 
-  berserkerUnlocked: boolean;
-  berserkerBonus: number;
-
   usedTechniques: Set<TournamentFighterTechnique>;
 }
 
@@ -271,12 +268,20 @@ function hasTechnique(
   return fighter.techniques.includes(technique) && !fighter.usedTechniques.has(technique);
 }
 
-function currentAttackThreshold(fighter: RuntimeFighter): number {
+function currentAttackThreshold(
+  fighter: RuntimeFighter,
+  opponent: RuntimeFighter,
+): number {
+  const berserkerBonus =
+    fighter.techniques.includes('berserker') && !hasShield(fighter.weaponStyle)
+      ? opponent.touches * 10
+      : 0;
+
   const raw =
     100 +
     fighter.attackBase +
     fighter.permanentAttackMod +
-    fighter.berserkerBonus +
+    berserkerBonus +
     fighter.nextAttackMod;
 
   return fighter.nextAttackFloor50 ? Math.max(raw, 50) : raw;
@@ -344,14 +349,6 @@ function chooseAttackerTechnique(
     return 'heroic-strike';
   }
 
-  if (
-    hasTechnique(attacker, 'berserker') &&
-    !hasShield(attacker.weaponStyle) &&
-    attacker.touches < defender.touches
-  ) {
-    return 'berserker';
-  }
-
   return null;
 }
 
@@ -360,7 +357,7 @@ function chooseDefenderTechnique(
   attacker: RuntimeFighter,
   attackerTechnique: TournamentFighterTechnique | null,
 ): TournamentFighterTechnique | null {
-  const attackThreshold = currentAttackThreshold(attacker);
+  const attackThreshold = currentAttackThreshold(attacker, defender);
   const defenseThreshold = currentDefenseThreshold(defender);
   const gap = attackThreshold - defenseThreshold;
   const currentRound = getCurrentRoundNumber(attacker, defender);
@@ -468,10 +465,6 @@ function applyTechniqueBeforeRoll(
       fighter.fatiguePenalty = Math.max(0, fighter.fatiguePenalty - 10);
       break;
 
-    case 'berserker':
-      fighter.berserkerUnlocked = true;
-      break;
-
     case 'intimidation':
     case 'crash':
     case 'maim':
@@ -536,7 +529,7 @@ const defenderTechnique = chooseDefenderTechnique(
 applyTechniqueBeforeRoll(attacker, defender, attackerTechnique, 'attacker');
 applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
 
-  const attackThreshold = currentAttackThreshold(attacker);
+  const attackThreshold = currentAttackThreshold(attacker, defender);
   const defenseThreshold = currentDefenseThreshold(defender);
 
   const attackRoll = randOnThreshold(attackThreshold);
@@ -578,8 +571,6 @@ applyTechniqueBeforeRoll(defender, attacker, defenderTechnique, 'defender');
     if (attackerTechnique === 'intimidation') {
       defender.permanentAttackMod -= 20;
     }
-  } else if (attacker.berserkerUnlocked) {
-    attacker.berserkerBonus += 10;
   }
 
   clearConsumedAttackState(attacker);
