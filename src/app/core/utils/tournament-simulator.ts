@@ -254,9 +254,6 @@ function createRuntimeFighter(
     nextAttackFloor50: false,
     nextDefenseFloor50: false,
 
-    berserkerUnlocked: false,
-    berserkerBonus: 0,
-
     usedTechniques: new Set<TournamentFighterTechnique>(),
   };
 }
