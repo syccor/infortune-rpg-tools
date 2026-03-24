@@ -41,6 +41,11 @@
         </a>
 
         @if (appUser.role === 'dev' || appUser.role === 'mj') {
+          <a routerLink="/cambuse" routerLinkActive="active">
+            <span class="nav-icon">🍲</span>
+            <span>Cambuse</span>
+          </a>
+
           <a routerLink="/admin/users" routerLinkActive="active">
             <span class="nav-icon">👑</span>
             <span>Administration</span>
