@@ -8,6 +8,7 @@
     "deploy": "ng build --base-href=/infortune-rpg-tools/ && npx angular-cli-ghpages --dir=dist/infortune-rpg-tools/browser",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "deploy:rules": "firebase deploy --only firestore:rules",
     "seed:classes": "node firebase/seeds/seedClasses.js",
     "seed:races": "node firebase/seeds/seedRaces.js",
     "seed:subclasses": "node firebase/seeds/seedSubClasses.js",
