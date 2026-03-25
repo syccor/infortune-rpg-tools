@@ -338,7 +338,7 @@ function chooseAttackerTechnique(
     return 'crash';
   }
 
-  if (hasTechnique(attacker, 'shield-break') && hasShield(defender.weaponStyle)) {
+  if (hasTechnique(attacker, 'shield-break')) {
     return 'shield-break';
   }
 
