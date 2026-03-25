@@ -110,6 +110,10 @@ export class TournamentComponent {
     }),
   );
 
+  readonly techniqueLabelMap = new Map(
+    TOURNAMENT_TECHNIQUES.map((technique) => [technique.id, technique.label]),
+  );
+
   readonly ownCharacters$ = combineLatest([
     this.characters$,
     this.authService.user$,
@@ -404,5 +408,13 @@ export class TournamentComponent {
   get rightCharacterName(): string {
     const id = this.duelForm.controls.rightCharacterId.value;
     return this.cachedCharacters.find((item) => item.id === id)?.name ?? 'Droite';
+  }
+
+  getTechniqueLabel(techniqueId: string | null | undefined): string {
+    if (!techniqueId) {
+      return 'Aucune';
+    }
+
+    return this.techniqueLabelMap.get(techniqueId as TournamentFighterTechnique) ?? techniqueId;
   }
 }

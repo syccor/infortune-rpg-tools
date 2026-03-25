@@ -429,7 +429,7 @@
                         <p><strong>Résultat :</strong> {{ round.leftResult }}</p>
                         <p>
                           <strong>Technique :</strong>
-                          {{ round.leftTechnique || 'Aucune' }}
+                          {{ getTechniqueLabel(round.leftTechnique) }}
                         </p>
                       </div>
 
@@ -442,7 +442,7 @@
                         <p><strong>Résultat :</strong> {{ round.rightResult }}</p>
                         <p>
                           <strong>Technique :</strong>
-                          {{ round.rightTechnique || 'Aucune' }}
+                          {{ getTechniqueLabel(round.rightTechnique) }}
                         </p>
                       </div>
                     </div>
