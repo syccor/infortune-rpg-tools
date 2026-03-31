@@ -86,6 +86,7 @@ export class TournamentComponent {
     rightCharacterId: ['', Validators.required],
     mode: ['armed' as TournamentCombatMode, Validators.required],
     predictionCount: [20, Validators.required],
+    targetScore: [3 as 3 | 5, Validators.required],
   });
 
   readonly characters$ = combineLatest([
@@ -332,6 +333,7 @@ export class TournamentComponent {
             ? right.profile.unarmed.techniques
             : right.profile.armed.techniques,
       },
+      targetScore: (raw.targetScore ?? 3) as 3 | 5,
     };
   }
 

@@ -302,8 +302,9 @@ function isCritical(roll: number, threshold: number): boolean {
 function chooseAttackerTechnique(
   attacker: RuntimeFighter,
   defender: RuntimeFighter,
+  targetScore: number,
 ): TournamentFighterTechnique | null {
-  const remainingToWin = 3 - attacker.touches;
+  const remainingToWin = targetScore - attacker.touches;
   const earlyFight = isEarlyFight(attacker, defender);
 
   if (isUnarmed(attacker.combatMode)) {
@@ -520,8 +521,9 @@ function runRound(
   roundNumber: number,
   attacker: RuntimeFighter,
   defender: RuntimeFighter,
+  targetScore: number,
 ): InternalRound {
-const attackerTechnique = chooseAttackerTechnique(attacker, defender);
+const attackerTechnique = chooseAttackerTechnique(attacker, defender, targetScore);
 const defenderTechnique = chooseDefenderTechnique(
   defender,
   attacker,
@@ -653,8 +655,8 @@ export function simulateTournamentFight(
   const rounds: TournamentRoundLog[] = [];
   let roundNumber = 1;
 
-  while (left.touches < 3 && right.touches < 3) {
-    const internalRound = runRound(roundNumber, currentAttacker, currentDefender);
+  while (left.touches < config.targetScore && right.touches < config.targetScore) {
+    const internalRound = runRound(roundNumber, currentAttacker, currentDefender, config.targetScore);
     rounds.push(toRoundLog(internalRound));
 
     [currentAttacker, currentDefender] = [currentDefender, currentAttacker];
@@ -662,7 +664,7 @@ export function simulateTournamentFight(
   }
 
   return {
-    winner: left.touches >= 3 ? 'left' : 'right',
+    winner: left.touches >= config.targetScore ? 'left' : 'right',
     leftTouches: left.touches,
     rightTouches: right.touches,
     rounds,

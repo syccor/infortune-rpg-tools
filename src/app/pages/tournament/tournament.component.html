@@ -300,6 +300,14 @@
                   <option [value]="10000">10000 - très lent</option>
                 </select>
               </label>
+
+              <label class="field">
+                <span class="field-label">Format</span>
+                <select formControlName="targetScore" class="field-input">
+                  <option [ngValue]="3">Standard · 3 points</option>
+                  <option [ngValue]="5">Finale · 5 points</option>
+                </select>
+              </label>
             </div>
 
             <div class="actions-row">

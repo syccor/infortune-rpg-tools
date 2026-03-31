@@ -152,6 +152,7 @@ export interface TournamentSimulationFighterConfig {
 export interface TournamentSimulationConfig {
   fighterA: TournamentSimulationFighterConfig;
   fighterB: TournamentSimulationFighterConfig;
+  targetScore: 3 | 5;
 }
 
 export interface TournamentSimulationRound {
