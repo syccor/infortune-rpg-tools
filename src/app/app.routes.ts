@@ -22,6 +22,6 @@ export const routes: Routes = [
   { path: 'rerolls', component: RerollsComponent, canActivate: [authGuard] },
   { path: 'combat', component: CombatComponent, canActivate: [authGuard] },
   { path: 'tournament', component: TournamentComponent, canActivate: [authGuard] },
-  { path: 'calcul-pv', component: PvCalculatorComponent, canActivate: [authGuard] },
+  { path: 'calcul-pv', component: PvCalculatorComponent },
   { path: '**', redirectTo: '' },
 ];
