@@ -34,12 +34,12 @@
           <span class="nav-icon">🛡</span>
           <span>Combat</span>
         </a>
-
-         <a routerLink="/calcul-pv" routerLinkActive="active">
-          <span class="nav-icon">📊</span>
-          <span>Pv Calc</span>
-        </a>
-
+      }
+      <a routerLink="/calcul-pv" routerLinkActive="active">
+        <span class="nav-icon">📊</span>
+        <span>Pv Calc</span>
+      </a>
+      @if (appUser$ | async; as appUser) {
         <a routerLink="/tournament" routerLinkActive="active">
           <span class="nav-icon">🏆</span>
           <span>Tournoi - Beta</span>
