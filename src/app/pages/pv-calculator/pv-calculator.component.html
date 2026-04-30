@@ -1,0 +1,145 @@
+<section class="pv-page">
+  <header class="pv-header">
+    <div>
+      <h1>Calculateur de PV</h1>
+      <p>
+        Ajuste la taille, le poids et la musculature du personnage pour obtenir son total de PV final.
+      </p>
+    </div>
+
+    <aside class="pv-result">
+      <span class="result-label">PV final</span>
+      <strong>{{ finalHp() }}</strong>
+
+      <span class="result-sub">
+        Base : {{ baseHp }} PV
+      </span>
+
+      <span class="result-sub">
+        Esquive : {{ formatModifier(finalEvasionModifier()) }}
+      </span>
+    </aside>
+  </header>
+
+  <div class="sliders-grid">
+    <article class="slider-card">
+      <h2>Taille</h2>
+
+      <div class="slider-content">
+        <input
+          class="vertical-slider"
+          type="range"
+          min="0"
+          [max]="sizes.length - 1"
+          step="1"
+          [value]="sizeIndex()"
+          aria-label="Taille"
+          (input)="setSize($any($event.target).value)"
+        />
+
+        <div class="graduations">
+          <button
+            *ngFor="let option of sizes; let i = index; trackBy: trackByIndex"
+            type="button"
+            class="graduation"
+            [class.selected]="i === sizeIndex()"
+            (click)="setSize(i.toString())"
+          >
+            <strong>{{ option.label }}</strong>
+            <span>{{ option.description }}</span>
+            <small>
+              PV {{ formatModifier(option.hp) }}
+              <ng-container *ngIf="option.evasion">
+                · Esquive {{ formatModifier(option.evasion) }}
+              </ng-container>
+            </small>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="slider-card">
+      <h2>Poids</h2>
+
+      <div class="slider-content">
+        <input
+          class="vertical-slider"
+          type="range"
+          min="0"
+          [max]="weights.length - 1"
+          step="1"
+          [value]="weightIndex()"
+          aria-label="Poids"
+          (input)="setWeight($any($event.target).value)"
+        />
+
+        <div class="graduations">
+          <button
+            *ngFor="let option of weights; let i = index; trackBy: trackByIndex"
+            type="button"
+            class="graduation"
+            [class.selected]="i === weightIndex()"
+            (click)="setWeight(i.toString())"
+          >
+            <strong>{{ option.label }}</strong>
+            <span>{{ option.description }}</span>
+            <small>
+              PV {{ formatModifier(option.hp) }}
+              <ng-container *ngIf="option.evasion">
+                · Esquive {{ formatModifier(option.evasion) }}
+              </ng-container>
+            </small>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="slider-card">
+      <h2>Musculature</h2>
+
+      <div class="slider-content">
+        <input
+          class="vertical-slider"
+          type="range"
+          min="0"
+          [max]="muscles.length - 1"
+          step="1"
+          [value]="muscleIndex()"
+          aria-label="Musculature"
+          (input)="setMuscle($any($event.target).value)"
+        />
+
+        <div class="graduations">
+          <button
+            *ngFor="let option of muscles; let i = index; trackBy: trackByIndex"
+            type="button"
+            class="graduation"
+            [class.selected]="i === muscleIndex()"
+            [class.disabled]="isMuscleDisabled(i)"
+            [disabled]="isMuscleDisabled(i)"
+            (click)="setMuscle(i.toString())"
+          >
+            <strong>{{ option.label }}</strong>
+            <span>{{ option.description }}</span>
+            <small>
+              PV {{ formatModifier(option.hp) }}
+            </small>
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section class="summary-card">
+    <h2>Détail du calcul</h2>
+
+    <p>
+      {{ baseHp }} (base)
+      {{ formatModifier(selectedSize().hp) }} PV (taille)
+      {{ formatModifier(selectedWeight().hp) }} PV (poids)
+      {{ formatModifier(selectedMuscle().hp) }} PV (musculature)
+      =
+      <strong>{{ finalHp() }} PV</strong>
+    </p>
+  </section>
+</section>
