@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
+import { PvCalculatorComponent } from './pages/pv-calculator/pv-calculator.component';
 import { CharactersComponent } from './pages/characters/characters.component';
 import { CharacterDetailComponent } from './pages/character-detail/character-detail.component';
 import { CharactersCreationComponent } from './pages/characters-creation/characters-creation.component';
@@ -9,6 +10,7 @@ import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { TournamentComponent } from './pages/tournament/tournament.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +22,6 @@ export const routes: Routes = [
   { path: 'rerolls', component: RerollsComponent, canActivate: [authGuard] },
   { path: 'combat', component: CombatComponent, canActivate: [authGuard] },
   { path: 'tournament', component: TournamentComponent, canActivate: [authGuard] },
-
+  { path: 'calcul-pv', component: PvCalculatorComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },
 ];

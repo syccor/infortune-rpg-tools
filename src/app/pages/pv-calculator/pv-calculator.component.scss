@@ -1,0 +1,170 @@
+.pv-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.pv-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: stretch;
+
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+  }
+
+  p {
+    margin: 0;
+    max-width: 720px;
+    line-height: 1.5;
+  }
+}
+
+.pv-result {
+  min-width: 180px;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: #181818;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  text-align: center;
+
+  strong {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+.result-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.result-sub {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.sliders-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.slider-card {
+  padding: 1.25rem;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  background: #ffffff;
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+  }
+}
+
+.slider-content {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.vertical-slider {
+  width: 48px;
+  height: 420px;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  cursor: pointer;
+}
+
+.graduations {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.graduation {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.75rem;
+  background: #f8f8f8;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.15s ease;
+
+  strong,
+  span,
+  small {
+    display: block;
+  }
+
+  strong {
+    font-size: 0.95rem;
+  }
+
+  span {
+    margin-top: 0.15rem;
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+
+  small {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    opacity: 0.9;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: #111;
+  }
+
+  &.selected {
+    border-color: #111;
+    background: #181818;
+    color: #ffffff;
+  }
+
+  &.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.summary-card {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: #f3f3f3;
+
+  h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 960px) {
+  .pv-header {
+    flex-direction: column;
+  }
+
+  .sliders-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vertical-slider {
+    height: 360px;
+  }
+}
