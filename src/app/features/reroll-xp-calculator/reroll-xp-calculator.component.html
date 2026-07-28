@@ -1,0 +1,51 @@
+<section class="tool-page">
+  <header class="tool-header">
+    <div>
+      <h1>Calculateur d’XP de reroll</h1>
+      <p>Un personnage qui reroll conserve 50% de son XP, arrondi à la dizaine la plus proche.</p>
+    </div>
+  </header>
+
+  <article class="calculator-card">
+    <label for="originalXp">XP totale du personnage actuel</label>
+
+    <input
+      id="originalXp"
+      type="number"
+      min="0"
+      [value]="originalXp()"
+      (input)="setOriginalXp($any($event.target).value)"
+    />
+
+    <div class="results-grid">
+      <div class="result-card">
+        <span>XP après reroll</span>
+        <strong>{{ rerollXp() }}</strong>
+        <small>50%, arrondi à la dizaine</small>
+      </div>
+
+      <div class="result-card">
+        <span>Niveau estimé</span>
+        <strong>{{ levelProgress().level }}</strong>
+
+        <small *ngIf="levelProgress().requiredForNextLevel !== null">
+          {{ levelProgress().currentLevelXp }} / {{ levelProgress().requiredForNextLevel }} XP
+          vers le niveau {{ levelProgress().level + 1 }}
+        </small>
+
+        <small *ngIf="levelProgress().requiredForNextLevel === null">
+          Niveau maximum atteint
+        </small>
+      </div>
+    </div>
+
+    <section class="level-table">
+      <h2>Barème d’XP</h2>
+
+      <div class="level-row" *ngFor="let level of nextLevels()">
+        <span>Niveau {{ level.from }} → {{ level.to }}</span>
+        <strong>{{ level.requiredXp }} XP</strong>
+      </div>
+    </section>
+  </article>
+</section>

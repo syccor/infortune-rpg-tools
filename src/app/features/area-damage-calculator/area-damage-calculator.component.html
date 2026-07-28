@@ -1,0 +1,183 @@
+<section class="tool-page">
+  <header class="tool-header">
+    <div>
+      <h1>Dégâts de zone</h1>
+      <p>
+        Calcule les dégâts infligés à chaque groupe selon le jet d’attaque de zone,
+        le nombre de cibles touchées et la taille de la zone.
+      </p>
+    </div>
+
+    <aside class="summary-result">
+      <span>Dégâts ennemis</span>
+      <strong>{{ enemyTotalDamage() }}</strong>
+      <small>Alliés : {{ allyDamage() }} dégâts potentiels</small>
+    </aside>
+  </header>
+
+  <section class="calculator-grid">
+    <article class="calculator-card">
+      <h2>Jet de zone</h2>
+
+      <label for="attackRoll">Résultat du jet d’attaque</label>
+      <input
+        id="attackRoll"
+        type="number"
+        min="0"
+        [value]="attackRoll()"
+        (input)="setAttackRoll($any($event.target).value)"
+      />
+
+      <label for="areaSize">Type de zone</label>
+      <select
+        id="areaSize"
+        [value]="selectedAreaIndex()"
+        (change)="setSelectedArea($any($event.target).value)"
+      >
+        <option
+          *ngFor="let area of areaSizes; let i = index"
+          [value]="i"
+        >
+          {{ area.label }} — {{ area.maxGroups }} groupe(s) max
+        </option>
+      </select>
+
+      <label for="targetRoll">Résultat du jet de cibles touchées</label>
+      <input
+        id="targetRoll"
+        type="number"
+        min="1"
+        [max]="largestGroupSize()"
+        [value]="targetRoll()"
+        (input)="setTargetRoll($any($event.target).value)"
+      />
+
+      <p class="helper">
+        Jet conseillé : <strong>{{ recommendedTargetRoll() }}</strong>
+      </p>
+
+      <p class="helper">
+        Valeur retenue : <strong>{{ cappedTargetRoll() }}</strong>
+        cible(s), plafonnée selon le plus grand groupe.
+      </p>
+
+      <label for="allyCount">Alliés dans la zone</label>
+      <input
+        id="allyCount"
+        type="number"
+        min="0"
+        [value]="allyCount()"
+        (input)="setAllyCount($any($event.target).value)"
+      />
+
+      <p class="warning">
+        Les alliés présents dans la zone sont toujours considérés comme touchés,
+        même si cela dépasse les limites de groupes ou de cibles.
+      </p>
+    </article>
+
+    <article class="calculator-card">
+      <div class="card-title-row">
+        <h2>Groupes ennemis</h2>
+
+        <button type="button" class="add-button" (click)="addGroup()">
+          Ajouter
+        </button>
+      </div>
+
+      <div
+        class="group-editor"
+        *ngFor="let group of groups(); trackBy: trackByGroupId"
+      >
+        <input
+          class="group-name-input"
+          type="text"
+          [value]="group.name"
+          (input)="updateGroupName(group.id, $any($event.target).value)"
+        />
+
+        <input
+          class="group-size-input"
+          type="number"
+          min="1"
+          [value]="group.size"
+          (input)="updateGroupSize(group.id, $any($event.target).value)"
+        />
+
+        <button
+          type="button"
+          class="remove-button"
+          [disabled]="groups().length <= 1"
+          (click)="removeGroup(group.id)"
+        >
+          ×
+        </button>
+      </div>
+    </article>
+  </section>
+
+  <section class="results-card">
+    <h2>Résultat</h2>
+
+    <div class="result-row header-row">
+      <span>Groupe</span>
+      <span>Présents</span>
+      <span>Cibles touchées</span>
+      <span>Dégâts</span>
+    </div>
+
+    <div
+      class="result-row"
+      *ngFor="let result of results()"
+      [class.inactive]="!result.isAffectedByZoneLimit"
+    >
+      <span>
+        <strong>{{ result.name }}</strong>
+        <small *ngIf="!result.isAffectedByZoneLimit">
+          Hors limite de zone
+        </small>
+      </span>
+
+      <span>{{ result.size }}</span>
+
+      <span>{{ result.touchedTargets }}</span>
+
+      <span>
+        <strong>{{ result.damage }}</strong>
+      </span>
+    </div>
+
+    <div class="ally-row" *ngIf="allyCount() > 0">
+      <span>
+        Alliés touchés automatiquement
+        <small>Jet de défense à gérer selon les règles de tir allié</small>
+      </span>
+
+      <strong>{{ allyCount() }} × {{ attackRoll() }} = {{ allyDamage() }}</strong>
+    </div>
+
+    <footer class="total-row">
+      <span>Total potentiel</span>
+      <strong>{{ totalPotentialDamage() }}</strong>
+    </footer>
+  </section>
+
+  <section class="rules-card">
+    <h2>Rappel rapide</h2>
+
+    <p>
+      Le jet d’attaque de zone est lancé une seule fois.
+      Le nombre de cibles touchées est déterminé avec le groupe le plus nombreux.
+    </p>
+
+    <p>
+      Pour chaque groupe, les dégâts sont :
+      <strong>jet d’attaque × nombre de cibles effectivement touchées</strong>.
+    </p>
+
+    <p>
+      Le nombre de cibles touchées ne peut jamais dépasser le nombre de personnages
+      présents dans le groupe concerné.
+    </p>
+  </section>
+</section>

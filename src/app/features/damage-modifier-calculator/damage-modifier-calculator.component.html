@@ -1,0 +1,34 @@
+<section class="tool-page">
+  <header class="tool-header">
+    <div>
+      <h1>Majorations de dégâts</h1>
+      <p>Calcule rapidement les dégâts majorés selon le résultat obtenu.</p>
+    </div>
+  </header>
+
+  <article class="calculator-card">
+    <label for="baseDamage">Dégâts de base</label>
+
+    <input
+      id="baseDamage"
+      type="number"
+      min="0"
+      [value]="baseDamage()"
+      (input)="setBaseDamage($any($event.target).value)"
+    />
+
+    <div class="results-grid">
+      <div class="result-card">
+        <span>Réussite critique</span>
+        <strong>{{ criticalSuccessDamage() }}</strong>
+        <small>Valeur +25%</small>
+      </div>
+
+      <div class="result-card danger">
+        <span>Échec critique</span>
+        <strong>{{ criticalFailureDamage() }}</strong>
+        <small>Valeur +50%</small>
+      </div>
+    </div>
+  </article>
+</section>
