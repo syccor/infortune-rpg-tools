@@ -39,6 +39,18 @@
         <span class="nav-icon">📊</span>
         <span>Pv Calc</span>
       </a>
+      <a routerLink="/majorations-degats" routerLinkActive="active">
+        <span class="nav-icon">💥</span>
+        <span>Majorations de dégâts</span>
+      </a>
+      <a routerLink="/reroll-xp" routerLinkActive="active">
+        <span class="nav-icon">🔄</span>
+        <span>Calculateur XP de reroll</span>
+      </a>
+      <a routerLink="/degats-zone" routerLinkActive="active">
+        <span class="nav-icon">🌐</span>
+        <span>Calculateur de dégâts de zone</span>
+      </a>
       @if (appUser$ | async; as appUser) {
         <a routerLink="/tournament" routerLinkActive="active">
           <span class="nav-icon">🏆</span>
