@@ -11,11 +11,13 @@ import { AdminUsersComponent } from './pages/admin-users/admin-users.component';
 import { TournamentComponent } from './pages/tournament/tournament.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { DamageModifierCalculatorComponent } from '@features/damage-modifier-calculator/damage-modifier-calculator.component';
+import { RerollXpCalculatorComponent } from '@features/reroll-xp-calculator/reroll-xp-calculator.component';
+import { AreaDamageCalculatorComponent } from '@features/area-damage-calculator/area-damage-calculator.component';
 
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-
   { path: 'admin/users', component: AdminUsersComponent, canActivate: [adminGuard] },
   { path: 'characters', component: CharactersComponent, canActivate: [authGuard] },
   { path: 'characters/create', component: CharactersCreationComponent, canActivate: [authGuard] },
@@ -25,5 +27,8 @@ export const routes: Routes = [
   { path: 'cambuse', component: CambuseComponent, canActivate: [adminGuard] },
   { path: 'tournament', component: TournamentComponent, canActivate: [authGuard] },
   { path: 'calcul-pv', component: PvCalculatorComponent },
+  { path: 'majorations-degats', component: DamageModifierCalculatorComponent },
+  { path: 'reroll-xp', component: RerollXpCalculatorComponent },
+  { path: 'degats-zone', component: AreaDamageCalculatorComponent },
   { path: '**', redirectTo: '' },
 ];

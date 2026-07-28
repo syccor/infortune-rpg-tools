@@ -1,0 +1,102 @@
+<section class="tool-page">
+  <header class="tool-header">
+    <div>
+      <h1>Calculateur d’XP de reroll</h1>
+      <p>
+        Indique le niveau actuel du personnage et son XP dans ce niveau.
+        Le calculateur retrouve l’XP totale, puis applique la perte de 50% arrondie à la dizaine la plus proche.
+      </p>
+    </div>
+  </header>
+
+  <article class="calculator-card">
+    <label for="currentLevel">Niveau actuel</label>
+
+    <input
+      id="currentLevel"
+      type="number"
+      min="1"
+      max="10"
+      [value]="currentLevel()"
+      (input)="setCurrentLevel($any($event.target).value)"
+    />
+
+    <label for="currentXpInLevel">XP actuelle dans ce niveau</label>
+
+    <input
+      id="currentXpInLevel"
+      type="number"
+      min="0"
+      [max]="currentLevelRequiredXp() ?? null"
+      [value]="currentXpInLevel()"
+      (input)="setCurrentXpInLevel($any($event.target).value)"
+    />
+
+    <p class="helper" *ngIf="currentLevelRequiredXp() !== null">
+      Niveau {{ currentLevel() }} :
+      {{ currentXpInLevel() }} / {{ currentLevelRequiredXp() }} XP
+      avant le niveau {{ currentLevel() + 1 }}.
+    </p>
+
+    <p class="helper" *ngIf="currentLevelRequiredXp() === null">
+      Le personnage est niveau 10. L’XP indiquée est comptée comme surplus.
+    </p>
+
+    <div class="results-grid">
+      <div class="result-card">
+        <span>XP totale actuelle</span>
+        <strong>{{ originalTotalXp() }}</strong>
+        <small>XP cumulée depuis le niveau 1</small>
+      </div>
+
+      <div class="result-card">
+        <span>XP après reroll</span>
+        <strong>{{ rerollXp() }}</strong>
+        <small>50%, arrondi à la dizaine</small>
+      </div>
+
+      <div class="result-card">
+        <span>Niveau du reroll</span>
+        <strong>{{ levelProgress().level }}</strong>
+
+        <small *ngIf="levelProgress().requiredForNextLevel !== null">
+          {{ levelProgress().currentLevelXp }} / {{ levelProgress().requiredForNextLevel }} XP
+          vers le niveau {{ levelProgress().level + 1 }}
+        </small>
+
+        <small *ngIf="levelProgress().requiredForNextLevel === null">
+          Niveau maximum atteint
+        </small>
+      </div>
+
+      <div class="result-card">
+        <span>XP restante à gagner</span>
+
+        <strong *ngIf="levelProgress().remainingForNextLevel !== null">
+          {{ levelProgress().remainingForNextLevel }}
+        </strong>
+
+        <strong *ngIf="levelProgress().remainingForNextLevel === null">
+          —
+        </strong>
+
+        <small *ngIf="levelProgress().remainingForNextLevel !== null">
+          Pour atteindre le niveau {{ levelProgress().level + 1 }}
+        </small>
+
+        <small *ngIf="levelProgress().remainingForNextLevel === null">
+          Aucun palier supérieur
+        </small>
+      </div>
+    </div>
+
+    <section class="level-table">
+      <h2>Barème d’XP</h2>
+
+      <div class="level-row" *ngFor="let level of nextLevels()">
+        <span>Niveau {{ level.from }} → {{ level.to }}</span>
+        <strong>{{ level.requiredXp }} XP</strong>
+      </div>
+    </section>
+  </article>
+</section>
