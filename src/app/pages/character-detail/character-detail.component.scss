@@ -77,6 +77,29 @@
   color: #f2f3f5;
 }
 
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+.edit-field input {
+  background: #1f2126;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: white;
+  padding: 0.7rem 0.8rem;
+}
+
 @media (max-width: 900px) {
   .stats-grid {
     grid-template-columns: 1fr;

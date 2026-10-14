@@ -167,6 +167,18 @@ export class CharactersService {
     return updatedCount;
   }
 
+  async updateCharacter(
+    characterId: string,
+    data: Partial<Character>,
+  ): Promise<void> {
+    const ref = doc(this.firestore, 'characters', characterId);
+
+    await updateDoc(ref, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
   async activateCharacter(characterId: string): Promise<void> {
     const ref = doc(this.firestore, 'characters', characterId);
 

@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { combineLatest, map, switchMap } from 'rxjs';
+import { combineLatest, map, switchMap, tap } from 'rxjs';
 
 import { CharactersService } from '@services/characters.service';
 import { GameDataService } from '@services/game-data.service';
@@ -12,7 +13,7 @@ import { getBuffedPet, getEffectiveCharacterStats } from '@utils/company-buff.ut
 @Component({
   selector: 'app-character-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, HealthBarComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HealthBarComponent],
   templateUrl: './character-detail.component.html',
   styleUrls: ['./character-detail.component.scss'],
 })
@@ -22,6 +23,18 @@ export class CharacterDetailComponent {
   private readonly gameDataService = inject(GameDataService);
   private readonly companyBuffService = inject(CompanyBuffService);
 
+  currentCharacter: any = null;
+  isEditing = false;
+
+  readonly editForm = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    surname: new FormControl(''),
+    lvl: new FormControl(1, [Validators.required, Validators.min(1)]),
+    xp: new FormControl(0, [Validators.required, Validators.min(0)]),
+    luckpoint: new FormControl(0, [Validators.required, Validators.min(0)]),
+    armor: new FormControl(0, [Validators.required, Validators.min(0)]),
+  });
+
   readonly character$ = this.route.paramMap.pipe(
     map((params) => params.get('id')),
     switchMap((id) =>
@@ -30,6 +43,21 @@ export class CharacterDetailComponent {
         this.gameDataService.getCreationData(),
         this.companyBuffService.getBuffState(),
       ]).pipe(
+        tap(([characters]) => {
+          const character = characters.find((item) => item.id === id);
+          this.currentCharacter = character ?? null;
+
+          if (character && !this.isEditing) {
+            this.editForm.patchValue({
+              name: character.name ?? '',
+              surname: character.surname ?? '',
+              lvl: Number(character.lvl ?? 1),
+              xp: Number(character.xp ?? 0),
+              luckpoint: Number(character.luckpoint ?? 0),
+              armor: Number(character.armor ?? 0),
+            }, { emitEvent: false });
+          }
+        }),
         map(([characters, refs, buffState]) => {
           const character = characters.find((item) => item.id === id);
           if (!character) return null;
@@ -83,6 +111,57 @@ export class CharacterDetailComponent {
       ),
     ),
   );
+
+  startEditing(): void {
+    if (!this.currentCharacter) return;
+
+    this.editForm.patchValue({
+      name: this.currentCharacter.name ?? '',
+      surname: this.currentCharacter.surname ?? '',
+      lvl: Number(this.currentCharacter.lvl ?? 1),
+      xp: Number(this.currentCharacter.xp ?? 0),
+      luckpoint: Number(this.currentCharacter.luckpoint ?? 0),
+      armor: Number(this.currentCharacter.armor ?? 0),
+    });
+    this.isEditing = true;
+  }
+
+  cancelEditing(): void {
+    this.isEditing = false;
+    if (this.currentCharacter) {
+      this.editForm.patchValue({
+        name: this.currentCharacter.name ?? '',
+        surname: this.currentCharacter.surname ?? '',
+        lvl: Number(this.currentCharacter.lvl ?? 1),
+        xp: Number(this.currentCharacter.xp ?? 0),
+        luckpoint: Number(this.currentCharacter.luckpoint ?? 0),
+        armor: Number(this.currentCharacter.armor ?? 0),
+      }, { emitEvent: false });
+    }
+  }
+
+  async saveEdit(): Promise<void> {
+    if (!this.currentCharacter || this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const values = this.editForm.getRawValue();
+
+    try {
+      await this.charactersService.updateCharacter(this.currentCharacter.id, {
+        name: String(values.name ?? '').trim(),
+        surname: String(values.surname ?? '').trim(),
+        lvl: Number(values.lvl),
+        xp: Number(values.xp),
+        luckpoint: Number(values.luckpoint),
+        armor: Number(values.armor),
+      });
+      this.isEditing = false;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async copyDiscord(character: any): Promise<void> {
     const text = this.buildDiscordText(character);
