@@ -12,6 +12,7 @@ export interface CharacterPreviewStats {
   maxHp: number;
   currentHp: number;
   dodge: number;
+  dodgeCap: number;
   agility: number;
   armor: number;
   perception: number;
@@ -31,6 +32,7 @@ export function calculateCharacterStats(input: {
 }): CharacterPreviewStats {
   const baseHp = 180;
   const baseDodge = 20;
+  const baseDodgeCap = 50;
 
   let weightDodge = input.weight.dodgeModifier;
   let sizeDodge = input.size.dodgeModifier;
@@ -69,8 +71,11 @@ export function calculateCharacterStats(input: {
     input.size.hpModifier +
     input.race.hpBonus;
 
-  const dodge =
-    baseDodge + weightDodge + sizeDodge + input.race.dodgeBonus + dodgeFromArmorType + shieldDodge;
+  const dodgeCap = baseDodgeCap + (input.race.dodgeCapBonus ?? 0);
+  const dodge = Math.min(
+    baseDodge + weightDodge + sizeDodge + input.race.dodgeBonus + dodgeFromArmorType + shieldDodge,
+    dodgeCap,
+  );
 
   const armor = armorFromArmorType + input.race.armorBonus + shieldArmor;
 
@@ -82,6 +87,7 @@ export function calculateCharacterStats(input: {
     maxHp,
     currentHp: maxHp,
     dodge,
+    dodgeCap,
     agility,
     armor,
     perception,

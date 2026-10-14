@@ -15,6 +15,33 @@ import {
   PetSpecies
 } from '../models/reference.model';
 
+const additionalRaces: Race[] = [
+  {
+    id: 'amani-troll',
+    label: 'Troll Amani',
+    order: 100,
+    hpBonus: 0,
+    dodgeBonus: 0,
+    armorBonus: 0,
+    perceptionBonus: 0,
+    defaultLuck: 0,
+    maxLuck: 1,
+    ignoreWeightDodgeMalus: true,
+  },
+  {
+    id: 'goblin',
+    label: 'Gobelin',
+    order: 101,
+    hpBonus: 0,
+    dodgeBonus: 0,
+    armorBonus: 0,
+    perceptionBonus: 0,
+    defaultLuck: 0,
+    maxLuck: 1,
+    dodgeCapBonus: 10,
+  },
+];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,7 +50,12 @@ export class GameDataService {
 
   readonly classes$ = this.getCollection<GameClass>('classes');
   readonly classProfiles$ = this.getCollection<ClassProfile>('classProfiles');
-  readonly races$ = this.getCollection<Race>('races');
+  readonly races$ = this.getCollection<Race>('races').pipe(
+    map((races) => {
+      const raceIds = new Set(races.map((race) => race.id));
+      return [...races, ...additionalRaces.filter((race) => !raceIds.has(race.id))];
+    }),
+  );
   readonly grades$ = this.getCollection<Grade>('grades');
   readonly armorTypes$ = this.getCollection<ArmorType>('armorTypes');
   readonly shieldTypes$ = this.getCollection<ShieldType>('shieldTypes');

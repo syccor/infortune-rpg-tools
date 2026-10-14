@@ -339,6 +339,7 @@ export class CharactersCreationComponent implements OnInit {
       currentHp: this.preview.currentHp,
       armor: this.preview.armor,
       dodge: this.preview.dodge,
+      dodgeCap: this.preview.dodgeCap,
       agility: this.preview.agility,
       perception: this.preview.perception,
       luckpoint: this.preview.luckpoint,
