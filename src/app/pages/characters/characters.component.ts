@@ -25,6 +25,8 @@ export class CharactersComponent {
 
   isApplyingDailyRegen = false;
   dailyRegenMessage = '';
+  isProcessing = false;
+  actionMessage = '';
 
   readonly characters$ = combineLatest([
     this.charactersService.getCharacters(),
@@ -67,6 +69,30 @@ export class CharactersComponent {
   goToCharacter(characterId?: string): void {
     if (!characterId) return;
     this.router.navigate(['/characters', characterId]);
+  }
+
+  async deleteCharacter(characterId?: string, event?: Event): Promise<void> {
+    event?.stopPropagation();
+    if (!characterId) return;
+
+    const confirmed = window.confirm(
+      'Supprimer définitivement ce personnage ? Cette action est irréversible.'
+    );
+
+    if (!confirmed) return;
+
+    this.isProcessing = true;
+    this.actionMessage = '';
+
+    try {
+      await this.charactersService.deleteCharacter(characterId);
+      this.actionMessage = 'Le personnage a été supprimé.';
+    } catch (error) {
+      console.error(error);
+      this.actionMessage = 'Erreur lors de la suppression du personnage.';
+    } finally {
+      this.isProcessing = false;
+    }
   }
 
   async applyDailyRegen(): Promise<void> {

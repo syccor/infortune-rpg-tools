@@ -21,6 +21,9 @@
   @if (dailyRegenMessage) {
     <p class="regen-message">{{ dailyRegenMessage }}</p>
   }
+  @if (actionMessage) {
+    <p class="info-message">{{ actionMessage }}</p>
+  }
   @if (characters$ | async; as characters) {
     @if (characters.length > 0) {
       <div class="characters-list">
@@ -82,6 +85,14 @@
                 (click)="goToCharacter(character.id); $event.stopPropagation()"
               >
                 Visualiser
+              </button>
+              <button
+                type="button"
+                class="danger-btn"
+                [disabled]="isProcessing"
+                (click)="deleteCharacter(character.id, $event)"
+              >
+                Supprimer
               </button>
             </div>
           </article>

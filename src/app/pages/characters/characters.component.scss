@@ -22,7 +22,8 @@
 }
 
 .primary-btn,
-.secondary-btn {
+.secondary-btn,
+.danger-btn {
   border: 0;
   border-radius: 12px;
   padding: 0.85rem 1rem;
@@ -47,6 +48,20 @@
 
 .secondary-btn:hover {
   background: #4a4e57;
+}
+
+.danger-btn {
+  background: #b42318;
+  color: white;
+}
+
+.danger-btn:hover {
+  background: #d92d20;
+}
+
+.danger-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .characters-list {
@@ -85,6 +100,13 @@
 .character-main {
   flex: 1;
   min-width: 0;
+}
+
+.character-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .character-top {
@@ -206,7 +228,8 @@
   align-items: center;
 }
 
-.regen-message {
+.regen-message,
+.info-message {
   background: #2b2d31;
   border-radius: 10px;
   padding: 0.75rem 1rem;
