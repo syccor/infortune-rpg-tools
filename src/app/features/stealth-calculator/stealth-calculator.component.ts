@@ -142,7 +142,7 @@ export class StealthCalculatorComponent {
   readonly selection = signal<Record<string, string | null>>({
     vigilance: 'insouciant',
     light: null,
-    movement: null,
+    movement: 'lent',
     target: null,
   });
 
@@ -253,7 +253,7 @@ export class StealthCalculatorComponent {
   }
 
   reset(): void {
-    this.selection.set({ vigilance: 'insouciant', light: null, movement: null, target: null });
+    this.selection.set({ vigilance: 'insouciant', light: null, movement: 'lent', target: null });
     this.checked.set(new Set());
     this.agility.set(100);
     this.dieRoll.set(null);
