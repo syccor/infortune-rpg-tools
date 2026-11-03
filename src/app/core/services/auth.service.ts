@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import {
   Auth,
   GoogleAuthProvider,
@@ -30,12 +30,43 @@ export class AuthService {
     }),
   );
 
-  async loginWithGoogle(): Promise<void> {
-    const credential = await signInWithPopup(this.auth, this.provider);
+  /** Message affiché à l'utilisateur quand la connexion ou l'enregistrement du profil échoue. */
+  readonly authError = signal<string | null>(null);
 
-    if (credential.user) {
-      await this.usersService.ensureUserDocument(credential.user);
+  async loginWithGoogle(): Promise<void> {
+    this.authError.set(null);
+
+    let credential;
+    try {
+      credential = await signInWithPopup(this.auth, this.provider);
+    } catch (error) {
+      console.error(error);
+      const code = (error as { code?: string }).code;
+      // Fenêtre fermée volontairement : pas d'erreur à afficher.
+      if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') {
+        this.authError.set('La connexion avec Google a échoué. Réessaie dans un instant.');
+      }
+      return;
     }
+
+    if (!credential.user) {
+      return;
+    }
+
+    try {
+      await this.usersService.ensureUserDocument(credential.user);
+    } catch (error) {
+      console.error(error);
+      this.authError.set(
+        'Tu es connecté, mais ton profil n’a pas pu être enregistré : tu n’apparaîtras pas dans ' +
+          'l’administration et ne pourras pas recevoir de rôle. Déconnecte-toi puis reconnecte-toi ' +
+          '(désactive un éventuel bloqueur de publicité) ; si ça persiste, préviens un administrateur.',
+      );
+    }
+  }
+
+  clearAuthError(): void {
+    this.authError.set(null);
   }
 
   async logout(): Promise<void> {

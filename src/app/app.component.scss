@@ -45,6 +45,24 @@
   padding: 1.5rem;
 }
 
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(237, 66, 69, 0.5);
+  border-radius: 1rem;
+  background: rgba(237, 66, 69, 0.12);
+  color: #ffb3b5;
+  line-height: 1.5;
+
+  p {
+    margin: 0;
+  }
+}
+
 /* SIDEBAR */
 
 .sidebar {

@@ -14,6 +14,7 @@ export class AppComponent {
   private readonly authService = inject(AuthService);
   readonly user$ = this.authService.user$;
   readonly appUser$ = this.authService.appUser$;
+  readonly authError = this.authService.authError;
 
   menuOpen = true;
 
@@ -23,6 +24,10 @@ export class AppComponent {
 
   closeMenu(): void {
     this.menuOpen = false;
+  }
+
+  dismissAuthError(): void {
+    this.authService.clearAuthError();
   }
 
   async login(): Promise<void> {

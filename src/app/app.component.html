@@ -120,6 +120,14 @@
     </header>
 
     <main class="content">
+      @if (authError(); as message) {
+        <div class="auth-error" role="alert">
+          <p>{{ message }}</p>
+          <button class="icon-btn" type="button" (click)="dismissAuthError()" aria-label="Fermer">
+            ✕
+          </button>
+        </div>
+      }
       <router-outlet></router-outlet>
       <footer class="app-footer">
         <p>
