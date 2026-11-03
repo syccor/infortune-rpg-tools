@@ -147,6 +147,8 @@ export class StealthCalculatorComponent {
   });
 
   readonly checked = signal<ReadonlySet<string>>(new Set());
+  /** Agilité de base du personnage : valeur maximale du rand (100 par défaut). */
+  readonly agility = signal(100);
   readonly dieRoll = signal<number | null>(null);
 
   private readonly allOptions: StealthOption[] = [
@@ -183,12 +185,12 @@ export class StealthCalculatorComponent {
 
   readonly threshold = computed(() => BASE_THRESHOLD + this.difficulty());
 
-  /** Seuil équivalent sur un d100 sans modificateur. */
+  /** Seuil équivalent sur le rand d'Agilité sans modificateur. */
   readonly simplifiedThreshold = computed(() => this.threshold() - this.rollModifier());
 
   readonly rollRange = computed(() => ({
     min: 1 + this.rollModifier(),
-    max: 100 + this.rollModifier(),
+    max: this.agility() + this.rollModifier(),
   }));
 
   readonly feasibility = computed<'impossible' | 'automatic' | 'normal'>(() => {
@@ -232,18 +234,28 @@ export class StealthCalculatorComponent {
     });
   }
 
+  setAgility(value: string): void {
+    const parsed = Number(value);
+    if (value.trim() === '' || Number.isNaN(parsed)) return;
+    const agility = Math.max(1, Math.round(parsed));
+    this.agility.set(agility);
+    const die = this.dieRoll();
+    if (die !== null && die > agility) this.dieRoll.set(agility);
+  }
+
   setDieRoll(value: string): void {
     if (value.trim() === '') {
       this.dieRoll.set(null);
       return;
     }
     const parsed = Number(value);
-    this.dieRoll.set(Number.isNaN(parsed) ? null : Math.min(100, Math.max(1, Math.round(parsed))));
+    this.dieRoll.set(Number.isNaN(parsed) ? null : Math.min(this.agility(), Math.max(1, Math.round(parsed))));
   }
 
   reset(): void {
     this.selection.set({ vigilance: 'insouciant', light: null, movement: null, target: null });
     this.checked.set(new Set());
+    this.agility.set(100);
     this.dieRoll.set(null);
   }
 

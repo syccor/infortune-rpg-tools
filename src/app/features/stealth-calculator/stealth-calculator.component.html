@@ -85,16 +85,28 @@
       <div class="summary-result__item">
         <span>Modificateur de rand</span>
         <strong>{{ formatSigned(rollModifier()) }}</strong>
-        <small>1d100{{ formatSigned(rollModifier()) }} · {{ rollRange().min }} à {{ rollRange().max }}</small>
+        <small>1d{{ agility() }}{{ formatSigned(rollModifier()) }} · {{ rollRange().min }} à {{ rollRange().max }}</small>
       </div>
       <p class="summary-result__hint" [class.bad]="feasibility() === 'impossible'">
         @switch (feasibility()) {
           @case ('impossible') { Réussite impossible. }
           @case ('automatic') { Réussite automatique. }
-          @default { Équivalent : 1d100, réussite à {{ simplifiedThreshold() }}+ }
+          @default { Équivalent : 1d{{ agility() }}, réussite à {{ simplifiedThreshold() }}+ }
         }
       </p>
     </aside>
+    <article class="calculator-card">
+      <h2>Agilité du personnage</h2>
+      <label for="agility">Agilité de base (valeur maximale du rand)</label>
+      <input
+        id="agility"
+        type="number"
+        min="1"
+        [value]="agility()"
+        (input)="setAgility($any($event.target).value)"
+      />
+    </article>
+
     <article class="calculator-card">
       <div class="card-title-row">
         <h2>Résultat du jet</h2>
@@ -106,7 +118,7 @@
         id="dieRoll"
         type="number"
         min="1"
-        max="100"
+        [max]="agility()"
         [value]="dieRoll() ?? ''"
         (input)="setDieRoll($any($event.target).value)"
       />
