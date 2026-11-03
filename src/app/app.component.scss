@@ -134,14 +134,41 @@
   color: white;
 }
 
-.nav-section {
-  margin: 0.9rem 0 0.1rem;
-  padding: 0 1rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #949ba4;
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.6rem;
+
+  summary {
+    padding: 0.4rem 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #949ba4;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: '▾';
+      display: inline-block;
+      width: 1rem;
+    }
+  }
+
+  &:not([open]) summary::before {
+    content: '▸';
+  }
+
+  &[open] > a {
+    margin-left: 0.4rem;
+  }
 }
 
 .nav-icon {
