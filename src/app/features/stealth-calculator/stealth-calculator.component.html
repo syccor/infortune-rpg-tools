@@ -1,0 +1,132 @@
+<section class="tool-page">
+  <header class="tool-header">
+    <div>
+      <h1>Calculateur Furtivité</h1>
+      <p>
+        Jet d’Agilité de base : réussite à {{ baseThreshold }}+. Coche les circonstances pour
+        obtenir le seuil à atteindre et le modificateur de rand.
+      </p>
+    </div>
+  </header>
+
+  <aside class="summary-result" aria-live="polite">
+    <div class="summary-result__item">
+      <span>Difficulté / Seuil</span>
+      <strong>{{ threshold() }}</strong>
+      <small>Base {{ baseThreshold }} {{ formatSigned(difficulty()) }}</small>
+    </div>
+    <div class="summary-result__item">
+      <span>Modificateur de rand</span>
+      <strong>{{ formatSigned(rollModifier()) }}</strong>
+      <small>1d100{{ formatSigned(rollModifier()) }} · {{ rollRange().min }} à {{ rollRange().max }}</small>
+    </div>
+    <p class="summary-result__hint" [class.bad]="feasibility() === 'impossible'">
+      @switch (feasibility()) {
+        @case ('impossible') { Réussite impossible. }
+        @case ('automatic') { Réussite automatique. }
+        @default { Équivalent : 1d100, réussite à {{ simplifiedThreshold() }}+ }
+      }
+    </p>
+  </aside>
+
+  <section class="calculator-grid">
+    <article class="calculator-card">
+      <h2>{{ vigilance.label }}</h2>
+      <div class="option-list">
+        @for (option of vigilance.options; track option.id) {
+          <label class="option" [class.active]="isSelected(vigilance, option.id)">
+            <input
+              type="radio"
+              name="vigilance"
+              [checked]="isSelected(vigilance, option.id)"
+              (change)="select(vigilance, option.id)"
+            />
+            <span>{{ option.label }}</span>
+            <em class="tag difficulty">+{{ option.value }}</em>
+          </label>
+        }
+      </div>
+
+      @for (group of exclusiveGroups; track group.id) {
+        <h2>{{ group.label }}</h2>
+        <div class="option-list">
+          <label class="option" [class.active]="selection()[group.id] === null">
+            <input
+              type="radio"
+              [name]="group.id"
+              [checked]="selection()[group.id] === null"
+              (change)="select(group, null)"
+            />
+            <span>Aucun</span>
+          </label>
+          @for (option of group.options; track option.id) {
+            <label class="option" [class.active]="isSelected(group, option.id)">
+              <input
+                type="radio"
+                [name]="group.id"
+                [checked]="isSelected(group, option.id)"
+                (change)="select(group, option.id)"
+              />
+              <span>{{ option.label }}</span>
+              <em class="tag" [class.difficulty]="option.kind === 'difficulty'" [class.bonus]="option.kind === 'bonus'">
+                +{{ option.value }}
+              </em>
+            </label>
+          }
+        </div>
+      }
+    </article>
+
+    <article class="calculator-card">
+      <h2>Facteurs défavorables</h2>
+      <div class="option-list">
+        @for (option of freeDifficulties; track option.id) {
+          <label class="option" [class.active]="isChecked(option.id)">
+            <input type="checkbox" [checked]="isChecked(option.id)" (change)="toggle(option.id)" />
+            <span>{{ option.label }}</span>
+            <em class="tag difficulty">+{{ option.value }}</em>
+          </label>
+        }
+      </div>
+
+      <h2>Facteurs favorables</h2>
+      <div class="option-list">
+        @for (option of freeBonuses; track option.id) {
+          <label class="option" [class.active]="isChecked(option.id)">
+            <input type="checkbox" [checked]="isChecked(option.id)" (change)="toggle(option.id)" />
+            <span>{{ option.label }}</span>
+            <em class="tag bonus">+{{ option.value }}</em>
+          </label>
+        }
+      </div>
+    </article>
+
+    <article class="calculator-card">
+      <div class="card-title-row">
+        <h2>Résultat du jet</h2>
+        <button type="button" class="ghost-btn" (click)="reset()">Réinitialiser</button>
+      </div>
+
+      <label for="dieRoll">Résultat du d100 (sans modificateur)</label>
+      <input
+        id="dieRoll"
+        type="number"
+        min="1"
+        max="100"
+        [value]="dieRoll() ?? ''"
+        (input)="setDieRoll($any($event.target).value)"
+      />
+
+      @if (outcome(); as outcome) {
+        <div class="outcome" [ngClass]="'outcome--' + outcome.id">
+          <strong>{{ outcome.label }}</strong>
+          <p>{{ outcome.description }}</p>
+          <small>
+            Jet total {{ totalRoll() }} contre seuil {{ threshold() }}
+            @if (gap()) { · écart de {{ gap() }} }
+          </small>
+        </div>
+      }
+    </article>
+  </section>
+</section>

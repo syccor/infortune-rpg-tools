@@ -51,6 +51,11 @@
         <span class="nav-icon">🌐</span>
         <span>Calculateur de dégâts de zone</span>
       </a>
+      <p class="nav-section">Sans-Couronne</p>
+      <a routerLink="/furtivite" routerLinkActive="active">
+        <span class="nav-icon">🥷</span>
+        <span>Calculateur Furtivité</span>
+      </a>
       @if (appUser$ | async; as appUser) {
         <a routerLink="/tournament" routerLinkActive="active">
           <span class="nav-icon">🏆</span>
