@@ -83,16 +83,25 @@ export class StealthCalculatorComponent {
     ],
   };
 
-  /** Groupes à choix unique (cocher une option décoche les autres du groupe). */
+  /** Lumière : source proche (case libre, difficulté) + ambiance (choix unique, bonus). Les deux se cumulent. */
+  readonly torch: StealthOption = {
+    id: 'torche',
+    label: 'Source de lumière proche (torche, lanterne…)',
+    kind: 'difficulty',
+    value: 20,
+  };
+
+  readonly lightGroup: StealthGroup = {
+    id: 'light',
+    label: 'Lumière',
+    options: [
+      { id: 'penombre', label: 'Présence d’ombres ou de pénombre', kind: 'bonus', value: 20 },
+      { id: 'obscurite', label: 'Obscurité presque totale', kind: 'bonus', value: 30 },
+    ],
+  };
+
+  /** Autres groupes à choix unique (cocher une option décoche les autres du groupe). */
   readonly exclusiveGroups: StealthGroup[] = [
-    {
-      id: 'light',
-      label: 'Lumière',
-      options: [
-        { id: 'penombre', label: 'Présence d’ombres ou de pénombre', kind: 'bonus', value: 20 },
-        { id: 'obscurite', label: 'Obscurité presque totale', kind: 'bonus', value: 30 },
-      ],
-    },
     {
       id: 'movement',
       label: 'Mouvement',
@@ -113,7 +122,6 @@ export class StealthCalculatorComponent {
   ];
 
   readonly freeDifficulties: StealthOption[] = [
-    { id: 'torche', label: 'Source de lumière proche (torche, lanterne…)', kind: 'difficulty', value: 20 },
     { id: 'boss', label: 'PNJ majeur / Boss à proximité', kind: 'difficulty', value: 20 },
     { id: 'terrain', label: 'Terrain difficile (graviers, débris, végétation)', kind: 'difficulty', value: 10 },
     { id: 'encombrant', label: 'Équipement encombrant', kind: 'difficulty', value: 10 },
@@ -141,7 +149,9 @@ export class StealthCalculatorComponent {
 
   private readonly allOptions: StealthOption[] = [
     ...this.vigilance.options,
+    ...this.lightGroup.options,
     ...this.exclusiveGroups.flatMap((group) => group.options),
+    this.torch,
     ...this.freeDifficulties,
     ...this.freeBonuses,
   ];

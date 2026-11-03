@@ -124,6 +124,20 @@
     }
   }
 
+  h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #949ba4;
+  }
+
+  .option-list + .option-list,
+  .option-list + ng-container + .option-list {
+    margin-top: 0.4rem;
+  }
+
   > label {
     display: block;
     margin-bottom: 0.6rem;
