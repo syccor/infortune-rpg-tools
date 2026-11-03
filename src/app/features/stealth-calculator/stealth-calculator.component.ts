@@ -14,6 +14,8 @@ export interface StealthGroup {
   id: string;
   label: string;
   options: StealthOption[];
+  /** Libellé du choix par défaut, sans effet (« Aucun » si absent). */
+  noneLabel?: string;
   /** Si vrai, une option est toujours sélectionnée (pas de choix « Aucun »). */
   required?: boolean;
 }
@@ -115,9 +117,9 @@ export class StealthCalculatorComponent {
     {
       id: 'movement',
       label: 'Mouvement',
+      noneLabel: 'Déplacement lent et précautionneux',
       options: [
         { id: 'immobile', label: 'Position immobile', kind: 'bonus', value: 20 },
-        { id: 'lent', label: 'Déplacement lent et précautionneux', kind: 'bonus', value: 10 },
         { id: 'rapide', label: 'Déplacement rapide ou précipité', kind: 'difficulty', value: 20 },
       ],
     },
@@ -142,7 +144,7 @@ export class StealthCalculatorComponent {
   readonly selection = signal<Record<string, string | null>>({
     vigilance: 'insouciant',
     light: null,
-    movement: 'lent',
+    movement: null,
     target: null,
   });
 
@@ -253,7 +255,7 @@ export class StealthCalculatorComponent {
   }
 
   reset(): void {
-    this.selection.set({ vigilance: 'insouciant', light: null, movement: 'lent', target: null });
+    this.selection.set({ vigilance: 'insouciant', light: null, movement: null, target: null });
     this.checked.set(new Set());
     this.agility.set(100);
     this.dieRoll.set(null);
