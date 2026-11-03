@@ -19,54 +19,73 @@
         <span>Accueil</span>
       </a>
 
+      <details class="nav-group" open>
+        <summary>Compagnie Infortune</summary>
+
+        @if (appUser$ | async; as appUser) {
+          <a routerLink="/characters" routerLinkActive="active">
+            <span class="nav-icon">⚔</span>
+            <span>Personnages</span>
+          </a>
+
+          <a routerLink="/rerolls" routerLinkActive="active">
+            <span class="nav-icon">🧪</span>
+            <span>Mes rerolls</span>
+          </a>
+
+          <a routerLink="/combat" routerLinkActive="active">
+            <span class="nav-icon">🛡</span>
+            <span>Combat</span>
+          </a>
+        }
+        <a routerLink="/calcul-pv" routerLinkActive="active">
+          <span class="nav-icon">📊</span>
+          <span>Pv Calc</span>
+        </a>
+        <a routerLink="/majorations-degats" routerLinkActive="active">
+          <span class="nav-icon">💥</span>
+          <span>Majorations de dégâts</span>
+        </a>
+        <a routerLink="/reroll-xp" routerLinkActive="active">
+          <span class="nav-icon">🔄</span>
+          <span>Calculateur XP de reroll</span>
+        </a>
+        <a routerLink="/degats-zone" routerLinkActive="active">
+          <span class="nav-icon">🌐</span>
+          <span>Calculateur de dégâts de zone</span>
+        </a>
+        @if (appUser$ | async; as appUser) {
+          <a routerLink="/tournament" routerLinkActive="active">
+            <span class="nav-icon">🏆</span>
+            <span>Tournoi - Beta</span>
+          </a>
+
+          @if (appUser.role === 'dev' || appUser.role === 'mj') {
+            <a routerLink="/cambuse" routerLinkActive="active">
+              <span class="nav-icon">🍲</span>
+              <span>Cambuse</span>
+            </a>
+          }
+        }
+      </details>
+
+      <details class="nav-group" open>
+        <summary>Sans-Couronne</summary>
+        <a routerLink="/furtivite" routerLinkActive="active">
+          <span class="nav-icon">🥷</span>
+          <span>Calculateur Furtivité</span>
+        </a>
+      </details>
+
       @if (appUser$ | async; as appUser) {
-        <a routerLink="/characters" routerLinkActive="active">
-          <span class="nav-icon">⚔</span>
-          <span>Personnages</span>
-        </a>
-
-        <a routerLink="/rerolls" routerLinkActive="active">
-          <span class="nav-icon">🧪</span>
-          <span>Mes rerolls</span>
-        </a>
-
-        <a routerLink="/combat" routerLinkActive="active">
-          <span class="nav-icon">🛡</span>
-          <span>Combat</span>
-        </a>
-      }
-      <a routerLink="/calcul-pv" routerLinkActive="active">
-        <span class="nav-icon">📊</span>
-        <span>Pv Calc</span>
-      </a>
-      <a routerLink="/majorations-degats" routerLinkActive="active">
-        <span class="nav-icon">💥</span>
-        <span>Majorations de dégâts</span>
-      </a>
-      <a routerLink="/reroll-xp" routerLinkActive="active">
-        <span class="nav-icon">🔄</span>
-        <span>Calculateur XP de reroll</span>
-      </a>
-      <a routerLink="/degats-zone" routerLinkActive="active">
-        <span class="nav-icon">🌐</span>
-        <span>Calculateur de dégâts de zone</span>
-      </a>
-      @if (appUser$ | async; as appUser) {
-        <a routerLink="/tournament" routerLinkActive="active">
-          <span class="nav-icon">🏆</span>
-          <span>Tournoi - Beta</span>
-        </a>
-
         @if (appUser.role === 'dev' || appUser.role === 'mj') {
-          <a routerLink="/cambuse" routerLinkActive="active">
-            <span class="nav-icon">🍲</span>
-            <span>Cambuse</span>
-          </a>
-
-          <a routerLink="/admin/users" routerLinkActive="active">
-            <span class="nav-icon">👑</span>
-            <span>Administration</span>
-          </a>
+          <details class="nav-group" open>
+            <summary>Admin</summary>
+            <a routerLink="/admin/users" routerLinkActive="active">
+              <span class="nav-icon">👑</span>
+              <span>Administration</span>
+            </a>
+          </details>
         }
       }
     </nav>

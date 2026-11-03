@@ -14,6 +14,7 @@ import { adminGuard } from './core/guards/admin.guard';
 import { DamageModifierCalculatorComponent } from '@features/damage-modifier-calculator/damage-modifier-calculator.component';
 import { RerollXpCalculatorComponent } from '@features/reroll-xp-calculator/reroll-xp-calculator.component';
 import { AreaDamageCalculatorComponent } from '@features/area-damage-calculator/area-damage-calculator.component';
+import { StealthCalculatorComponent } from '@features/stealth-calculator/stealth-calculator.component';
 
 
 export const routes: Routes = [
@@ -30,5 +31,6 @@ export const routes: Routes = [
   { path: 'majorations-degats', component: DamageModifierCalculatorComponent },
   { path: 'reroll-xp', component: RerollXpCalculatorComponent },
   { path: 'degats-zone', component: AreaDamageCalculatorComponent },
+  { path: 'furtivite', component: StealthCalculatorComponent },
   { path: '**', redirectTo: '' },
 ];
