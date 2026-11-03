@@ -9,25 +9,6 @@
     </div>
   </header>
 
-  <aside class="summary-result" aria-live="polite">
-    <div class="summary-result__item">
-      <span>Difficulté / Seuil</span>
-      <strong>{{ threshold() }}</strong>
-      <small>Base {{ baseThreshold }} {{ formatSigned(difficulty()) }}</small>
-    </div>
-    <div class="summary-result__item">
-      <span>Modificateur de rand</span>
-      <strong>{{ formatSigned(rollModifier()) }}</strong>
-      <small>1d100{{ formatSigned(rollModifier()) }} · {{ rollRange().min }} à {{ rollRange().max }}</small>
-    </div>
-    <p class="summary-result__hint" [class.bad]="feasibility() === 'impossible'">
-      @switch (feasibility()) {
-        @case ('impossible') { Réussite impossible. }
-        @case ('automatic') { Réussite automatique. }
-        @default { Équivalent : 1d100, réussite à {{ simplifiedThreshold() }}+ }
-      }
-    </p>
-  </aside>
 
   <section class="calculator-grid">
     <article class="calculator-card">
@@ -101,13 +82,35 @@
       </div>
     </article>
 
+  </section>
+  <div class="side">
+    <div class="side__inner">
+    <aside class="summary-result" aria-live="polite">
+      <div class="summary-result__item">
+        <span>Difficulté / Seuil</span>
+        <strong>{{ threshold() }}</strong>
+        <small>Base {{ baseThreshold }} {{ formatSigned(difficulty()) }}</small>
+      </div>
+      <div class="summary-result__item">
+        <span>Modificateur de rand</span>
+        <strong>{{ formatSigned(rollModifier()) }}</strong>
+        <small>1d100{{ formatSigned(rollModifier()) }} · {{ rollRange().min }} à {{ rollRange().max }}</small>
+      </div>
+      <p class="summary-result__hint" [class.bad]="feasibility() === 'impossible'">
+        @switch (feasibility()) {
+          @case ('impossible') { Réussite impossible. }
+          @case ('automatic') { Réussite automatique. }
+          @default { Équivalent : 1d100, réussite à {{ simplifiedThreshold() }}+ }
+        }
+      </p>
+    </aside>
     <article class="calculator-card">
       <div class="card-title-row">
         <h2>Résultat du jet</h2>
         <button type="button" class="ghost-btn" (click)="reset()">Réinitialiser</button>
       </div>
 
-      <label for="dieRoll">Résultat du d100 (sans modificateur)</label>
+      <label for="dieRoll">Résultat du rand d'Agilité</label>
       <input
         id="dieRoll"
         type="number"
@@ -128,5 +131,6 @@
         </div>
       }
     </article>
-  </section>
+    </div>
+  </div>
 </section>
