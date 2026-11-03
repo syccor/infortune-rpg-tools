@@ -100,6 +100,16 @@ export class StealthCalculatorComponent {
     ],
   };
 
+  /** État du garde (distrait ou endormi) : se combine avec n'importe quelle vigilance. */
+  readonly guardStateGroup: StealthGroup = {
+    id: 'target',
+    label: 'État du garde',
+    options: [
+      { id: 'distrait', label: 'PNJ distrait ou occupé', kind: 'bonus', value: 20 },
+      { id: 'endormi', label: 'PNJ endormi', kind: 'bonus', value: 30 },
+    ],
+  };
+
   /** Autres groupes à choix unique (cocher une option décoche les autres du groupe). */
   readonly exclusiveGroups: StealthGroup[] = [
     {
@@ -109,14 +119,6 @@ export class StealthCalculatorComponent {
         { id: 'immobile', label: 'Position immobile', kind: 'bonus', value: 20 },
         { id: 'lent', label: 'Déplacement lent et précautionneux', kind: 'bonus', value: 10 },
         { id: 'rapide', label: 'Déplacement rapide ou précipité', kind: 'difficulty', value: 20 },
-      ],
-    },
-    {
-      id: 'target',
-      label: 'État du garde',
-      options: [
-        { id: 'distrait', label: 'PNJ distrait ou occupé', kind: 'bonus', value: 20 },
-        { id: 'endormi', label: 'PNJ endormi', kind: 'bonus', value: 30 },
       ],
     },
   ];
@@ -150,6 +152,7 @@ export class StealthCalculatorComponent {
   private readonly allOptions: StealthOption[] = [
     ...this.vigilance.options,
     ...this.lightGroup.options,
+    ...this.guardStateGroup.options,
     ...this.exclusiveGroups.flatMap((group) => group.options),
     this.torch,
     ...this.freeDifficulties,

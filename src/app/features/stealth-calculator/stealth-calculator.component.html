@@ -12,7 +12,8 @@
 
   <section class="calculator-grid">
     <article class="calculator-card">
-      <h2>{{ vigilance.label }}</h2>
+      <h2>Garde</h2>
+      <h3>Vigilance</h3>
       <div class="option-list">
         @for (option of vigilance.options; track option.id) {
           <label class="option" [class.active]="isSelected(vigilance, option.id)">
@@ -27,6 +28,9 @@
           </label>
         }
       </div>
+
+      <h3>État</h3>
+      <ng-container *ngTemplateOutlet="exclusiveOptions; context: { $implicit: guardStateGroup }" />
 
       @for (group of exclusiveGroups; track group.id) {
         <h2>{{ group.label }}</h2>
